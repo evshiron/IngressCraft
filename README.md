@@ -16,8 +16,6 @@ A Power Cube?
 
 ## TODO
 
-* Extract Wavefront .obj from Ingress.ipa.
-* Make Portal and Resonator Entity rendered as custom Wavefront model.
 * Prevent Links from going through solid blocks.
 * Make the position of a Resonator reasonable.
 
@@ -49,6 +47,6 @@ PositionTextureVertex(
 
 ## References
 
-* [http://bedrockminer.jimdo.com/modding-tutorials/basic-modding-1-7/](http://bedrockminer.jimdo.com/modding-tutorials/basic-modding-1-7/)
+* [Basic Modding (1.7) - Minecraft Mods & Modding by BedrockMiner](http://bedrockminer.jimdo.com/modding-tutorials/basic-modding-1-7/)
 * [[1.7.2] Forge | Add new Block, Item, Entity, AI, Creative tab, Language localization, Block textures, Side textures - Mapping and Modding Tutorials - Mapping and Modding - Minecraft Forum - Minecraft Forum](http://www.minecraftforum.net/forums/mapping-and-modding/mapping-and-modding-tutorials/1571558-1-7-2-forge-add-new-block-item-entity-ai-creative)
 * [GLSL Shaders with LWJGL - LWJGL](http://wiki.lwjgl.org/wiki/GLSL_Shaders_with_LWJGL)
