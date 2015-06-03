@@ -24,6 +24,5 @@ vec4 tmpvar_4;
   tmpvar_4 = ((mix (u_altColor, u_teamColor, (tmpvar_3 - 0.25)) + vec4(tmpvar_3)) - vec4(1.0, 1.0, 1.0, 1.0));
   gl_FragColor.xyz = tmpvar_4.xyz;
   gl_FragColor.w = u_teamColor.w;
-  gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
 }
 

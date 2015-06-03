@@ -15,6 +15,7 @@ import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.opengl.*;
+import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -65,34 +66,19 @@ public class ResonatorRenderer extends RenderEntity {
 
     }
 
-    String getInfoLogARB(int handle) {
-
-        return ARBShaderObjects.glGetInfoLogARB(handle, ARBShaderObjects.glGetObjectParameteriARB(handle, ARBShaderObjects.GL_OBJECT_INFO_LOG_LENGTH_ARB));
-
-    }
-
     int createShader(int type, InputStream stream) {
 
-        int shader = ARBShaderObjects.glCreateShaderObjectARB(type);
+        int shader = GL20.glCreateShader(type);
 
         try {
 
             String source = readAllFromStream(stream);
-            ARBShaderObjects.glShaderSourceARB(shader, source);
-            ARBShaderObjects.glCompileShaderARB(shader);
+            GL20.glShaderSource(shader, source);
+            GL20.glCompileShader(shader);
 
-            if(ARBShaderObjects.glGetObjectParameteriARB(shader, ARBShaderObjects.GL_OBJECT_COMPILE_STATUS_ARB) == GL11.GL_FALSE) {
+            System.out.println(GL20.glGetShaderInfoLog(shader, GL20.GL_COMPILE_STATUS));
 
-                System.out.println(source);
-                System.out.println(getInfoLogARB(shader));
-                return 0;
-
-            }
-            else {
-
-                return shader;
-
-            }
+            return shader;
 
         } catch (IOException e) {
 
@@ -101,6 +87,11 @@ public class ResonatorRenderer extends RenderEntity {
 
         }
 
+    }
+
+    double getPoints(double i) {
+
+        return i - Math.floor(i);
 
     }
 
@@ -109,83 +100,61 @@ public class ResonatorRenderer extends RenderEntity {
 
         if(mRingShaderProgram == 0 || mRingShaderProgram == 0) {
 
-            int ringShaderProgram = ARBShaderObjects.glCreateProgramObjectARB();
-            int ringVertexShader = createShader(ARBVertexShader.GL_VERTEX_SHADER_ARB, getClass().getResourceAsStream("/assets/ingresscraft/shaders/bicolor_textured.glsl.vert"));
-            int ringFragmentShader = createShader(ARBFragmentShader.GL_FRAGMENT_SHADER_ARB, getClass().getResourceAsStream("/assets/ingresscraft/shaders/bicolor_textured.glsl.frag"));
+            int ringShaderProgram = GL20.glCreateProgram();
+            int ringVertexShader = createShader(GL20.GL_VERTEX_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/bicolor_textured.glsl.vert"));
+            int ringFragmentShader = createShader(GL20.GL_FRAGMENT_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/bicolor_textured.glsl.frag"));
 
-            ARBShaderObjects.glAttachObjectARB(ringShaderProgram, ringVertexShader);
-            ARBShaderObjects.glAttachObjectARB(ringShaderProgram, ringFragmentShader);
+            GL20.glAttachShader(ringShaderProgram, ringVertexShader);
+            GL20.glAttachShader(ringShaderProgram, ringFragmentShader);
 
-            ARBShaderObjects.glLinkProgramARB(ringShaderProgram);
+            GL20.glLinkProgram(ringShaderProgram);
 
-            ARBShaderObjects.glValidateProgramARB(ringShaderProgram);
+            System.out.println(GL20.glGetProgramInfoLog(ringShaderProgram, GL20.GL_LINK_STATUS));
 
-            if(ARBShaderObjects.glGetObjectParameteriARB(ringShaderProgram, ARBShaderObjects.GL_OBJECT_VALIDATE_STATUS_ARB) == GL11.GL_FALSE) {
+            int xmShaderProgram = GL20.glCreateProgram();
+            int xmVertexShader = createShader(GL20.GL_VERTEX_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/xm.glsl.vert"));
+            int xmFragmentShader = createShader(GL20.GL_FRAGMENT_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/xm.glsl.frag"));
 
-                System.out.println(getInfoLogARB(ringShaderProgram));
+            GL20.glAttachShader(xmShaderProgram, xmVertexShader);
+            GL20.glAttachShader(xmShaderProgram, xmFragmentShader);
 
-            }
-            else {
+            GL20.glLinkProgram(xmShaderProgram);
 
-                System.out.println("RING_SHADER_PROGRAM_VALIDATED");
-
-            }
-
-            int xmShaderProgram = ARBShaderObjects.glCreateProgramObjectARB();
-            int xmVertexShader = createShader(ARBVertexShader.GL_VERTEX_SHADER_ARB, getClass().getResourceAsStream("/assets/ingresscraft/shaders/xm.glsl.vert"));
-            int xmFragmentShader = createShader(ARBFragmentShader.GL_FRAGMENT_SHADER_ARB, getClass().getResourceAsStream("/assets/ingresscraft/shaders/xm.glsl.frag"));
-
-            ARBShaderObjects.glAttachObjectARB(ringShaderProgram, xmVertexShader);
-            ARBShaderObjects.glAttachObjectARB(ringShaderProgram, xmFragmentShader);
-
-            ARBShaderObjects.glLinkProgramARB(xmShaderProgram);
-
-            ARBShaderObjects.glValidateProgramARB(xmShaderProgram);
-
-            if(ARBShaderObjects.glGetObjectParameteriARB(xmShaderProgram, ARBShaderObjects.GL_OBJECT_VALIDATE_STATUS_ARB) == GL11.GL_FALSE) {
-
-                System.out.println(getInfoLogARB(xmShaderProgram));
-
-            }
-            else {
-
-                System.out.println("XM_SHADER_PROGRAM_VALIDATED");
-
-            }
+            System.out.println(GL20.glGetProgramInfoLog(xmShaderProgram, GL20.GL_LINK_STATUS));
 
             mRingShaderProgram = ringShaderProgram;
             mXMShaderProgram = xmShaderProgram;
 
-            int ringVertexBufferObjectId = ARBVertexBufferObject.glGenBuffersARB();
+            int ringVertexBufferObjectId = GL15.glGenBuffers();
 
-            ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, ringVertexBufferObjectId);
-            ARBVertexBufferObject.glBufferDataARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, mResonatorRingModel.Vertices, ARBVertexBufferObject.GL_STATIC_DRAW_ARB);
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ringVertexBufferObjectId);
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, mResonatorRingModel.Vertices, GL15.GL_STATIC_DRAW);
 
-            ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, 0);
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
-            int ringIndexBufferObjectId = ARBVertexBufferObject.glGenBuffersARB();
+            int ringIndexBufferObjectId = GL15.glGenBuffers();
 
-            ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ELEMENT_ARRAY_BUFFER_ARB, ringIndexBufferObjectId);
-            ARBVertexBufferObject.glBufferDataARB(ARBVertexBufferObject.GL_ELEMENT_ARRAY_BUFFER_ARB, mResonatorRingModel.Indices, ARBVertexBufferObject.GL_STATIC_DRAW_ARB);
+            GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, ringIndexBufferObjectId);
+            GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, mResonatorRingModel.Indices, GL15.GL_STATIC_DRAW);
 
-            ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+            GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
 
             mRingVertexBufferObjectId = ringVertexBufferObjectId;
             mRingIndexBufferObjectId = ringIndexBufferObjectId;
 
-            int xmVertexBufferObjectId = ARBVertexBufferObject.glGenBuffersARB();
+            int xmVertexBufferObjectId = GL15.glGenBuffers();
 
-            ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, xmVertexBufferObjectId);
-            ARBVertexBufferObject.glBufferDataARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, mResonatorXMModel.Vertices, ARBVertexBufferObject.GL_STATIC_DRAW_ARB);
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, xmVertexBufferObjectId);
+            GL15.glBufferData(GL15.GL_ARRAY_BUFFER, mResonatorXMModel.Vertices, GL15.GL_STATIC_DRAW);
 
-            ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, 0);
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
-            int xmIndexBufferObjectId = ARBVertexBufferObject.glGenBuffersARB();
+            int xmIndexBufferObjectId = GL15.glGenBuffers();
 
-            ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ELEMENT_ARRAY_BUFFER_ARB, ringIndexBufferObjectId);
-            ARBVertexBufferObject.glBufferDataARB(ARBVertexBufferObject.GL_ELEMENT_ARRAY_BUFFER_ARB, mResonatorXMModel.Indices, ARBVertexBufferObject.GL_STATIC_DRAW_ARB);
+            GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, ringIndexBufferObjectId);
+            GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, mResonatorXMModel.Indices, GL15.GL_STATIC_DRAW);
 
-            ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+            GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
 
             mXMVertexBufferObjectId = xmVertexBufferObjectId;
             mXMIndexBufferObjectId = xmIndexBufferObjectId;
@@ -196,57 +165,62 @@ public class ResonatorRenderer extends RenderEntity {
 
         GL11.glTranslated(x, y + 1, z);
 
-        ARBShaderObjects.glUseProgramObjectARB(mRingShaderProgram);
+        GL20.glUseProgram(mRingShaderProgram);
 
-        ARBShaderObjects.glUniform4fARB(ARBShaderObjects.glGetUniformLocationARB(mRingShaderProgram, "u_color0"), 0.5882352941176471f, 0.15294117647058825f, 0.9568627450980393f, 1.0f);
+        GL20.glUniform4f(GL20.glGetUniformLocation(mRingShaderProgram, "u_color0"), 0.5882352941176471f, 0.15294117647058825f, 0.9568627450980393f, 1.0f);
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         bindTexture(ResonatorRingTextureLocation);
-        ARBShaderObjects.glUniform1iARB(ARBShaderObjects.glGetUniformLocationARB(mRingShaderProgram, "u_texture"), 0);
+        GL20.glUniform1i(GL20.glGetUniformLocation(mRingShaderProgram, "u_texture"), 0);
 
         GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-        ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, mRingVertexBufferObjectId);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, mRingVertexBufferObjectId);
         GL11.glVertexPointer(3, GL11.GL_FLOAT, 20, 0);
 
         GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-        ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, mRingVertexBufferObjectId);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, mRingVertexBufferObjectId);
         GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 20, 12);
 
-        //ARBVertexBufferObject.glBindBufferARB(GL15.GL_ELEMENT_ARRAY_BUFFER, mRingIndexBufferObjectId);
+        //GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, mRingIndexBufferObjectId);
         GL11.glDrawElements(GL11.GL_TRIANGLES, mResonatorRingModel.Indices);
         //ResonatorRingModel.renderAll();
 
-        ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, 0);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
         GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 
-        ARBShaderObjects.glUseProgramObjectARB(0);
+        GL20.glUseProgram(0);
 
-        ARBShaderObjects.glUseProgramObjectARB(mXMShaderProgram);
+        GL20.glUseProgram(mXMShaderProgram);
 
-        ARBShaderObjects.glUniform1fARB(ARBShaderObjects.glGetUniformLocationARB(mXMShaderProgram, "u_elapsedTime"), (float) Minecraft.getSystemTime());
+        System.out.println(GLU.gluErrorString(GL11.glGetError()));
+
+        GL20.glUniform1f(GL20.glGetUniformLocation(mXMShaderProgram, "u_elapsedTime"), (float) getPoints((double) Minecraft.getSystemTime() / 2000.0));
+
+        GL20.glUniform4f(GL20.glGetUniformLocation(mXMShaderProgram, "u_teamColor"), 0.92f, 0.7f, 0.89f, 1.0f);
+        GL20.glUniform4f(GL20.glGetUniformLocation(mXMShaderProgram, "u_altColor"), 0.6f, 0.4f, 0.6f, 0.8f);
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         bindTexture(ResonatorXMTextureLocation);
-        ARBShaderObjects.glUniform1iARB(ARBShaderObjects.glGetUniformLocationARB(mXMShaderProgram, "u_texture"), 0);
+        GL20.glUniform1i(GL20.glGetUniformLocation(mXMShaderProgram, "u_texture"), 0);
 
         GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-        ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, mXMVertexBufferObjectId);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, mXMVertexBufferObjectId);
         GL11.glVertexPointer(3, GL11.GL_FLOAT, 20, 0);
 
         GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-        ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, mXMVertexBufferObjectId);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, mXMVertexBufferObjectId);
         GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 20, 12);
 
-        //ARBVertexBufferObject.glBindBufferARB(GL15.GL_ELEMENT_ARRAY_BUFFER, mXMIndexBufferObjectId);
+        //GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, mXMIndexBufferObjectId);
         GL11.glDrawElements(GL11.GL_TRIANGLES, mResonatorXMModel.Indices);
         //ResonatorXMModel.renderAll();
 
-        ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, 0);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
         GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 
-        ARBShaderObjects.glUseProgramObjectARB(0);
+        GL20.glUseProgram(0);
 
         GL11.glPopMatrix();
 
