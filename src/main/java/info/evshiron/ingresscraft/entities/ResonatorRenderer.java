@@ -89,11 +89,9 @@ public class ResonatorRenderer extends RenderEntity {
 
     }
 
-    double getTickPoints() {
+    double getElapsedTime() {
 
-        double i = (double) Minecraft.getSystemTime() / 10000.0;
-
-        return (i - Math.floor(i)) * 2;
+        return (((double) Minecraft.getSystemTime() / 1000.0) % 300.0) * 0.1;
 
     }
 
@@ -195,7 +193,7 @@ public class ResonatorRenderer extends RenderEntity {
 
         GL20.glUseProgram(mXMShaderProgram);
 
-        GL20.glUniform1f(GL20.glGetUniformLocation(mXMShaderProgram, "u_elapsedTime"), (float) getTickPoints());
+        GL20.glUniform1f(GL20.glGetUniformLocation(mXMShaderProgram, "u_elapsedTime"), (float) getElapsedTime());
 
         GL20.glUniform4f(GL20.glGetUniformLocation(mXMShaderProgram, "u_teamColor"), 0.92f, 0.7f, 0.89f, 1.0f);
         GL20.glUniform4f(GL20.glGetUniformLocation(mXMShaderProgram, "u_altColor"), 0.6f, 0.4f, 0.6f, 0.8f);
