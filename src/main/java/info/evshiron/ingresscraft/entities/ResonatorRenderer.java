@@ -193,8 +193,6 @@ public class ResonatorRenderer extends RenderEntity {
 
         GL20.glUseProgram(mXMShaderProgram);
 
-        System.out.println(GLU.gluErrorString(GL11.glGetError()));
-
         GL20.glUniform1f(GL20.glGetUniformLocation(mXMShaderProgram, "u_elapsedTime"), (float) getPoints((double) Minecraft.getSystemTime() / 2000.0));
 
         GL20.glUniform4f(GL20.glGetUniformLocation(mXMShaderProgram, "u_teamColor"), 0.92f, 0.7f, 0.89f, 1.0f);
