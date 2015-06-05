@@ -2,6 +2,17 @@
 
 A whim of making Ingress in MineCraft 1.7.10 with Forge.
 
+## Setup
+
+```
+
+git clone https://bitbucket.org/evshiron/IngressCraft.git
+cd IngressCraft
+./gradlew setupDecompWorkspace --refresh-dependencies
+./gradlew genIntellijRuns
+
+```
+
 ## Directives
 
 A Portal is an Entity that accepts left click (Hack), right click with hand (Inspect, and further linking). Deployed Resonators will stay around and their distances to Portal are determined by the operating Agent. That is to say, a Resonator should have a Portal as parent.
