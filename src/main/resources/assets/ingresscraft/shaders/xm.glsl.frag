@@ -1,5 +1,4 @@
 // GENERATED FILE //
-#version 110
 #ifndef GL_ES
 #define lowp
 #define mediump
