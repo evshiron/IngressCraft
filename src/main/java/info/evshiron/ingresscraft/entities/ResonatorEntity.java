@@ -10,9 +10,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+
+import javax.sound.sampled.Port;
+import java.util.List;
 
 /**
  * Created by evshiron on 5/31/15.
@@ -76,27 +80,41 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
     }
 
     @Override
-    protected boolean interact(EntityPlayer player) {
-
-        player.openGui(IngressCraft.Instance, ScannerGUI.ID, worldObj, 0, 0, 0);
-
-        return true;
-
-    }
-
-    @Override
     protected void applyEntityAttributes() {
+
         super.applyEntityAttributes();
+
         getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(1000.0);
+
     }
 
     @Override
     public void onLivingUpdate() {
-        //System.err.println("Resonator current Health:" + this.getHealth());
+
+        //System.out.println("Resonator current Health:" + this.getHealth());
+
         if (this.getHealth() <= 0) {
+
             //this.setHealth(100);
             this.isDead = true;
+
         }
+
+        List entities = worldObj.getEntitiesWithinAABB(PortalEntity.class, boundingBox.expand(4, 4, 4));
+
+        for(int i = 0; i < entities.size(); i++) {
+
+            PortalEntity entity = (PortalEntity) entities.get(i);
+
+            if(entity.mFaction == Constants.Faction.NEUTRAL) {
+
+                entity.SetFaction(mFaction);
+                entity.SetOwner(mOwner);
+
+            }
+
+        }
+
     }
 
     @Override

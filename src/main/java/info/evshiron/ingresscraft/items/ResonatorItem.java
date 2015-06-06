@@ -39,6 +39,12 @@ public class ResonatorItem extends Item {
 
         ItemStack scanner = player.getCurrentArmor(3);
 
+        if(scanner == null) {
+
+            return false;
+
+        }
+
         if(!(scanner.getItem() instanceof ScannerItem)) {
 
             return false;
