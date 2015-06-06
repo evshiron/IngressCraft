@@ -14,6 +14,7 @@ public class ClientProxy extends CommonProxy {
 
     private PortalRenderer portal;
     private  ResonatorRenderer resonator;
+    private EntityPlayer player;
 
     @Override
     public void RegisterRenderers() {
@@ -26,6 +27,12 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void setPlayer(EntityPlayer player) {
+        this.player = player;
         portal.setPlayer(player);
+    }
+
+    @Override
+    public EntityPlayer getPlayer() {
+        return player;
     }
 }

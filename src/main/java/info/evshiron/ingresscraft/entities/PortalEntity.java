@@ -8,6 +8,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
@@ -46,8 +47,8 @@ public class PortalEntity extends IngressEntityBase {
     public void onLivingUpdate() {
         System.err.println("Portal current Health:" + this.getHealth());
         if (this.getHealth() <= 0) {
-            this.setHealth(100);
-            this.isDead = false;
+            //this.setHealth(100);
+            this.isDead = true;
         }
     }
 
@@ -97,10 +98,13 @@ public class PortalEntity extends IngressEntityBase {
                         /**
                          * TODO:replace the IngressCraft.scanner to anything you want
                          */
-                        if(player.getCurrentEquippedItem().getItem().equals(IngressCraft.scanner)){
+                        if(player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem().equals(IngressCraft.scanner)){
+                            System.out.println("boom");
                             this.damageEntity(p_70097_1_, p_70097_2_);
+                            player.inventory.consumeInventoryItem(player.getCurrentEquippedItem().getItem());
                         }
-
+                    }else{
+                        System.out.println(entity);
                     }
                     this.hurtTime = this.maxHurtTime = 10;
                 }
@@ -111,7 +115,7 @@ public class PortalEntity extends IngressEntityBase {
                         /**
                          * TODO:replace the IngressCraft.scanner to anything you want
                          */
-                        if(player.getCurrentEquippedItem().getItem().equals(IngressCraft.scanner)){
+                        if(player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem().equals(IngressCraft.scanner)){
                             this.recentlyHit = 100;
                             this.attackingPlayer = (EntityPlayer) entity;
                         }
@@ -119,29 +123,6 @@ public class PortalEntity extends IngressEntityBase {
                         return false;
                     }
                 }
-
-                /*if (flag) {
-                    this.worldObj.setEntityState(this, (byte) 2);
-
-                    if (p_70097_1_ != DamageSource.drown) {
-                        this.setBeenAttacked();
-                    }
-
-                    if (entity != null) {
-                        double d1 = entity.posX - this.posX;
-                        double d0;
-
-                        for (d0 = entity.posZ - this.posZ; d1 * d1 + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D) {
-                            d1 = (Math.random() - Math.random()) * 0.01D;
-                        }
-
-                        this.attackedAtYaw = (float) (Math.atan2(d0, d1) * 180.0D / Math.PI) - this.rotationYaw;
-                        this.knockBack(entity, p_70097_2_, d1, d0);
-                    } else {
-                        this.attackedAtYaw = (float) ((int) (Math.random() * 2.0D) * 180);
-                    }
-                }*/
-
                 String s;
 
                 if (this.getHealth() <= 0.0F) {
