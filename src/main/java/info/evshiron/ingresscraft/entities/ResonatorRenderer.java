@@ -1,5 +1,6 @@
 package info.evshiron.ingresscraft.entities;
 
+import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.utils.IngressDeserializer;
 import net.minecraft.client.Minecraft;
@@ -18,6 +19,7 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 import java.io.*;
 
@@ -95,8 +97,37 @@ public class ResonatorRenderer extends RenderEntity {
 
     }
 
+    void applyTeamColorByConstant(Vector4f color) {
+
+        GL20.glUniform4f(GL20.glGetUniformLocation(mXMShaderProgram, "u_teamColor"), color.x, color.y, color.z, color.w);
+
+    }
+
+    void applyTeamColorByFaction(int faction) {
+
+        switch(faction) {
+            case Constants.Faction.RESISTANCE:
+                applyTeamColorByConstant(Constants.TeamColor.RESISTANCE);
+                break;
+            case Constants.Faction.ENLIGHTENED:
+                applyTeamColorByConstant(Constants.TeamColor.ENLIGHTENED);
+                break;
+            default:
+                applyTeamColorByConstant(Constants.TeamColor.NEUTRAL);
+                break;
+        }
+
+
+    }
+
     @Override
     public void doRender(Entity entity, double x, double y, double z, float param5, float param6) {
+
+        doRender((ResonatorEntity) entity, x, y, z, param5, param6);
+
+    }
+
+    void doRender(ResonatorEntity entity, double x, double y, double z, float param5, float param6) {
 
         if(mRingShaderProgram == 0 || mRingShaderProgram == 0) {
 
@@ -195,7 +226,8 @@ public class ResonatorRenderer extends RenderEntity {
 
         GL20.glUniform1f(GL20.glGetUniformLocation(mXMShaderProgram, "u_elapsedTime"), (float) getElapsedTime());
 
-        GL20.glUniform4f(GL20.glGetUniformLocation(mXMShaderProgram, "u_teamColor"), 0.92f, 0.7f, 0.89f, 1.0f);
+        applyTeamColorByFaction(entity.mFaction);
+
         GL20.glUniform4f(GL20.glGetUniformLocation(mXMShaderProgram, "u_altColor"), 0.6f, 0.4f, 0.6f, 0.8f);
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
@@ -223,4 +255,5 @@ public class ResonatorRenderer extends RenderEntity {
         GL11.glPopMatrix();
 
     }
+
 }
