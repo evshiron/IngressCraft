@@ -100,6 +100,7 @@ public class IngressCraft
     public static IngressCraft Instance;
 
     public static ScannerItem scanner;
+    public static ResonatorItem resonator;
     public static XMPBursterItem xmp;
 
     @SidedProxy(clientSide = "info.evshiron.ingresscraft.ClientProxy", serverSide = "info.evshiron.ingresscraft.CommonProxy")
@@ -111,10 +112,11 @@ public class IngressCraft
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
+        resonator = new ResonatorItem();
         scanner = new ScannerItem();
         xmp = new XMPBursterItem();
         GameRegistry.registerItem(scanner, ScannerItem.NAME);
-        GameRegistry.registerItem(new ResonatorItem(), ResonatorItem.NAME);
+        GameRegistry.registerItem(resonator, ResonatorItem.NAME);
         GameRegistry.registerItem(xmp, XMPBursterItem.NAME);
 
         GameRegistry.registerBlock(new XMBlock(), XMBlock.NAME);

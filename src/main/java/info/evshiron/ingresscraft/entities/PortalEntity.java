@@ -7,6 +7,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.client.gui.PortalGUI;
+import info.evshiron.ingresscraft.items.ResonatorItem;
+import info.evshiron.ingresscraft.items.XMPBursterItem;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -16,6 +18,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.AxisAlignedBB;
@@ -103,16 +106,16 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     @Override
     public void onLivingUpdate() {
 
-        if(this.getHealth() <= 0) {
+        if (this.getHealth() <= 0) {
 
-            //this.setHealth(100);
-            this.isDead = true;
+            this.setHealth(100);
+            this.isDead = false;
 
         }
 
         List entities = worldObj.getEntitiesWithinAABB(ResonatorEntity.class, boundingBox.expand(4, 4, 4));
 
-        if(entities.size() == 0) {
+        if (entities.size() == 0) {
 
             SetFaction(Constants.Faction.NEUTRAL);
             SetOwner("NIA");
@@ -164,9 +167,10 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
                         /**
                          * TODO:replace the IngressCraft.scanner to anything you want
                          */
-                        if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem().equals(IngressCraft.scanner)) {
+                        if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem().equals(IngressCraft.resonator)) {
                             System.out.println("boom");
                             this.damageEntity(p_70097_1_, p_70097_2_);
+                            this.dropFewItems(true, 2);
                             player.inventory.consumeInventoryItem(player.getCurrentEquippedItem().getItem());
                         }
                     } else {
@@ -181,7 +185,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
                         /**
                          * TODO:replace the IngressCraft.scanner to anything you want
                          */
-                        if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem().equals(IngressCraft.scanner)) {
+                        if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem().equals(IngressCraft.resonator)) {
                             this.recentlyHit = 100;
                             this.attackingPlayer = (EntityPlayer) entity;
                         }
@@ -212,5 +216,31 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
         }
     }
 
+    /**
+     * this.getLastAttackTime
+     */
+    @Override
+    protected void dropFewItems(boolean p_70628_1_, int p_70628_2_) {
+        int q = this.rand.nextInt(2);
+        if (q == 0) {
+            int j = this.rand.nextInt(3);
+            if (p_70628_2_ > 0) {
+                j += this.rand.nextInt(p_70628_2_ + 1);
 
+            }
+            for (int k = 0; k < j; ++k) {
+                this.dropItem(IngressCraft.resonator, 1);
+            }
+        } else {
+            int j = this.rand.nextInt(3);
+            if (p_70628_2_ > 0) {
+                j += this.rand.nextInt(p_70628_2_ + 1);
+
+            }
+            for (int k = 0; k < j; ++k) {
+                this.dropItem(IngressCraft.xmp, 1);
+            }
+        }
+
+    }
 }
