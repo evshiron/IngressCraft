@@ -16,7 +16,7 @@ public class PortalGUI extends GuiScreen {
 
         drawDefaultBackground();
 
-        fontRendererObj.drawString("这不是节操po", 8, 8, 0xff0000);
+        fontRendererObj.drawString("这不是节操po", 16, 16, 0xff0000);
 
     }
 }

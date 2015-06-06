@@ -2,7 +2,9 @@ package info.evshiron.ingresscraft.entities;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
+import info.evshiron.ingresscraft.client.gui.PortalGUI;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -25,18 +27,13 @@ public class PortalEntity extends IngressEntityBase {
 
     public static final String NAME = "portal";
 
+    int mFaction = Constants.Faction.NEUTRAL;
+
+    String mOwner;
+
     public PortalEntity(World world) {
         super(world);
 
-    }
-
-    @SideOnly(Side.CLIENT)
-    public int getBrightnessForRender(float p_70070_1_) {
-        return 15728880;
-    }
-
-    public float getBrightness(float p_70013_1_) {
-        return 1.0F;
     }
 
     /**
@@ -45,7 +42,7 @@ public class PortalEntity extends IngressEntityBase {
      */
     @Override
     public void onLivingUpdate() {
-        System.err.println("Portal current Health:" + this.getHealth());
+        //System.err.println("Portal current Health:" + this.getHealth());
         if (this.getHealth() <= 0) {
             //this.setHealth(100);
             this.isDead = true;

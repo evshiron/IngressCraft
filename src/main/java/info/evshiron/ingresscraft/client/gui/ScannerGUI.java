@@ -1,6 +1,7 @@
 package info.evshiron.ingresscraft.client.gui;
 
 import info.evshiron.ingresscraft.Constants;
+import info.evshiron.ingresscraft.IngressCraft;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.gui.GuiButton;
@@ -164,7 +165,8 @@ public class ScannerGUI extends GuiScreen {
             // Use this to send data back to the server.
             // FIXME: But it gets lost when restarting.
             (new PacketBuffer(bytes)).writeItemStackToBuffer(mScanner);
-            mc.getNetHandler().addToSendQueue(new C17PacketCustomPayload("ScannerWrite", bytes));
+
+            IngressCraft.LoginScannerChannel.sendToServer(new IngressCraft.LoginScannerMessage(mCodenameInput.getText(), mFaction));
 
             String broadcast = String.format("%s has joined the %s.", nbt.getString("codename"), nbt.getInteger("faction") == 1 ? "Resistance" : "Enlightened");
 
