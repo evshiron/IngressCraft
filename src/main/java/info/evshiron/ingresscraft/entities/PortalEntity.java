@@ -31,7 +31,6 @@ public class PortalEntity extends IngressEntityBase {
 
     public static final String NAME = "portal";
 
-    int mFaction = Constants.Faction.NEUTRAL;
 
     String mOwner;
 
@@ -56,17 +55,18 @@ public class PortalEntity extends IngressEntityBase {
         if (this.getHealth() <= 0) {
             //this.setHealth(100);
             this.isDead = true;
-        if(world.isRemote){
-            net.minecraft.entity.Entity single = world.findNearestEntityWithinAABB(ResonatorEntity.class, this.boundingBox.expand(5, 5, 5), this);
-            if (single != null) {
-                System.out.println("found");
-                if(((ResonatorEntity)single).mFaction== Constants.Faction.ENLIGHTENED){
-                    this.setmFaction(Constants.Faction.ENLIGHTENED);
-                }else if(((ResonatorEntity)single).mFaction== Constants.Faction.RESISTANCE){
-                    this.setmFaction(Constants.Faction.RESISTANCE);
+            if (world.isRemote) {
+                net.minecraft.entity.Entity single = world.findNearestEntityWithinAABB(ResonatorEntity.class, this.boundingBox.expand(5, 5, 5), this);
+                if (single != null) {
+                    System.out.println("found");
+                    if (((ResonatorEntity) single).mFaction == Constants.Faction.ENLIGHTENED) {
+                        this.setmFaction(Constants.Faction.ENLIGHTENED);
+                    } else if (((ResonatorEntity) single).mFaction == Constants.Faction.RESISTANCE) {
+                        this.setmFaction(Constants.Faction.RESISTANCE);
+                    }
+                } else {
+                    this.setmFaction(Constants.Faction.NEUTRAL);
                 }
-            }else{
-                this.setmFaction(Constants.Faction.NEUTRAL);
             }
         }
     }
@@ -76,7 +76,6 @@ public class PortalEntity extends IngressEntityBase {
      * this.setAttackTarget()
      * used to response to XM Burst
      */
-
 
     @Override
     public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_) {
@@ -164,5 +163,6 @@ public class PortalEntity extends IngressEntityBase {
             }
         }
     }
+
 
 }
