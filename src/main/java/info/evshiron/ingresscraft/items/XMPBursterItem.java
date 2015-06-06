@@ -16,7 +16,7 @@ public class XMPBursterItem extends Item {
         super();
 
         setUnlocalizedName(NAME);
-        setCreativeTab(CreativeTabs.tabDecorations);
+        setCreativeTab(CreativeTabs.tabInventory);
         setTextureName(IngressCraft.MODID + ":" + NAME);
 
     }
