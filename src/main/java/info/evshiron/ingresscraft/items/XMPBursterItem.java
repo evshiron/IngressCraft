@@ -9,7 +9,7 @@ import net.minecraft.item.Item;
  */
 public class XMPBursterItem extends Item {
 
-    public static final String NAME = "xmpburster";
+    public static final String NAME = "xmpBurster";
 
     public XMPBursterItem() {
 
@@ -17,7 +17,7 @@ public class XMPBursterItem extends Item {
 
         setUnlocalizedName(NAME);
         setCreativeTab(CreativeTabs.tabDecorations);
-        setTextureName("fireworks_charge");
+        setTextureName(IngressCraft.MODID + ":" + NAME);
 
     }
 
