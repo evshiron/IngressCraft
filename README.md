@@ -63,3 +63,5 @@ PositionTextureVertex(
 * [GLSL Shaders with LWJGL - LWJGL](http://wiki.lwjgl.org/wiki/GLSL_Shaders_with_LWJGL)
 * [DeviateFish/ingress-model-viewer](https://github.com/DeviateFish/ingress-model-viewer)
 * [Technical Q&A QA1679: Deprecated built-in variables in GLSL Shaders](https://developer.apple.com/library/ios/qa/qa1679/_index.html)
+* [Basic GUI - Minecraft Forge](http://www.minecraftforge.net/wiki/Basic_GUI)
+* [[1.4.7][forge]Blaueseichoern's GUI Tutorial - Tutorials - Archive - Minecraft Forum - Minecraft Forum](http://www.minecraftforum.net/forums/archive/tutorials/931088-1-4-7-forge-blaueseichoerns-gui-tutorial)
