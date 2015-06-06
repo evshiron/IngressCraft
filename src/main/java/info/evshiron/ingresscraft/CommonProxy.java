@@ -1,5 +1,6 @@
 package info.evshiron.ingresscraft;
 
+import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.network.IGuiHandler;
 import info.evshiron.ingresscraft.client.gui.PortalGUI;
 import info.evshiron.ingresscraft.client.gui.ScannerGUI;
@@ -17,6 +18,14 @@ public class CommonProxy implements IGuiHandler {
 
     public void RegisterRenderers() {
 
+    }
+
+    public void setPlayer(EntityPlayer player){
+
+    }
+
+    public EntityPlayer getPlayer(){
+        return null;
     }
 
     @Override
