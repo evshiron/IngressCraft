@@ -1,6 +1,7 @@
 package info.evshiron.ingresscraft;
 
 import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import info.evshiron.ingresscraft.blocks.XMBlock;
@@ -47,6 +48,8 @@ public class IngressCraft
         EntityList.entityEggs.put(resonatorEntityId, new EntityList.EntityEggInfo(resonatorEntityId, 0, 0));
 
         Proxy.RegisterRenderers();
+
+        NetworkRegistry.INSTANCE.registerGuiHandler(Instance, Proxy);
 
     }
 
