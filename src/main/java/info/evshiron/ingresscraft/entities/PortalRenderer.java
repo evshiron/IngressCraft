@@ -1,5 +1,6 @@
 package info.evshiron.ingresscraft.entities;
 
+import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.utils.IngressDeserializer;
 import net.minecraft.client.Minecraft;
@@ -11,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.util.vector.Vector4f;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -83,6 +85,28 @@ public class PortalRenderer extends RenderEntity {
 
     }
 
+    void applyTeamColorByConstant(Vector4f color) {
+
+        GL20.glUniform4f(GL20.glGetUniformLocation(mShaderProgram, "u_baseColor"), color.x, color.y, color.z, color.w);
+
+    }
+
+    void applyBaseColorByFaction(int faction) {
+
+        switch(faction) {
+            case Constants.Faction.RESISTANCE:
+                applyTeamColorByConstant(Constants.TeamColor.RESISTANCE);
+                break;
+            case Constants.Faction.ENLIGHTENED:
+                applyTeamColorByConstant(Constants.TeamColor.ENLIGHTENED);
+                break;
+            default:
+                applyTeamColorByConstant(Constants.TeamColor.NEUTRAL);
+                break;
+        }
+
+    }
+
     double getRotation() {
 
         return ((double) Minecraft.getSystemTime() / 5000.0) % 360.0;
@@ -108,15 +132,32 @@ public class PortalRenderer extends RenderEntity {
     @Override
     public void doRender(Entity entity, double x, double y, double z, float param5, float param6) {
 
-        if(player!=null){
-            if(player.getCurrentArmor(3)!=null&&player.getCurrentArmor(3).getItem().equals(IngressCraft.scanner)){
+        doRender((PortalEntity) entity, x, y, z, param5, param6);
+
+    }
+
+    void doRender(PortalEntity entity, double x, double y, double z, float param5, float param6) {
+
+        if(player != null) {
+
+            if(player.getCurrentArmor(3) != null && player.getCurrentArmor(3).getItem().equals(IngressCraft.scanner)) {
+
                 //System.err.println("true");
-            }else{
-                //System.err.println("false");
+
             }
-        }else{
-            //System.err.println("null player");
+            else {
+
+                //System.err.println("false");
+
+            }
+
         }
+        else {
+
+            //System.err.println("null");
+
+        }
+
         if(mShaderProgram == 0) {
 
             int shaderProgram = GL20.glCreateProgram();
@@ -166,7 +207,8 @@ public class PortalRenderer extends RenderEntity {
 
         GL20.glUseProgram(mShaderProgram);
 
-        GL20.glUniform4f(GL20.glGetUniformLocation(mShaderProgram, "u_baseColor"), 0f, 0.7607843137254902f, 1f, 1f);
+        applyBaseColorByFaction(entity.mFaction);
+
         GL20.glUniform1f(GL20.glGetUniformLocation(mShaderProgram, "u_rotation"), (float) getRotation());
         GL20.glUniform1f(GL20.glGetUniformLocation(mShaderProgram, "u_rampTarget"), (float) getRampTarget());
         GL20.glUniform1f(GL20.glGetUniformLocation(mShaderProgram, "u_alpha"), (float) getAlpha());
@@ -198,4 +240,5 @@ public class PortalRenderer extends RenderEntity {
         GL11.glPopAttrib();
 
     }
+
 }

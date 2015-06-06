@@ -1,10 +1,13 @@
 package info.evshiron.ingresscraft.entities;
 
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.client.gui.PortalGUI;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,26 +16,76 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
 import javax.swing.text.html.parser.Entity;
+import java.util.List;
 
 /**
  * Created by evshiron on 5/26/15.
  */
-public class PortalEntity extends IngressEntityBase {
+public class PortalEntity extends IngressEntityBase implements IEntityAdditionalSpawnData {
 
     public static final String NAME = "portal";
 
-    int mFaction = Constants.Faction.NEUTRAL;
+    public int mFaction = Constants.Faction.NEUTRAL;
 
-    String mOwner;
+    public String mOwner = "NIA";
 
     public PortalEntity(World world) {
         super(world);
+
+    }
+
+    public void SetFaction(int faction) {
+
+        mFaction = faction;
+
+    }
+
+    public void SetOwner(String owner) {
+
+        mOwner = owner;
+
+    }
+
+    @Override
+    public void writeEntityToNBT(NBTTagCompound nbt) {
+
+        nbt.setInteger("faction", mFaction);
+        nbt.setString("owner", mOwner);
+
+        super.writeEntityToNBT(nbt);
+
+    }
+
+    @Override
+    public void readEntityFromNBT(NBTTagCompound nbt) {
+
+        super.readEntityFromNBT(nbt);
+
+        mFaction = nbt.getInteger("faction");
+        mOwner = nbt.getString("owner");
+
+    }
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer) {
+
+        ByteBufUtils.writeUTF8String(buffer, String.valueOf(mFaction));
+        ByteBufUtils.writeUTF8String(buffer, mOwner);
+
+    }
+
+    @Override
+    public void readSpawnData(ByteBuf additionalData) {
+
+        mFaction = Integer.parseInt(ByteBufUtils.readUTF8String(additionalData));
+        mOwner = ByteBufUtils.readUTF8String(additionalData);
 
     }
 
@@ -42,11 +95,23 @@ public class PortalEntity extends IngressEntityBase {
      */
     @Override
     public void onLivingUpdate() {
-        //System.err.println("Portal current Health:" + this.getHealth());
+
         if (this.getHealth() <= 0) {
+
             //this.setHealth(100);
             this.isDead = true;
+
         }
+
+        List entities = worldObj.getEntitiesWithinAABB(ResonatorEntity.class, boundingBox.expand(4, 4, 4));
+
+        if(entities.size() == 0) {
+
+            SetFaction(Constants.Faction.NEUTRAL);
+            SetOwner("NIA");
+
+        }
+
     }
 
 
