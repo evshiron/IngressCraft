@@ -100,20 +100,28 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
         }
 
-        List entities = worldObj.getEntitiesWithinAABB(PortalEntity.class, boundingBox.expand(4, 4, 4));
+        List<PortalEntity> entities = worldObj.getEntitiesWithinAABB(PortalEntity.class, boundingBox.expand(4, 4, 4));
+        if(entities.size()==0){
+           this.isDead = true;
+        }else{
+            for(int i = 0; i < entities.size(); i++) {
 
-        for(int i = 0; i < entities.size(); i++) {
+                PortalEntity entity = entities.get(i);
 
-            PortalEntity entity = (PortalEntity) entities.get(i);
 
-            if(entity.mFaction == Constants.Faction.NEUTRAL) {
+                if(entity.mFaction == Constants.Faction.NEUTRAL) {
 
-                entity.SetFaction(mFaction);
-                entity.SetOwner(mOwner);
+                    entity.SetFaction(mFaction);
+                    entity.SetOwner(mOwner);
+
+                }else if(entity.mFaction!=mFaction||worldObj.getEntitiesWithinAABB(ResonatorEntity.class,entity.boundingBox.expand(4,4,4)).size()>8){
+                    ((ResonatorEntity)(worldObj.getEntitiesWithinAABB(ResonatorEntity.class,entity.boundingBox.expand(4,4,4)).get(8))).isDead=true;
+                }
 
             }
-
         }
+
+
 
     }
 
@@ -161,8 +169,8 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
                             this.damageEntity(p_70097_1_, p_70097_2_);
                             //player.inventory.consumeInventoryItem(player.getCurrentEquippedItem().getItem());
                         }
-                    }else{
-                        System.out.println(entity);
+                    }else if(entity==null){
+                        this.damageEntity(p_70097_1_, p_70097_2_);
                     }
                     this.hurtTime = this.maxHurtTime = 10;
                 }

@@ -116,7 +116,6 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
             SetFaction(Constants.Faction.NEUTRAL);
             SetOwner("NIA");
-
         }
 
     }
