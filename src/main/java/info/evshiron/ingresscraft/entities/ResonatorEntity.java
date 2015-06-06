@@ -116,8 +116,10 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
                     entity.SetFaction(mFaction);
                     entity.SetOwner(mOwner);
 
-                }else if(entity.mFaction!=mFaction||worldObj.getEntitiesWithinAABB(ResonatorEntity.class,entity.boundingBox.expand(4,4,4)).size()>8){
-                    ((ResonatorEntity)(worldObj.getEntitiesWithinAABB(ResonatorEntity.class,entity.boundingBox.expand(4,4,4)).get(8))).isDead=true;
+                }else if(entity.mFaction != mFaction || worldObj.getEntitiesWithinAABB(ResonatorEntity.class, entity.boundingBox.expand(4, 4, 4)).size() > 8) {
+
+                    ((ResonatorEntity) (worldObj.getEntitiesWithinAABB(ResonatorEntity.class, entity.boundingBox.expand(4, 4, 4)).get(8))).isDead = true;
+
                 }
 
             }
