@@ -2,7 +2,6 @@ package info.evshiron.ingresscraft.entities;
 
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
-import info.evshiron.ingresscraft.client.gui.PortalGUI;
 import info.evshiron.ingresscraft.client.gui.ScannerGUI;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -29,15 +28,11 @@ public class ResonatorEntity extends IngressEntityBase {
     }
 
     public void SetFaction(int faction) {
-
         mFaction = faction;
-
     }
 
     public void SetOwner(String owner) {
-
         mOwner = owner;
-
     }
 
     @Override
@@ -57,7 +52,7 @@ public class ResonatorEntity extends IngressEntityBase {
 
     @Override
     public void onLivingUpdate() {
-        System.err.println("Resonator current Health:" + this.getHealth());
+        //System.err.println("Resonator current Health:" + this.getHealth());
         if (this.getHealth() <= 0) {
             //this.setHealth(100);
             this.isDead = true;

@@ -2,6 +2,7 @@ package info.evshiron.ingresscraft.entities;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -12,21 +13,32 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
 import javax.swing.text.html.parser.Entity;
+import java.util.List;
 
 /**
  * Created by evshiron on 5/26/15.
  */
 public class PortalEntity extends IngressEntityBase {
 
+    public World world;
+
     public static final String NAME = "portal";
+
+    int mFaction = Constants.Faction.NEUTRAL;
+
+    public void setmFaction(int mFaction) {
+        this.mFaction = mFaction;
+    }
 
     public PortalEntity(World world) {
         super(world);
+        this.world = world;
 
     }
 
@@ -45,19 +57,25 @@ public class PortalEntity extends IngressEntityBase {
      */
     @Override
     public void onLivingUpdate() {
-        System.err.println("Portal current Health:" + this.getHealth());
-        if (this.getHealth() <= 0) {
-            //this.setHealth(100);
-            this.isDead = true;
+        if(world.isRemote){
+            net.minecraft.entity.Entity single = world.findNearestEntityWithinAABB(ResonatorEntity.class, this.boundingBox.expand(5, 5, 5), this);
+            if (single != null) {
+                System.out.println("found");
+                if(((ResonatorEntity)single).mFaction== Constants.Faction.ENLIGHTENED){
+                    this.setmFaction(Constants.Faction.ENLIGHTENED);
+                }else if(((ResonatorEntity)single).mFaction== Constants.Faction.RESISTANCE){
+                    this.setmFaction(Constants.Faction.RESISTANCE);
+                }
+            }else{
+                this.setmFaction(Constants.Faction.NEUTRAL);
+            }
         }
     }
-
 
     /**
      * this.setAttackTarget()
      * used to response to XM Burst
      */
-
 
     @Override
     public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_) {
@@ -94,16 +112,16 @@ public class PortalEntity extends IngressEntityBase {
                     this.prevHealth = this.getHealth();
                     this.hurtResistantTime = this.maxHurtResistantTime;
                     if (entity instanceof EntityPlayer) {
-                        EntityPlayer player = (EntityPlayer)entity;
+                        EntityPlayer player = (EntityPlayer) entity;
                         /**
                          * TODO:replace the IngressCraft.scanner to anything you want
                          */
-                        if(player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem().equals(IngressCraft.scanner)){
+                        if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem().equals(IngressCraft.scanner)) {
                             System.out.println("boom");
                             this.damageEntity(p_70097_1_, p_70097_2_);
                             player.inventory.consumeInventoryItem(player.getCurrentEquippedItem().getItem());
                         }
-                    }else{
+                    } else {
                         System.out.println(entity);
                     }
                     this.hurtTime = this.maxHurtTime = 10;
@@ -111,11 +129,11 @@ public class PortalEntity extends IngressEntityBase {
                 this.attackedAtYaw = 0.0F;
                 if (entity != null) {
                     if (entity instanceof EntityPlayer) {
-                        EntityPlayer player = (EntityPlayer)entity;
+                        EntityPlayer player = (EntityPlayer) entity;
                         /**
                          * TODO:replace the IngressCraft.scanner to anything you want
                          */
-                        if(player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem().equals(IngressCraft.scanner)){
+                        if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem().equals(IngressCraft.scanner)) {
                             this.recentlyHit = 100;
                             this.attackingPlayer = (EntityPlayer) entity;
                         }
@@ -145,4 +163,5 @@ public class PortalEntity extends IngressEntityBase {
             }
         }
     }
+
 }
