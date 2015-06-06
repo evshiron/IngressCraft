@@ -23,14 +23,16 @@ public class IngressCraft
     @Mod.Instance(MODID)
     public static IngressCraft Instance;
 
+    public static ScannerItem scanner;
+
     @SidedProxy(clientSide = "info.evshiron.ingresscraft.ClientProxy", serverSide = "info.evshiron.ingresscraft.CommonProxy")
     public static CommonProxy Proxy;
 
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-
-        GameRegistry.registerItem(new ScannerItem(), ScannerItem.NAME);
+        scanner = new ScannerItem();
+        GameRegistry.registerItem(scanner, ScannerItem.NAME);
         GameRegistry.registerItem(new ResonatorItem(), ResonatorItem.NAME);
         GameRegistry.registerItem(new XMPBursterItem(), XMPBursterItem.NAME);
 

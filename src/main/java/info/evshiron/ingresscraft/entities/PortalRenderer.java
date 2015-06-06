@@ -5,6 +5,7 @@ import info.evshiron.ingresscraft.utils.IngressDeserializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -20,6 +21,12 @@ import java.io.InputStreamReader;
  * Created by evshiron on 5/28/15.
  */
 public class PortalRenderer extends RenderEntity {
+
+    public void setPlayer(EntityPlayer player) {
+        this.player = player;
+    }
+
+    private EntityPlayer player;
 
     public static final ResourceLocation PortalTextureLocation = new ResourceLocation(IngressCraft.MODID, "textures/entities/portalTexture.png");
 
@@ -101,6 +108,15 @@ public class PortalRenderer extends RenderEntity {
     @Override
     public void doRender(Entity entity, double x, double y, double z, float param5, float param6) {
 
+        if(player!=null){
+            if(player.getCurrentArmor(3)!=null&&player.getCurrentArmor(3).getItem().equals(IngressCraft.scanner)){
+                System.err.println("true");
+            }else{
+                System.err.println("false");
+            }
+        }else{
+            System.err.println("null player");
+        }
         if(mShaderProgram == 0) {
 
             int shaderProgram = GL20.glCreateProgram();
