@@ -663,5 +663,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="TooMuchTNT v2.9" level="project" />
   </component>
 </module>

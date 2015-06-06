@@ -117,7 +117,6 @@ public class ResonatorRenderer extends RenderEntity {
                 break;
         }
 
-
     }
 
     @Override

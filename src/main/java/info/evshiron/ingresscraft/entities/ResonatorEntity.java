@@ -1,10 +1,14 @@
 package info.evshiron.ingresscraft.entities;
 
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.client.gui.ScannerGUI;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -13,13 +17,13 @@ import net.minecraftforge.common.ForgeHooks;
 /**
  * Created by evshiron on 5/31/15.
  */
-public class ResonatorEntity extends IngressEntityBase {
+public class ResonatorEntity extends IngressEntityBase implements IEntityAdditionalSpawnData {
 
     public static String NAME = "resonator";
 
-    int mFaction = Constants.Faction.NEUTRAL;
+    public int mFaction = Constants.Faction.NEUTRAL;
 
-    String mOwner;
+    public String mOwner;
 
     public ResonatorEntity(World world) {
 
@@ -33,6 +37,42 @@ public class ResonatorEntity extends IngressEntityBase {
 
     public void SetOwner(String owner) {
         mOwner = owner;
+    }
+
+    @Override
+    public void writeEntityToNBT(NBTTagCompound nbt) {
+
+        nbt.setInteger("faction", mFaction);
+        nbt.setString("owner", mOwner);
+
+        super.writeEntityToNBT(nbt);
+
+    }
+
+    @Override
+    public void readEntityFromNBT(NBTTagCompound nbt) {
+
+        super.readEntityFromNBT(nbt);
+
+        mFaction = nbt.getInteger("faction");
+        mOwner = nbt.getString("owner");
+
+    }
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer) {
+
+        ByteBufUtils.writeUTF8String(buffer, String.valueOf(mFaction));
+        ByteBufUtils.writeUTF8String(buffer, mOwner);
+
+    }
+
+    @Override
+    public void readSpawnData(ByteBuf additionalData) {
+
+        mFaction = Integer.parseInt(ByteBufUtils.readUTF8String(additionalData));
+        mOwner = ByteBufUtils.readUTF8String(additionalData);
+
     }
 
     @Override
@@ -145,4 +185,5 @@ public class ResonatorEntity extends IngressEntityBase {
             }
         }
     }
+
 }

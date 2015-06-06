@@ -1,6 +1,8 @@
 package info.evshiron.ingresscraft.items;
 
+import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
+import info.evshiron.ingresscraft.client.gui.ScannerGUI;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -27,6 +29,15 @@ public class ScannerItem extends ItemArmor {
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
-        IngressCraft.Proxy.setPlayer(player);
+
+        //System.out.println("tick");
+
+        if(!itemStack.hasTagCompound() || itemStack.getTagCompound().getInteger("faction") == Constants.Faction.NEUTRAL) {
+
+            player.openGui(IngressCraft.Instance, ScannerGUI.ID, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+
+        }
+
     }
+
 }
