@@ -57,7 +57,7 @@ public class ResonatorEntity extends IngressEntityBase {
 
     @Override
     public void onLivingUpdate() {
-        System.err.println("Resonator current Health:" + this.getHealth());
+        //System.err.println("Resonator current Health:" + this.getHealth());
         if (this.getHealth() <= 0) {
             //this.setHealth(100);
             this.isDead = true;
