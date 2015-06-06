@@ -18,6 +18,7 @@ import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
@@ -30,11 +31,17 @@ import java.util.List;
  */
 public class PortalEntity extends IngressEntityBase implements IEntityAdditionalSpawnData {
 
+    public World world;
+
     public static final String NAME = "portal";
 
     public int mFaction = Constants.Faction.NEUTRAL;
 
     public String mOwner = "NIA";
+
+    public void setmFaction(int mFaction) {
+        this.mFaction = mFaction;
+    }
 
     public PortalEntity(World world) {
         super(world);
@@ -96,7 +103,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     @Override
     public void onLivingUpdate() {
 
-        if (this.getHealth() <= 0) {
+        if(this.getHealth() <= 0) {
 
             //this.setHealth(100);
             this.isDead = true;
@@ -114,12 +121,10 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
     }
 
-
     /**
      * this.setAttackTarget()
      * used to response to XM Burst
      */
-
 
     @Override
     public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_) {
@@ -156,16 +161,16 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
                     this.prevHealth = this.getHealth();
                     this.hurtResistantTime = this.maxHurtResistantTime;
                     if (entity instanceof EntityPlayer) {
-                        EntityPlayer player = (EntityPlayer)entity;
+                        EntityPlayer player = (EntityPlayer) entity;
                         /**
                          * TODO:replace the IngressCraft.scanner to anything you want
                          */
-                        if(player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem().equals(IngressCraft.scanner)){
+                        if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem().equals(IngressCraft.scanner)) {
                             System.out.println("boom");
                             this.damageEntity(p_70097_1_, p_70097_2_);
                             player.inventory.consumeInventoryItem(player.getCurrentEquippedItem().getItem());
                         }
-                    }else{
+                    } else {
                         System.out.println(entity);
                     }
                     this.hurtTime = this.maxHurtTime = 10;
@@ -173,11 +178,11 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
                 this.attackedAtYaw = 0.0F;
                 if (entity != null) {
                     if (entity instanceof EntityPlayer) {
-                        EntityPlayer player = (EntityPlayer)entity;
+                        EntityPlayer player = (EntityPlayer) entity;
                         /**
                          * TODO:replace the IngressCraft.scanner to anything you want
                          */
-                        if(player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem().equals(IngressCraft.scanner)){
+                        if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem().equals(IngressCraft.scanner)) {
                             this.recentlyHit = 100;
                             this.attackingPlayer = (EntityPlayer) entity;
                         }
@@ -207,4 +212,6 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
             }
         }
     }
+
+
 }

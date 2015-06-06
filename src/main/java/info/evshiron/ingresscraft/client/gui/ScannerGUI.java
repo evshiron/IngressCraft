@@ -31,9 +31,9 @@ public class ScannerGUI extends GuiScreen {
 
     public static final int ID = 10001;
 
-    public static final int ID_RESISTANCE_BUTTON = 10000;
-    public static final int ID_ENLIGHTENED_BUTTON = 10001;
-    public static final int ID_CANCEL_BUTTON = 10002;
+    public static final int ID_RESISTANCE_BUTTON = 10005;
+    public static final int ID_ENLIGHTENED_BUTTON = 10006;
+    public static final int ID_CANCEL_BUTTON = 10007;
 
     EntityPlayer mPlayer;
     ItemStack mScanner;
