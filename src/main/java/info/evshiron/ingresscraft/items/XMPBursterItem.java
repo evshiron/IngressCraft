@@ -22,13 +22,16 @@ public class XMPBursterItem extends Item {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack p_77659_1_, World p_77659_2_, EntityPlayer p_77659_3_) {
+    public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
 
-        OExplosion explosion = new OExplosion(p_77659_2_,p_77659_3_,p_77659_3_.posX,p_77659_3_.posY,p_77659_3_.posZ,10.0F);
+        OExplosion explosion = new OExplosion(world, player, player.posX, player.posY, player.posZ, 10.0F);
         explosion.doExplosionA();
         explosion.doExplosionB(true);
-        p_77659_3_.inventory.consumeInventoryItem(p_77659_3_.getCurrentEquippedItem().getItem());
-        return super.onItemRightClick(p_77659_1_, p_77659_2_, p_77659_3_);
+
+        player.inventory.consumeInventoryItem(player.getCurrentEquippedItem().getItem());
+
+        return itemStack;
+
     }
 
 }
