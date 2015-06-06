@@ -17,7 +17,7 @@ public class ResonatorItem extends Item {
 
         setUnlocalizedName(NAME);
         setCreativeTab(CreativeTabs.tabDecorations);
-        setTextureName("fireworks");
+        setTextureName(IngressCraft.MODID + ":" + NAME);
 
     }
 
