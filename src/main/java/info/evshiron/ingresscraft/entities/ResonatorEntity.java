@@ -5,14 +5,17 @@ import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.client.gui.ScannerGUI;
+import info.evshiron.ingresscraft.items.ScannerItem;
 import info.evshiron.ingresscraft.items.XMPBursterItem;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
@@ -100,32 +103,34 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
             //this.setHealth(100);
             this.isDead = true;
 
+            if(attackingPlayer != null && attackingPlayer.getCurrentArmor(3).getItem() instanceof ScannerItem) {
+
+                NBTTagCompound nbt = attackingPlayer.getCurrentArmor(3).getTagCompound();
+
+                String broadcast = String.format("%s has destroyed a resonator.", nbt.getString("codename"));
+
+                Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(new ChatComponentText(broadcast));
+
+            }
+
+            return;
+
         }
 
         List<PortalEntity> entities = worldObj.getEntitiesWithinAABB(PortalEntity.class, boundingBox.expand(4, 4, 4));
-        if(entities.size()==0){
-           this.isDead = true;
-        }else{
-            for(int i = 0; i < entities.size(); i++) {
 
-                PortalEntity entity = entities.get(i);
+        for(int i = 0; i < entities.size(); i++) {
 
+            PortalEntity entity = entities.get(i);
 
-                if(entity.mFaction == Constants.Faction.NEUTRAL) {
+            if(entity.mFaction == Constants.Faction.NEUTRAL) {
 
-                    entity.SetFaction(mFaction);
-                    entity.SetOwner(mOwner);
-
-                }else if(entity.mFaction != mFaction || worldObj.getEntitiesWithinAABB(ResonatorEntity.class, entity.boundingBox.expand(4, 4, 4)).size() > 8) {
-
-                    ((ResonatorEntity) (worldObj.getEntitiesWithinAABB(ResonatorEntity.class, entity.boundingBox.expand(4, 4, 4)).get(8))).isDead = true;
-
-                }
+                entity.SetFaction(mFaction);
+                entity.SetOwner(mOwner);
 
             }
+
         }
-
-
 
     }
 
