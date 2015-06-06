@@ -127,7 +127,6 @@ public class IngressCraft
         int resonatorEntityId = EntityRegistry.findGlobalUniqueEntityId();
         EntityRegistry.registerGlobalEntityID(ResonatorEntity.class, ResonatorEntity.NAME, resonatorEntityId);
         EntityRegistry.registerModEntity(ResonatorEntity.class, ResonatorEntity.NAME, resonatorEntityId, Instance, 64, 1, true);
-        EntityList.entityEggs.put(resonatorEntityId, new EntityList.EntityEggInfo(resonatorEntityId, 0, 0));
 
         Proxy.RegisterRenderers();
 
