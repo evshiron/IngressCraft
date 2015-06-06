@@ -8,7 +8,7 @@ import info.evshiron.ingresscraft.entities.ResonatorRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
- * Created by evshiron on 5/27/15.
+ * Created by evshiron on 5/27/15
  */
 public class ClientProxy extends CommonProxy {
 

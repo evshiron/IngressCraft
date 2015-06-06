@@ -17,6 +17,19 @@ public class IngressEntityBase extends EntityLiving {
 
     }
 
+    /**
+     * Used to block entity's back movement
+     */
+    @Override
+    public void knockBack(net.minecraft.entity.Entity p_70653_1_, float p_70653_2_, double p_70653_3_, double p_70653_5_) {
+        System.err.println("Yo");
+    }
+
+    @Override
+    public void onLivingUpdate() {
+
+    }
+
     /*
     @Override
     protected void entityInit() {

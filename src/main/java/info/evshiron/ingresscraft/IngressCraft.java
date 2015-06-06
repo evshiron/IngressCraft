@@ -25,6 +25,7 @@ public class IngressCraft
 
     public static ScannerItem scanner;
 
+
     @SidedProxy(clientSide = "info.evshiron.ingresscraft.ClientProxy", serverSide = "info.evshiron.ingresscraft.CommonProxy")
     public static CommonProxy Proxy;
 

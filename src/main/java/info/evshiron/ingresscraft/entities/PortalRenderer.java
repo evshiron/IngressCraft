@@ -110,12 +110,12 @@ public class PortalRenderer extends RenderEntity {
 
         if(player!=null){
             if(player.getCurrentArmor(3)!=null&&player.getCurrentArmor(3).getItem().equals(IngressCraft.scanner)){
-                System.err.println("true");
+                //System.err.println("true");
             }else{
-                System.err.println("false");
+                //System.err.println("false");
             }
         }else{
-            System.err.println("null player");
+            //System.err.println("null player");
         }
         if(mShaderProgram == 0) {
 
