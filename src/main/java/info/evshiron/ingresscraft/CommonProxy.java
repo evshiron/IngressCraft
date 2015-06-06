@@ -2,7 +2,12 @@ package info.evshiron.ingresscraft;
 
 import cpw.mods.fml.common.network.IGuiHandler;
 import info.evshiron.ingresscraft.client.gui.PortalGUI;
+import info.evshiron.ingresscraft.client.gui.ScannerGUI;
+import info.evshiron.ingresscraft.items.ScannerItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 /**
@@ -23,6 +28,42 @@ public class CommonProxy implements IGuiHandler {
     public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
 
         switch(id) {
+
+            case ScannerGUI.ID:
+
+                // HELMET = 3.
+                ItemStack helmet = player.getCurrentArmor(3);
+
+                if(helmet.getItem() instanceof ScannerItem) {
+
+                    if(!helmet.hasTagCompound()) {
+
+                        NBTTagCompound nbt = new NBTTagCompound();
+                        nbt.setString("codename", "");
+                        nbt.setString("faction", "");
+
+                        helmet.setTagCompound(nbt);
+
+                        return new ScannerGUI(player, helmet);
+
+                    }
+                    else if(helmet.getTagCompound().getString("codename").contentEquals("")) {
+
+                        return new ScannerGUI(player, helmet);
+
+                    }
+                    else {
+
+                        return null;
+
+                    }
+
+                }
+                else {
+
+                    return null;
+
+                }
 
             case PortalGUI.ID:
 
