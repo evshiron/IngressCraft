@@ -1,5 +1,6 @@
 package info.evshiron.ingresscraft.client.gui;
 
+import info.evshiron.ingresscraft.Constants;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.gui.GuiButton;
@@ -11,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.ChunkCoordinates;
@@ -37,7 +39,7 @@ public class ScannerGUI extends GuiScreen {
 
     GuiTextField mCodenameInput;
 
-    String mFaction;
+    int mFaction;
 
     GuiButton mResistanceButton;
     GuiButton mEnlightenedButton;
@@ -97,7 +99,7 @@ public class ScannerGUI extends GuiScreen {
 
             case ID_RESISTANCE_BUTTON:
 
-                mFaction = "RESISTANCE";
+                mFaction = Constants.Faction.RESISTANCE;
 
                 write();
 
@@ -107,7 +109,7 @@ public class ScannerGUI extends GuiScreen {
 
             case ID_ENLIGHTENED_BUTTON:
 
-                mFaction = "ENLIGHTENED";
+                mFaction = Constants.Faction.ENLIGHTENED;
 
                 write();
 
@@ -151,16 +153,20 @@ public class ScannerGUI extends GuiScreen {
         NBTTagCompound nbt = mScanner.getTagCompound();
 
         nbt.setString("codename", mCodenameInput.getText());
-        nbt.setString("faction", mFaction);
+        nbt.setInteger("faction", mFaction);
+
+        mScanner.setTagCompound(nbt);
 
         ByteBuf bytes = Unpooled.buffer();
 
         try {
 
             // Use this to send data back to the server.
+            // FIXME: But it gets lost when restarting.
             (new PacketBuffer(bytes)).writeItemStackToBuffer(mScanner);
+            mc.getNetHandler().addToSendQueue(new C17PacketCustomPayload("ScannerWrite", bytes));
 
-            String broadcast = String.format("%s has joined the %s.", nbt.getString("codename"), nbt.getString("faction"));
+            String broadcast = String.format("%s has joined the %s.", nbt.getString("codename"), nbt.getInteger("faction") == 1 ? "Resistance" : "Enlightened");
 
             mc.getIntegratedServer().getConfigurationManager().sendChatMsg(new ChatComponentText(broadcast));
 

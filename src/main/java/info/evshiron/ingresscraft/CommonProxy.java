@@ -40,7 +40,7 @@ public class CommonProxy implements IGuiHandler {
 
                         NBTTagCompound nbt = new NBTTagCompound();
                         nbt.setString("codename", "");
-                        nbt.setString("faction", "");
+                        nbt.setInteger("faction", Constants.Faction.NEUTRAL);
 
                         helmet.setTagCompound(nbt);
 
