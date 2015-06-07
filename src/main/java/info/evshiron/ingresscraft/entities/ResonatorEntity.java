@@ -108,8 +108,9 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
                 NBTTagCompound nbt = attackingPlayer.getCurrentArmor(3).getTagCompound();
 
                 String broadcast = String.format("%s has destroyed a resonator.", nbt.getString("codename"));
-
                 Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(new ChatComponentText(broadcast));
+
+                attackingPlayer.addExperience(1);
 
             }
 
@@ -127,6 +128,8 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
                 entity.SetFaction(mFaction);
                 entity.SetOwner(mOwner);
+
+                //break;
 
             }
 

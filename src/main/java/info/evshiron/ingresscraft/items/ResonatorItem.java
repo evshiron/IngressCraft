@@ -108,7 +108,8 @@ public class ResonatorItem extends Item {
             if(!player.capabilities.isCreativeMode) {
 
                 itemStack.stackSize--;
-
+                player.addExperience(2);
+                
             }
 
             world.spawnEntityInWorld(entity);
