@@ -164,15 +164,11 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
                     this.hurtResistantTime = this.maxHurtResistantTime;
                     if (entity instanceof EntityPlayer) {
                         EntityPlayer player = (EntityPlayer) entity;
-                        /**
-                         * TODO:replace the IngressCraft.scanner to anything you want
-                         */
-                        if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem().equals(IngressCraft.resonator)) {
-                            System.out.println("boom");
+                        if (player.getCurrentEquippedItem() == null) {
                             this.damageEntity(p_70097_1_, p_70097_2_);
                             this.dropFewItems(true, 2);
-                            player.inventory.consumeInventoryItem(player.getCurrentEquippedItem().getItem());
                         }
+
                     } else {
                         System.out.println(entity);
                     }
@@ -182,10 +178,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
                 if (entity != null) {
                     if (entity instanceof EntityPlayer) {
                         EntityPlayer player = (EntityPlayer) entity;
-                        /**
-                         * TODO:replace the IngressCraft.scanner to anything you want
-                         */
-                        if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem().equals(IngressCraft.resonator)) {
+                        if (player.getCurrentEquippedItem() == null) {
                             this.recentlyHit = 100;
                             this.attackingPlayer = (EntityPlayer) entity;
                         }
