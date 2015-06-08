@@ -43,6 +43,8 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
     public String mOwner = "NIA";
 
+    public EntityPlayer mAttackingAgent = null;
+
     public PortalEntity(World world) {
 
         super(world);
@@ -103,10 +105,10 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
         List resonators = worldObj.getEntitiesWithinAABB(ResonatorEntity.class, boundingBox.expand(4, 4, 4));
 
         // When called, the last resonator has not been destoryed.
-        if (resonators.size() == 0) {
+        if (mFaction != Constants.Faction.NEUTRAL && resonators.size() == 0) {
 
             // FIXME: But client's faction is not changed. Message needed.
-            onDeath(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", attackingPlayer));
+            onDeath(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", mAttackingAgent));
 
         }
 
@@ -133,11 +135,11 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
                 return true;
 
             }
-            else {
+            else if(((EntityPlayer) source.getEntity()).getCurrentEquippedItem().getItem() instanceof XMPBursterItem) {
 
                 EntityPlayer player = (EntityPlayer) source.getEntity();
 
-                attackingPlayer = player;
+                mAttackingAgent = player;
 
                 return true;
 
@@ -230,6 +232,8 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
                 SetFaction(Constants.Faction.NEUTRAL);
                 SetOwner("NIA");
+
+                mAttackingAgent = null;
 
             }
 
