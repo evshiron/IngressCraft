@@ -12,11 +12,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -86,37 +88,14 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
     @Override
     protected void applyEntityAttributes() {
-
         super.applyEntityAttributes();
 
-        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(1000.0);
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(1000);
 
     }
 
     @Override
     public void onLivingUpdate() {
-
-        //System.out.println("Resonator current Health:" + this.getHealth());
-
-        if (this.getHealth() <= 0) {
-
-            //this.setHealth(100);
-            this.isDead = true;
-
-            if(attackingPlayer != null && attackingPlayer.getCurrentArmor(3).getItem() instanceof ScannerItem) {
-
-                NBTTagCompound nbt = attackingPlayer.getCurrentArmor(3).getTagCompound();
-
-                String broadcast = String.format("%s has destroyed a resonator.", nbt.getString("codename"));
-                Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(new ChatComponentText(broadcast));
-
-                attackingPlayer.addExperience(1);
-
-            }
-
-            return;
-
-        }
 
         List<PortalEntity> entities = worldObj.getEntitiesWithinAABB(PortalEntity.class, boundingBox.expand(4, 4, 4));
 
@@ -135,131 +114,89 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
         }
 
+        if(getHealth() <= 0) {
+
+            onDeath(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", attackingPlayer));
+
+        }
+
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_) {
+    public boolean attackEntityFrom(DamageSource source, float damage) {
 
-        if (ForgeHooks.onLivingAttack(this, p_70097_1_, p_70097_2_)) return false;
+        if(worldObj.isRemote) {
 
-        if (this.isEntityInvulnerable()) {
             return false;
-        } else if (this.worldObj.isRemote) {
-            return false;
-        } else {
 
-            this.entityAge = 0;
+        }
 
-            if (this.getHealth() <= 0.0F) {
-                return false;
-            } else if (p_70097_1_.isFireDamage() && this.isPotionActive(Potion.fireResistance)) {
-                return false;
-            } else {
+        entityAge = 0;
 
-                if ((p_70097_1_ == DamageSource.anvil || p_70097_1_ == DamageSource.fallingBlock) && this.getEquipmentInSlot(4) != null) {
-                    this.getEquipmentInSlot(4).damageItem((int) (p_70097_2_ * 4.0F + this.rand.nextFloat() * p_70097_2_ * 2.0F), this);
-                    p_70097_2_ *= 0.75F;
+        if(source.getDamageType().contentEquals(IngressCraft.MODID + ":xmpBurster")) {
+
+            EntityPlayer player = (EntityPlayer) source.getEntity();
+
+            ItemStack scanner = player.getCurrentArmor(3);
+
+            if(scanner.getTagCompound().getInteger("faction") != mFaction) {
+
+                attackingPlayer = player;
+
+                float xmpBursterRange = 10;
+                // Should be fetched as below when leveling available.
+                /*
+                if(player.getCurrentEquippedItem().getItem() instanceof XMPBursterItem) {
+                    float xmpBursterRange = XMPBursterItem.GetMaxRangeFromLevel(player.getCurrentEquippedItem().getTagCompound().getInteger("range"));
                 }
-                this.limbSwingAmount = 1.5F;
-                boolean flag = true;
+                */
 
-                Entity entity = p_70097_1_.getEntity();
+                float newDamage = (float) (xmpBursterRange - Math.sqrt(Math.pow(posX - player.posX, 2) + Math.pow(posY - player.posY, 2) + Math.pow(posZ - player.posZ, 2))) / xmpBursterRange * damage;
 
-                if ((float) this.hurtResistantTime > (float) this.maxHurtResistantTime / 2.0F) {
-
-                    if (p_70097_2_ <= this.lastDamage) {
-                        return false;
-                    }
-                    this.damageEntity(p_70097_1_, p_70097_2_ - this.lastDamage);
-                    this.lastDamage = p_70097_2_;
-                    flag = false;
-
-                } else {
-
-                    this.lastDamage = p_70097_2_;
-                    this.prevHealth = this.getHealth();
-                    this.hurtResistantTime = this.maxHurtResistantTime;
-
-                    if (entity instanceof EntityPlayer) {
-
-                        EntityPlayer player = (EntityPlayer) entity;
-
-                        if (player.getCurrentArmor(3) != null && player.getCurrentArmor(3).getTagCompound() != null && player.getCurrentArmor(3).getTagCompound().getInteger("faction") != mFaction) {
-
-                            if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof XMPBursterItem) {
-
-                                this.damageEntity(p_70097_1_, p_70097_2_);
-
-                            }
-
-                        }
-
-                    }
-                    else {
-
-                        System.out.println(entity);
-
-                    }
-
-                    this.hurtTime = this.maxHurtTime = 10;
-
-                }
-
-                this.attackedAtYaw = 0.0F;
-
-                if (entity != null) {
-
-                    if (entity instanceof EntityPlayer) {
-
-                        EntityPlayer player = (EntityPlayer) entity;
-
-                        if(player.getCurrentArmor(3) != null && player.getCurrentArmor(3).getTagCompound() != null && player.getCurrentArmor(3).getTagCompound().getInteger("faction") != mFaction) {
-
-                            if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof XMPBursterItem) {
-
-                                this.recentlyHit = 100;
-                                this.attackingPlayer = (EntityPlayer) entity;
-
-                            }
-
-                        }
-
-                    } else {
-
-                        return false;
-
-                    }
-
-                }
-
-                String s;
-
-                if (this.getHealth() <= 0.0F) {
-
-                    s = this.getDeathSound();
-
-                    if (flag && s != null) {
-                        this.playSound(s, this.getSoundVolume(), this.getSoundPitch());
-                    }
-
-                    this.onDeath(p_70097_1_);
-
-                } else {
-
-                    s = this.getHurtSound();
-
-                    if (flag && s != null) {
-                        this.playSound(s, this.getSoundVolume(), this.getSoundPitch());
-                    }
-
-                }
-
-                return true;
+                damageEntity(source, newDamage);
 
             }
 
         }
 
+        return true;
+
     }
+
+    @Override
+    protected void damageEntity(DamageSource source, float damage) {
+
+        prevHealth = getHealth();
+
+        setHealth(prevHealth - damage);
+
+        if(getHealth() <= 0) {
+
+            onDeath(source);
+
+        }
+
+    }
+
+    @Override
+    public void onDeath(DamageSource source) {
+
+        ItemStack scanner;
+
+        if(source.getEntity() instanceof EntityPlayer && (scanner = ((EntityPlayer) source.getEntity()).getCurrentArmor(3)).getItem() instanceof ScannerItem) {
+
+            NBTTagCompound nbt = scanner.getTagCompound();
+
+            String broadcast = String.format("%s has destroyed a resonator.", nbt.getString("codename"));
+            Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(new ChatComponentText(broadcast));
+
+            attackingPlayer.addExperience(1);
+
+        }
+
+        isDead = true;
+
+    }
+
 
 }

@@ -45,13 +45,10 @@ public class ResonatorItem extends Item {
 
         ItemStack scanner = player.getCurrentArmor(3);
 
-        if(scanner == null) {
+        if(scanner == null || !(scanner.getItem() instanceof ScannerItem)) {
 
-            return false;
-
-        }
-
-        if(!(scanner.getItem() instanceof ScannerItem)) {
+            String broadcast = String.format("Resonator can't be deployed without Scanner.");
+            player.addChatMessage(new ChatComponentText(broadcast));
 
             return false;
 
@@ -107,9 +104,9 @@ public class ResonatorItem extends Item {
 
             if(!player.capabilities.isCreativeMode) {
 
-                itemStack.stackSize--;
+                player.inventory.consumeInventoryItem(itemStack.getItem());
                 player.addExperience(2);
-                
+
             }
 
             world.spawnEntityInWorld(entity);

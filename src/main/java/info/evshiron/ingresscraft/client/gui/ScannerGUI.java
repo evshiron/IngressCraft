@@ -163,7 +163,6 @@ public class ScannerGUI extends GuiScreen {
         try {
 
             // Use this to send data back to the server.
-            // FIXME: But it gets lost when restarting.
             (new PacketBuffer(bytes)).writeItemStackToBuffer(mScanner);
 
             IngressCraft.LoginScannerChannel.sendToServer(new IngressCraft.LoginScannerMessage(mCodenameInput.getText(), mFaction));

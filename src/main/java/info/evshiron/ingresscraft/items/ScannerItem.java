@@ -17,7 +17,8 @@ import net.minecraftforge.common.util.EnumHelper;
 public class ScannerItem extends ItemArmor {
 
     public static final String NAME = "scanner";
-    private int counter;
+
+    private int mTriggerCounter;
 
     public ScannerItem() {
 
@@ -32,15 +33,27 @@ public class ScannerItem extends ItemArmor {
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
 
         //System.out.println("tick");
+
         if(world.isRemote){
+
             if((!itemStack.hasTagCompound()) || (itemStack.getTagCompound().getInteger("faction") == Constants.Faction.NEUTRAL)) {
-                if(counter==0){
+
+                if(mTriggerCounter == 0){
+
                     player.openGui(IngressCraft.Instance, ScannerGUI.ID, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+
                 }
-                counter++;
+
+                mTriggerCounter++;
+
             }else{
-                counter=0;
+
+                mTriggerCounter = 0;
+
             }
+
         }
+
     }
+
 }

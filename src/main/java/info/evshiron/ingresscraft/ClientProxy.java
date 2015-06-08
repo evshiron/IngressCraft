@@ -12,27 +12,12 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class ClientProxy extends CommonProxy {
 
-    private PortalRenderer portal;
-    private  ResonatorRenderer resonator;
-    private EntityPlayer player;
-
     @Override
     public void RegisterRenderers() {
-        portal = new PortalRenderer();
-        resonator = new ResonatorRenderer();
-        RenderingRegistry.registerEntityRenderingHandler(PortalEntity.class,portal);
-        RenderingRegistry.registerEntityRenderingHandler(ResonatorEntity.class,resonator);
+
+        RenderingRegistry.registerEntityRenderingHandler(PortalEntity.class, new PortalRenderer());
+        RenderingRegistry.registerEntityRenderingHandler(ResonatorEntity.class, new ResonatorRenderer());
 
     }
 
-    @Override
-    public void setPlayer(EntityPlayer player) {
-        this.player = player;
-        portal.setPlayer(player);
-    }
-
-    @Override
-    public EntityPlayer getPlayer() {
-        return player;
-    }
 }

@@ -8,10 +8,12 @@ import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.client.gui.PortalGUI;
 import info.evshiron.ingresscraft.items.ResonatorItem;
+import info.evshiron.ingresscraft.items.ScannerItem;
 import info.evshiron.ingresscraft.items.XMPBursterItem;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,10 +21,14 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -34,19 +40,14 @@ import java.util.List;
  */
 public class PortalEntity extends IngressEntityBase implements IEntityAdditionalSpawnData {
 
-    public World world;
-
     public static final String NAME = "portal";
 
     public int mFaction = Constants.Faction.NEUTRAL;
 
     public String mOwner = "NIA";
 
-    public void setmFaction(int mFaction) {
-        this.mFaction = mFaction;
-    }
-
     public PortalEntity(World world) {
+
         super(world);
 
     }
@@ -99,141 +100,142 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
     }
 
-    /**
-     * Health's done
-     * Movement is done
-     */
     @Override
     public void onLivingUpdate() {
 
-        if (this.getHealth() <= 0) {
+        List resonators = worldObj.getEntitiesWithinAABB(ResonatorEntity.class, boundingBox.expand(4, 4, 4));
 
-            this.setHealth(100);
-            this.isDead = false;
+        // When called, the last resonator has not been destoryed.
+        if (resonators.size() == 0) {
+
+            // FIXME: But client's faction is not changed. Message needed.
+            onDeath(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", attackingPlayer));
 
         }
 
-        List entities = worldObj.getEntitiesWithinAABB(ResonatorEntity.class, boundingBox.expand(4, 4, 4));
+    }
 
-        if (entities.size() == 0) {
+    public boolean attackEntityFrom(DamageSource source, float damage) {
+
+        if(worldObj.isRemote) {
+
+            return false;
+
+        }
+
+        entityAge = 0;
+
+        if(source.getEntity() instanceof EntityPlayer) {
+
+            if(((EntityPlayer) source.getEntity()).getCurrentEquippedItem() == null) {
+
+                EntityPlayer player = (EntityPlayer) source.getEntity();
+
+                dropFewItems(true, 1);
+
+                return true;
+
+            }
+            else {
+
+                EntityPlayer player = (EntityPlayer) source.getEntity();
+
+                attackingPlayer = player;
+
+                return true;
+
+            }
+
+        }
+
+        return false;
+
+    }
+
+    @Override
+    protected void dropFewItems(boolean isHitRecently, int lootingLevel) {
+
+        int i = rand.nextInt(2);
+        int j = rand.nextInt(3);
+
+        switch(i) {
+
+            case 0:
+
+                if (lootingLevel > 0) {
+
+                    j += rand.nextInt(lootingLevel + 1);
+
+                }
+
+                for (int k = 0; k < j; k++) {
+
+                    dropItem(IngressCraft.ResonatorItem, 1);
+
+                }
+
+                break;
+
+            case 1:
+
+                if (lootingLevel > 0) {
+
+                    j += rand.nextInt(lootingLevel + 1);
+
+                }
+
+                for (int k = 0; k < j; k++) {
+
+                    this.dropItem(IngressCraft.XMPBursterItem, 1);
+
+                }
+
+                break;
+
+        }
+
+    }
+
+    @Override
+    protected void damageEntity(DamageSource source, float damage) {
+
+        prevHealth = getHealth();
+
+        setHealth(getHealth() - damage);
+
+    }
+
+    @Override
+    public void onDeath(DamageSource source) {
+
+        if(source.getEntity() instanceof EntityPlayer) {
+
+            // FIXME: Never called.
+
+            ItemStack scanner = ((EntityPlayer) source.getEntity()).getCurrentArmor(3);
+
+            if(scanner.getItem() instanceof ScannerItem) {
+
+                NBTTagCompound nbt = scanner.getTagCompound();
+
+                String broadcast = String.format("%s has neutralized a portal.", nbt.getString("codename"));
+                Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(new ChatComponentText(broadcast));
+
+                // Show effects.
+
+                SetFaction(Constants.Faction.NEUTRAL);
+                SetOwner("NIA");
+
+            }
+
+        }
+        else if(source.getEntity() == null) {
 
             SetFaction(Constants.Faction.NEUTRAL);
             SetOwner("NIA");
+
         }
 
     }
 
-    /**
-     * this.setAttackTarget()
-     * used to response to XM Burst
-     */
-
-    @Override
-    public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_) {
-        if (ForgeHooks.onLivingAttack(this, p_70097_1_, p_70097_2_)) return false;
-        if (this.isEntityInvulnerable()) {
-            return false;
-        } else if (this.worldObj.isRemote) {
-            return false;
-        } else {
-            this.entityAge = 0;
-
-            if (this.getHealth() <= 0.0F) {
-                return false;
-            } else if (p_70097_1_.isFireDamage() && this.isPotionActive(Potion.fireResistance)) {
-                return false;
-            } else {
-                if ((p_70097_1_ == DamageSource.anvil || p_70097_1_ == DamageSource.fallingBlock) && this.getEquipmentInSlot(4) != null) {
-                    this.getEquipmentInSlot(4).damageItem((int) (p_70097_2_ * 4.0F + this.rand.nextFloat() * p_70097_2_ * 2.0F), this);
-                    p_70097_2_ *= 0.75F;
-                }
-                this.limbSwingAmount = 1.5F;
-                boolean flag = true;
-                net.minecraft.entity.Entity entity = p_70097_1_.getEntity();
-                if ((float) this.hurtResistantTime > (float) this.maxHurtResistantTime / 2.0F) {
-                    if (p_70097_2_ <= this.lastDamage) {
-                        return false;
-                    }
-                    this.damageEntity(p_70097_1_, p_70097_2_ - this.lastDamage);
-                    this.lastDamage = p_70097_2_;
-                    flag = false;
-                } else {
-
-                    this.lastDamage = p_70097_2_;
-                    this.prevHealth = this.getHealth();
-                    this.hurtResistantTime = this.maxHurtResistantTime;
-                    if (entity instanceof EntityPlayer) {
-                        EntityPlayer player = (EntityPlayer) entity;
-                        if (player.getCurrentEquippedItem() == null) {
-                            this.damageEntity(p_70097_1_, p_70097_2_);
-                            this.dropFewItems(true, 2);
-                        }
-
-                    } else {
-                        System.out.println(entity);
-                    }
-                    this.hurtTime = this.maxHurtTime = 10;
-                }
-                this.attackedAtYaw = 0.0F;
-                if (entity != null) {
-                    if (entity instanceof EntityPlayer) {
-                        EntityPlayer player = (EntityPlayer) entity;
-                        if (player.getCurrentEquippedItem() == null) {
-                            this.recentlyHit = 100;
-                            this.attackingPlayer = (EntityPlayer) entity;
-                        }
-                    } else {
-                        return false;
-                    }
-                }
-                String s;
-
-                if (this.getHealth() <= 0.0F) {
-                    s = this.getDeathSound();
-
-                    if (flag && s != null) {
-                        this.playSound(s, this.getSoundVolume(), this.getSoundPitch());
-                    }
-
-                    this.onDeath(p_70097_1_);
-                } else {
-                    s = this.getHurtSound();
-
-                    if (flag && s != null) {
-                        this.playSound(s, this.getSoundVolume(), this.getSoundPitch());
-                    }
-                }
-
-                return true;
-            }
-        }
-    }
-
-    /**
-     * this.getLastAttackTime
-     */
-    @Override
-    protected void dropFewItems(boolean p_70628_1_, int p_70628_2_) {
-        int q = this.rand.nextInt(2);
-        if (q == 0) {
-            int j = this.rand.nextInt(3);
-            if (p_70628_2_ > 0) {
-                j += this.rand.nextInt(p_70628_2_ + 1);
-
-            }
-            for (int k = 0; k < j; ++k) {
-                this.dropItem(IngressCraft.resonator, 1);
-            }
-        } else {
-            int j = this.rand.nextInt(3);
-            if (p_70628_2_ > 0) {
-                j += this.rand.nextInt(p_70628_2_ + 1);
-
-            }
-            for (int k = 0; k < j; ++k) {
-                this.dropItem(IngressCraft.xmp, 1);
-            }
-        }
-
-    }
 }
