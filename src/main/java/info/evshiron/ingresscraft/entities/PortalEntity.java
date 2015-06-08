@@ -25,10 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -218,8 +215,16 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
                 NBTTagCompound nbt = scanner.getTagCompound();
 
-                String broadcast = String.format("%s has neutralized a portal.", nbt.getString("codename"));
-                Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(new ChatComponentText(broadcast));
+                ChatComponentText message = new ChatComponentText("");
+                message.appendSibling(
+                    new ChatComponentText(nbt.getString("codename"))
+                    .setChatStyle(
+                        new ChatStyle()
+                        .setColor(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
+                    )
+                );
+                message.appendSibling(new ChatComponentText(" has neutralized a Portal."));
+                Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
 
                 // Show effects.
 

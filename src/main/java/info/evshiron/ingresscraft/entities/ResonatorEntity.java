@@ -15,10 +15,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -187,8 +184,16 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
             NBTTagCompound nbt = scanner.getTagCompound();
 
-            String broadcast = String.format("%s has destroyed a resonator.", nbt.getString("codename"));
-            Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(new ChatComponentText(broadcast));
+            ChatComponentText message = new ChatComponentText("");
+            message.appendSibling(
+                new ChatComponentText(nbt.getString("codename"))
+                .setChatStyle(
+                    new ChatStyle()
+                    .setColor(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
+                )
+            );
+            message.appendSibling(new ChatComponentText(" has destroyed a resonator."));
+            Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
 
             attackingPlayer.addExperience(1);
 

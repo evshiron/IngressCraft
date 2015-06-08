@@ -11,6 +11,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatStyle;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -99,8 +101,16 @@ public class ResonatorItem extends Item {
 
             NBTTagCompound nbt1 = player.getCurrentArmor(3).getTagCompound();
 
-            String broadcast = String.format("%s has deployed a resonator.", nbt1.getString("codename"));
-            Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(new ChatComponentText(broadcast));
+            ChatComponentText message = new ChatComponentText("");
+            message.appendSibling(
+                new ChatComponentText(nbt1.getString("codename"))
+                .setChatStyle(
+                    new ChatStyle()
+                    .setColor(nbt1.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
+                )
+            );
+            message.appendSibling(new ChatComponentText(" has deployed a resonator."));
+            Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
 
             if(!player.capabilities.isCreativeMode) {
 

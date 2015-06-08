@@ -4,6 +4,7 @@ import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -14,10 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatStyle;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 import java.io.IOException;
@@ -167,9 +165,24 @@ public class ScannerGUI extends GuiScreen {
 
             IngressCraft.LoginScannerChannel.sendToServer(new IngressCraft.LoginScannerMessage(mCodenameInput.getText(), mFaction));
 
-            String broadcast = String.format("%s has joined the %s.", nbt.getString("codename"), nbt.getInteger("faction") == 1 ? "Resistance" : "Enlightened");
-
-            mc.getIntegratedServer().getConfigurationManager().sendChatMsg(new ChatComponentText(broadcast));
+            ChatComponentText message = new ChatComponentText("");
+            message.appendSibling(
+                new ChatComponentText(nbt.getString("codename"))
+                .setChatStyle(
+                    new ChatStyle()
+                    .setColor(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
+                )
+            );
+            message.appendSibling(new ChatComponentText(" has joined the "));
+            message.appendSibling(
+                new ChatComponentText(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? "Resistance" : "Enlightened")
+                .setChatStyle(
+                    new ChatStyle()
+                    .setColor(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
+                )
+            );
+            message.appendSibling(new ChatComponentText("."));
+            Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
 
         } catch (IOException e) {
             e.printStackTrace();
