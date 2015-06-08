@@ -2,6 +2,14 @@
 
 A whim of making Ingress in MineCraft 1.7.10 with Forge.
 
+## Brief
+
+This project is developed by @evshiron and @orz3969 on 2015 Unique Hack Day, as a gift for all Ingress agents joining that event. Many thanks to @orz3969.
+
+## Resources
+
+This project includes some resource files from ingress.apk. Will be removed in some commits.
+
 ## Setup
 
 ```
@@ -15,11 +23,11 @@ cd IngressCraft
 
 ## Directives
 
-A Portal is an Entity that accepts left click (Hack), right click with hand (Inspect, and further linking). Deployed Resonators will stay around and their distances to Portal are determined by the operating Agent. That is to say, a Resonator should have a Portal as parent.
+A Portal is an Entity that accepts left click (Hack), right click with hand (Inspect, and further linking).
 
-A Resonator is an Item that can be deployed by left click on a Portal, or be recycled by right hold.
+A Resonator is an Item that can be deployed right click around a Portal, or be recycled by right hold.
 
-An XMPBurster can be fired by left click, and damage Resonators around, or be recycled by right hold.
+An XMPBurster can be fired by right click, damaging Resonators around, or be recycled by right hold.
 
 A Mod can be deployed by left click on a Portal, or be recycled by right hold.
 
@@ -28,6 +36,7 @@ A Power Cube?
 ## TODO
 
 * Prevent Links from going through solid blocks.
+* Make Resonator managed by Portal.
 * Make the position of a Resonator reasonable.
 
 ## Decompiled Code Comments
@@ -65,3 +74,18 @@ PositionTextureVertex(
 * [Technical Q&A QA1679: Deprecated built-in variables in GLSL Shaders](https://developer.apple.com/library/ios/qa/qa1679/_index.html)
 * [Basic GUI - Minecraft Forge](http://www.minecraftforge.net/wiki/Basic_GUI)
 * [[1.4.7][forge]Blaueseichoern's GUI Tutorial - Tutorials - Archive - Minecraft Forum - Minecraft Forum](http://www.minecraftforum.net/forums/archive/tutorials/931088-1-4-7-forge-blaueseichoerns-gui-tutorial)
+
+## Credits
+
+  * `evshiron@github`
+  * `orz3969@github`
+
+## License
+
+The MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
