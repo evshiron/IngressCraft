@@ -8,8 +8,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
+
+import java.util.List;
 
 /**
  * Created by evshiron on 5/25/15.
@@ -26,6 +29,17 @@ public class ScannerItem extends ItemArmor {
 
         setUnlocalizedName(NAME);
         setTextureName("chainmail_helmet");
+
+    }
+
+    @Override
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List lines, boolean p_77624_4_) {
+
+        if(itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("codename")) {
+
+            lines.add((itemStack.getTagCompound().getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN) + itemStack.getTagCompound().getString("codename"));
+
+        }
 
     }
 
