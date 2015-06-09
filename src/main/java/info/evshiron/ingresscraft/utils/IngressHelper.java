@@ -11,6 +11,31 @@ import java.util.List;
  */
 public class IngressHelper {
 
+    public static double GetResonatorMaxXM(int level) {
+
+        switch(level) {
+            case 1:
+                return 1000;
+            case 2:
+                return 1500;
+            case 3:
+                return 2000;
+            case 4:
+                return 2500;
+            case 5:
+                return 3000;
+            case 6:
+                return 4000;
+            case 7:
+                return 5000;
+            case 8:
+                return 6000;
+            default:
+                return 0;
+        }
+
+    }
+
     public static double GetXMPBursterRange(int level) {
 
         switch(level) {
