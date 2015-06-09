@@ -62,7 +62,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
         }
 
-        return levels / resonators.size();
+        return resonators.size() == 0 ? 0 : levels / resonators.size();
 
     }
 
