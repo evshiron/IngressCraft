@@ -6,6 +6,7 @@ import info.evshiron.ingresscraft.entities.PortalEntity;
 import info.evshiron.ingresscraft.entities.ResonatorEntity;
 import info.evshiron.ingresscraft.utils.IngressHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -35,6 +36,36 @@ public class ResonatorItem extends Item {
     }
 
     @Override
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List lines, boolean p_77624_4_) {
+
+        if(!itemStack.hasTagCompound()) {
+
+            return;
+
+        }
+
+        NBTTagCompound nbt = itemStack.getTagCompound();
+
+        lines.add(String.format("L%d", nbt.getInteger("level")));
+
+    }
+
+    @Override
+    public void onUpdate(ItemStack itemStack, World world, Entity entity, int p_77663_4_, boolean p_77663_5_) {
+
+        if(!itemStack.hasTagCompound()) {
+
+            NBTTagCompound nbt = new NBTTagCompound();
+
+            nbt.setInteger("level", 1);
+
+            itemStack.setTagCompound(nbt);
+
+        }
+
+    }
+
+    @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int targetSide, float targetX, float targetY, float targetZ) {
 
         if(world.isRemote) {
@@ -42,8 +73,6 @@ public class ResonatorItem extends Item {
             return false;
 
         }
-
-        ResonatorEntity entity = new ResonatorEntity(world);
 
         ItemStack scanner = player.getCurrentArmor(3);
 
@@ -58,8 +87,20 @@ public class ResonatorItem extends Item {
 
         NBTTagCompound nbt = scanner.getTagCompound();
 
-        entity.SetFaction(nbt.getInteger("faction"));
+        if(nbt.getInteger("level") < itemStack.getTagCompound().getInteger("level")) {
+
+            String broadcast = String.format("You don't have the access to deploy this Resonator.");
+            player.addChatMessage(new ChatComponentText(broadcast));
+
+            return false;
+
+        }
+
+        ResonatorEntity entity = new ResonatorEntity(world);
+
+        entity.SetLevel(itemStack.getTagCompound().getInteger("level"));
         entity.SetOwner(nbt.getString("codename"));
+        entity.SetFaction(nbt.getInteger("faction"));
 
         entity.setPosition(x + targetX, y + targetY, z + targetZ);
 
@@ -79,7 +120,7 @@ public class ResonatorItem extends Item {
 
                 PortalEntity portal = (PortalEntity) portals.get(i);
 
-                if(player.getCurrentArmor(3).getTagCompound().getInteger("faction") != portal.mFaction && portal.mFaction != Constants.Faction.NEUTRAL) {
+                if(nbt.getInteger("faction") != portal.mFaction && portal.mFaction != Constants.Faction.NEUTRAL) {
 
                     String broadcast = String.format("Resonator can't be deployed within opponent's Portal.");
                     player.addChatMessage(new ChatComponentText(broadcast));
@@ -98,23 +139,22 @@ public class ResonatorItem extends Item {
 
             }
 
-            NBTTagCompound nbt1 = player.getCurrentArmor(3).getTagCompound();
-
             ChatComponentText message = new ChatComponentText("");
             message.appendSibling(
-                new ChatComponentText(nbt1.getString("codename"))
+                new ChatComponentText(nbt.getString("codename"))
                 .setChatStyle(
                     new ChatStyle()
-                    .setColor(nbt1.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
+                    .setColor(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
                 )
             );
             message.appendSibling(new ChatComponentText(" has deployed a Resonator."));
             Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
 
+            nbt.setInteger("ap", nbt.getInteger("ap") + 125);
+
             if(!player.capabilities.isCreativeMode) {
 
                 player.inventory.consumeInventoryItem(itemStack.getItem());
-                player.addExperience(2);
 
             }
 

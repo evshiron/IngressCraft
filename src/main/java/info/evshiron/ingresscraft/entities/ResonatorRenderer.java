@@ -97,6 +97,43 @@ public class ResonatorRenderer extends RenderEntity {
 
     }
 
+    void applyColorByConstant(Vector4f color) {
+
+        GL20.glUniform4f(GL20.glGetUniformLocation(mRingShaderProgram, "u_color0"), color.x, color.y, color.z, color.w);
+
+    }
+
+    void applyColorByLevel(int level) {
+
+        switch(level) {
+            case 1:
+                applyTeamColorByConstant(Constants.QualityColor.L1);
+                break;
+            case 2:
+                applyTeamColorByConstant(Constants.QualityColor.L2);
+                break;
+            case 3:
+                applyTeamColorByConstant(Constants.QualityColor.L3);
+                break;
+            case 4:
+                applyTeamColorByConstant(Constants.QualityColor.L4);
+                break;
+            case 5:
+                applyTeamColorByConstant(Constants.QualityColor.L5);
+                break;
+            case 6:
+                applyTeamColorByConstant(Constants.QualityColor.L6);
+                break;
+            case 7:
+                applyTeamColorByConstant(Constants.QualityColor.L7);
+                break;
+            case 8:
+                applyTeamColorByConstant(Constants.QualityColor.L8);
+                break;
+        }
+
+    }
+
     void applyTeamColorByConstant(Vector4f color) {
 
         GL20.glUniform4f(GL20.glGetUniformLocation(mXMShaderProgram, "u_teamColor"), color.x, color.y, color.z, color.w);
@@ -111,9 +148,6 @@ public class ResonatorRenderer extends RenderEntity {
                 break;
             case Constants.Faction.ENLIGHTENED:
                 applyTeamColorByConstant(Constants.TeamColor.ENLIGHTENED);
-                break;
-            default:
-                applyTeamColorByConstant(Constants.TeamColor.NEUTRAL);
                 break;
         }
 
@@ -197,7 +231,7 @@ public class ResonatorRenderer extends RenderEntity {
 
         GL20.glUseProgram(mRingShaderProgram);
 
-        GL20.glUniform4f(GL20.glGetUniformLocation(mRingShaderProgram, "u_color0"), 0.5882352941176471f, 0.15294117647058825f, 0.9568627450980393f, 1.0f);
+        applyColorByLevel(entity.Level);
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         bindTexture(ResonatorRingTextureLocation);
@@ -225,7 +259,7 @@ public class ResonatorRenderer extends RenderEntity {
 
         GL20.glUniform1f(GL20.glGetUniformLocation(mXMShaderProgram, "u_elapsedTime"), (float) getElapsedTime());
 
-        applyTeamColorByFaction(entity.mFaction);
+        applyTeamColorByFaction(entity.Faction);
 
         GL20.glUniform4f(GL20.glGetUniformLocation(mXMShaderProgram, "u_altColor"), 0.6f, 0.4f, 0.6f, 0.8f);
 

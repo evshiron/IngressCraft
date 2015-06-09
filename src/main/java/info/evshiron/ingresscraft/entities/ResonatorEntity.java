@@ -30,9 +30,9 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
     public static String NAME = "resonator";
 
-    public int mFaction = Constants.Faction.NEUTRAL;
-
-    public String mOwner;
+    public int Level = 0;
+    public int Faction = Constants.Faction.NEUTRAL;
+    public String Owner = "NIA";
 
     public ResonatorEntity(World world) {
 
@@ -40,19 +40,22 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
     }
 
+    public void SetLevel(int level) { Level = level; }
+
     public void SetFaction(int faction) {
-        mFaction = faction;
+        Faction = faction;
     }
 
     public void SetOwner(String owner) {
-        mOwner = owner;
+        Owner = owner;
     }
 
     @Override
     public void writeEntityToNBT(NBTTagCompound nbt) {
 
-        nbt.setInteger("faction", mFaction);
-        nbt.setString("owner", mOwner);
+        nbt.setInteger("level", Level);
+        nbt.setInteger("faction", Faction);
+        nbt.setString("owner", Owner);
 
         super.writeEntityToNBT(nbt);
 
@@ -63,31 +66,36 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
         super.readEntityFromNBT(nbt);
 
-        mFaction = nbt.getInteger("faction");
-        mOwner = nbt.getString("owner");
+        Level = nbt.getInteger("level");
+        Faction = nbt.getInteger("faction");
+        Owner = nbt.getString("owner");
 
     }
 
     @Override
     public void writeSpawnData(ByteBuf buffer) {
 
-        ByteBufUtils.writeUTF8String(buffer, String.valueOf(mFaction));
-        ByteBufUtils.writeUTF8String(buffer, mOwner);
+        ByteBufUtils.writeUTF8String(buffer, String.valueOf(Level));
+        ByteBufUtils.writeUTF8String(buffer, String.valueOf(Faction));
+        ByteBufUtils.writeUTF8String(buffer, Owner);
 
     }
 
     @Override
     public void readSpawnData(ByteBuf additionalData) {
 
-        mFaction = Integer.parseInt(ByteBufUtils.readUTF8String(additionalData));
-        mOwner = ByteBufUtils.readUTF8String(additionalData);
+        Level = Integer.parseInt(ByteBufUtils.readUTF8String(additionalData));
+        Faction = Integer.parseInt(ByteBufUtils.readUTF8String(additionalData));
+        Owner = ByteBufUtils.readUTF8String(additionalData);
 
     }
 
     @Override
     protected void applyEntityAttributes() {
+
         super.applyEntityAttributes();
 
+        // FIXME: Leveling.
         getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(1000);
 
     }
@@ -103,8 +111,8 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
             if(portal.mFaction == Constants.Faction.NEUTRAL) {
 
-                portal.SetFaction(mFaction);
-                portal.SetOwner(mOwner);
+                portal.SetFaction(Faction);
+                portal.SetOwner(Owner);
 
                 //break;
 
@@ -137,7 +145,7 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
             ItemStack scanner = player.getCurrentArmor(3);
 
-            if(scanner.getTagCompound().getInteger("faction") != mFaction) {
+            if(scanner.getItem() instanceof ScannerItem && scanner.getTagCompound().getInteger("faction") != Faction) {
 
                 attackingPlayer = player;
 
@@ -196,7 +204,7 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
             message.appendSibling(new ChatComponentText(" has destroyed a Resonator."));
             Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
 
-            attackingPlayer.addExperience(1);
+            nbt.setInteger("ap", nbt.getInteger("ap") + 75);
 
         }
 
