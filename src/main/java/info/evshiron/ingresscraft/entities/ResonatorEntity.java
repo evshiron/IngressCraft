@@ -193,7 +193,7 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
                     .setColor(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
                 )
             );
-            message.appendSibling(new ChatComponentText(" has destroyed a resonator."));
+            message.appendSibling(new ChatComponentText(" has destroyed a Resonator."));
             Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
 
             attackingPlayer.addExperience(1);

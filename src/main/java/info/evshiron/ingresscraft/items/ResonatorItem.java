@@ -108,7 +108,7 @@ public class ResonatorItem extends Item {
                     .setColor(nbt1.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
                 )
             );
-            message.appendSibling(new ChatComponentText(" has deployed a resonator."));
+            message.appendSibling(new ChatComponentText(" has deployed a Resonator."));
             Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
 
             if(!player.capabilities.isCreativeMode) {
