@@ -14,7 +14,7 @@ This project includes some resource files from ingress.apk. Will be removed in s
 
 ```
 
-git clone https://bitbucket.org/evshiron/IngressCraft.git
+git clone https://github.com/evshiron/IngressCraft.git
 cd IngressCraft
 ./gradlew setupDecompWorkspace --refresh-dependencies
 ./gradlew genIntellijRuns
