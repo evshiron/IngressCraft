@@ -7,6 +7,7 @@ import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.client.gui.ScannerGUI;
 import info.evshiron.ingresscraft.items.ScannerItem;
 import info.evshiron.ingresscraft.items.XMPBursterItem;
+import info.evshiron.ingresscraft.utils.IngressHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -94,16 +95,16 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
     @Override
     public void onLivingUpdate() {
 
-        List<PortalEntity> entities = worldObj.getEntitiesWithinAABB(PortalEntity.class, boundingBox.expand(4, 4, 4));
+        List<PortalEntity> portals = IngressHelper.GetEntitiesAround(worldObj, PortalEntity.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
 
-        for(int i = 0; i < entities.size(); i++) {
+        for(int i = 0; i < portals.size(); i++) {
 
-            PortalEntity entity = entities.get(i);
+            PortalEntity portal = portals.get(i);
 
-            if(entity.mFaction == Constants.Faction.NEUTRAL) {
+            if(portal.mFaction == Constants.Faction.NEUTRAL) {
 
-                entity.SetFaction(mFaction);
-                entity.SetOwner(mOwner);
+                portal.SetFaction(mFaction);
+                portal.SetOwner(mOwner);
 
                 //break;
 
@@ -148,7 +149,7 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
                 }
                 */
 
-                float newDamage = (float) (xmpBursterRange - Math.sqrt(Math.pow(posX - player.posX, 2) + Math.pow(posY - player.posY, 2) + Math.pow(posZ - player.posZ, 2))) / xmpBursterRange * damage;
+                float newDamage = (float) (xmpBursterRange - IngressHelper.GetDistanceBetween(player, this)) / xmpBursterRange * damage;
 
                 damageEntity(source, newDamage);
 

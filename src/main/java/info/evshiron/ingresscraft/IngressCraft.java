@@ -1,8 +1,10 @@
 package info.evshiron.ingresscraft;
 
+import com.google.common.eventbus.Subscribe;
 import com.sun.corba.se.impl.orbutil.concurrent.Sync;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -30,7 +32,9 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.world.WorldEvent;
 import scala.tools.nsc.backend.icode.Members;
 import sun.nio.ch.Net;
 
@@ -107,6 +111,8 @@ public class IngressCraft
     @Mod.Instance(MODID)
     public static IngressCraft Instance;
 
+    public static double CONFIG_PORTAL_RANGE;
+
     public static final CreativeTabs CreativeTab = new CreativeTabs("ingress") {
 
         @Override
@@ -133,6 +139,10 @@ public class IngressCraft
     public void preInit(FMLPreInitializationEvent event) {
 
         Config = new Configuration(event.getSuggestedConfigurationFile());
+
+        CONFIG_PORTAL_RANGE = Config.get("general", "PortalRange", 4.0).getDouble();
+
+        Config.save();
 
     }
 

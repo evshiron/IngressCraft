@@ -4,6 +4,7 @@ import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.entities.PortalEntity;
 import info.evshiron.ingresscraft.entities.ResonatorEntity;
+import info.evshiron.ingresscraft.utils.IngressHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -62,7 +63,7 @@ public class ResonatorItem extends Item {
 
         entity.setPosition(x + targetX, y + targetY, z + targetZ);
 
-        List portals = world.getEntitiesWithinAABB(PortalEntity.class, entity.boundingBox.expand(4, 4, 4));
+        List portals = IngressHelper.GetEntitiesAround(world, PortalEntity.class, entity, IngressCraft.CONFIG_PORTAL_RANGE);
 
         if(portals.size() == 0) {
 
@@ -86,15 +87,14 @@ public class ResonatorItem extends Item {
                     return false;
 
                 }
+                else if(IngressHelper.GetEntitiesAround(world, ResonatorEntity.class, portal, IngressCraft.CONFIG_PORTAL_RANGE).size() >= 8) {
 
-            }
+                    String broadcast = String.format("Resonator can't be deployed on this Portal.");
+                    player.addChatMessage(new ChatComponentText(broadcast));
 
-            if(world.getEntitiesWithinAABB(ResonatorEntity.class, entity.boundingBox.expand(4, 4, 4)).size() >= 8) {
+                    return false;
 
-                String broadcast = String.format("Resonator can't be deployed on this Portal.");
-                player.addChatMessage(new ChatComponentText(broadcast));
-
-                return false;
+                }
 
             }
 

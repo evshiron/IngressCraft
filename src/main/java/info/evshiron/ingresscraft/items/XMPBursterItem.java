@@ -3,6 +3,7 @@ package info.evshiron.ingresscraft.items;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.entities.PortalEntity;
 import info.evshiron.ingresscraft.entities.ResonatorEntity;
+import info.evshiron.ingresscraft.utils.IngressHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -48,21 +49,21 @@ public class XMPBursterItem extends Item {
         float xmpBursterDamage = 500;
         //float xmpBursterDamage = mDamage;
 
-        List resonators = world.getEntitiesWithinAABB(ResonatorEntity.class, player.boundingBox.expand(xmpBursterRange, xmpBursterRange, xmpBursterRange));
+        List<ResonatorEntity> resonators = IngressHelper.GetEntitiesAround(world, ResonatorEntity.class, player, xmpBursterRange);
 
         for(int i = 0; i < resonators.size(); i++) {
 
-            ResonatorEntity resonator = (ResonatorEntity) resonators.get(i);
+            ResonatorEntity resonator = resonators.get(i);
 
             resonator.attackEntityFrom(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", player), xmpBursterDamage);
 
         }
 
-        List portals = world.getEntitiesWithinAABB(PortalEntity.class, player.boundingBox.expand(xmpBursterRange, xmpBursterRange, xmpBursterRange));
+        List<PortalEntity> portals = IngressHelper.GetEntitiesAround(world, PortalEntity.class, player, xmpBursterRange);
 
         for(int i = 0; i < portals.size(); i++) {
 
-            PortalEntity portal = (PortalEntity) portals.get(i);
+            PortalEntity portal = portals.get(i);
 
             portal.attackEntityFrom(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", player), xmpBursterDamage);
 

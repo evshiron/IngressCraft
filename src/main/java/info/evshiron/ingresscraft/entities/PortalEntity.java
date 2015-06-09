@@ -10,6 +10,7 @@ import info.evshiron.ingresscraft.client.gui.PortalGUI;
 import info.evshiron.ingresscraft.items.ResonatorItem;
 import info.evshiron.ingresscraft.items.ScannerItem;
 import info.evshiron.ingresscraft.items.XMPBursterItem;
+import info.evshiron.ingresscraft.utils.IngressHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -110,7 +111,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     @Override
     public void onLivingUpdate() {
 
-        List resonators = worldObj.getEntitiesWithinAABB(ResonatorEntity.class, boundingBox.expand(4, 4, 4));
+        List resonators = IngressHelper.GetEntitiesAround(worldObj, ResonatorEntity.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
 
         // When called, the last resonator has not been destoryed.
         if (mFaction != Constants.Faction.NEUTRAL && resonators.size() == 0) {
