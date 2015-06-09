@@ -100,6 +100,14 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     }
 
     @Override
+    public boolean shouldRenderInPass(int pass) {
+
+        // 0 = Opaque, 1 = Translucent.
+        return pass == 1;
+
+    }
+
+    @Override
     public void onLivingUpdate() {
 
         List resonators = worldObj.getEntitiesWithinAABB(ResonatorEntity.class, boundingBox.expand(4, 4, 4));
