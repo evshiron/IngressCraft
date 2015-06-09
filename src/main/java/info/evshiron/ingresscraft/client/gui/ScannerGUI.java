@@ -153,8 +153,8 @@ public class ScannerGUI extends GuiScreen {
 
         nbt.setString("codename", mCodenameInput.getText());
         nbt.setInteger("faction", mFaction);
-        nbt.setInteger("ap", 0);
         nbt.setInteger("level", 1);
+        nbt.setInteger("ap", 0);
         nbt.setInteger("xm", 1000);
 
         mScanner.setTagCompound(nbt);

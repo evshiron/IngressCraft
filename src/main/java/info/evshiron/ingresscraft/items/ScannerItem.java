@@ -72,7 +72,9 @@ public class ScannerItem extends ItemArmor {
 
         lines.add(codename);
 
-        lines.add(String.format("L%d", nbt.getInteger("level")));
+        lines.add(String.format("Level: %d", nbt.getInteger("level")));
+        lines.add(String.format("AP: %d", nbt.getInteger("ap")));
+        lines.add(String.format("XM: %d", nbt.getInteger("xm")));
 
     }
 
@@ -85,8 +87,8 @@ public class ScannerItem extends ItemArmor {
 
             nbt.setString("codename", "-UNKNOWN-");
             nbt.setInteger("faction", Constants.Faction.NEUTRAL);
-            nbt.setInteger("ap", 0);
             nbt.setInteger("level", 0);
+            nbt.setInteger("ap", 0);
             nbt.setInteger("xm", 0);
 
             itemStack.setTagCompound(nbt);

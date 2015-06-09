@@ -49,8 +49,8 @@ public class IngressCraft
 
         public String Codename;
         public int Faction;
-        public int AP;
         public int Level;
+        public int AP;
         public int XM;
 
         public LoginScannerMessage() {}
@@ -59,8 +59,8 @@ public class IngressCraft
 
             Codename = nbt.getString("codename");
             Faction = nbt.getInteger("faction");
-            AP = nbt.getInteger("ap");
             Level = nbt.getInteger("level");
+            AP = nbt.getInteger("ap");
             XM = nbt.getInteger("xm");
 
         }
@@ -70,8 +70,8 @@ public class IngressCraft
 
             Codename = ByteBufUtils.readUTF8String(buf);
             Faction = Integer.parseInt(ByteBufUtils.readUTF8String(buf));
-            AP = Integer.parseInt(ByteBufUtils.readUTF8String(buf));
             Level = Integer.parseInt(ByteBufUtils.readUTF8String(buf));
+            AP = Integer.parseInt(ByteBufUtils.readUTF8String(buf));
             XM = Integer.parseInt(ByteBufUtils.readUTF8String(buf));
 
         }
@@ -81,8 +81,8 @@ public class IngressCraft
 
             ByteBufUtils.writeUTF8String(buf, Codename);
             ByteBufUtils.writeUTF8String(buf, String.valueOf(Faction));
-            ByteBufUtils.writeUTF8String(buf, String.valueOf(AP));
             ByteBufUtils.writeUTF8String(buf, String.valueOf(Level));
+            ByteBufUtils.writeUTF8String(buf, String.valueOf(AP));
             ByteBufUtils.writeUTF8String(buf, String.valueOf(XM));
 
         }
@@ -115,8 +115,8 @@ public class IngressCraft
 
                     nbt.setString("codename", message.Codename);
                     nbt.setInteger("faction", message.Faction);
-                    nbt.setInteger("ap", message.AP);
                     nbt.setInteger("level", message.Level);
+                    nbt.setInteger("ap", message.AP);
                     nbt.setInteger("xm", message.XM);
 
                     itemStack.setTagCompound(nbt);
