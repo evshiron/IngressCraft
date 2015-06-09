@@ -3,9 +3,7 @@ package info.evshiron.ingresscraft.items;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.client.gui.ScannerGUI;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -28,6 +26,7 @@ public class ScannerItem extends ItemArmor {
         super(EnumHelper.addArmorMaterial("XM", 33, new int[]{ 1, 3, 2, 1 }, 0), 0, 0);
 
         setUnlocalizedName(NAME);
+        setCreativeTab(IngressCraft.CreativeTab);
         setTextureName("chainmail_helmet");
 
     }

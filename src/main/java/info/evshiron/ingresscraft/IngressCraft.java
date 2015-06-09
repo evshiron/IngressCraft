@@ -2,6 +2,7 @@ package info.evshiron.ingresscraft;
 
 import com.sun.corba.se.impl.orbutil.concurrent.Sync;
 import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -24,13 +25,17 @@ import info.evshiron.ingresscraft.items.ScannerItem;
 import info.evshiron.ingresscraft.items.XMPBursterItem;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityList;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.config.Configuration;
 import scala.tools.nsc.backend.icode.Members;
 import sun.nio.ch.Net;
 
 import javax.swing.text.html.parser.Entity;
+import java.io.File;
 
 @Mod(modid = IngressCraft.MODID, version = IngressCraft.VERSION)
 public class IngressCraft
@@ -96,77 +101,22 @@ public class IngressCraft
 
     }
 
-    public static class SyncPortalMessage implements IMessage {
-
-        public int EntityId;
-
-        public int Faction;
-
-        public String Owner;
-
-        public SyncPortalMessage() {}
-
-        public SyncPortalMessage(int entityId, int faction, String owner) {
-
-            EntityId = entityId;
-            Faction = faction;
-            Owner = owner;
-
-        }
-
-        @Override
-        public void fromBytes(ByteBuf buf) {
-
-            EntityId = Integer.parseInt(ByteBufUtils.readUTF8String(buf));
-            Faction = Integer.parseInt(ByteBufUtils.readUTF8String(buf));
-            Owner = ByteBufUtils.readUTF8String(buf);
-
-        }
-
-        @Override
-        public void toBytes(ByteBuf buf) {
-
-            ByteBufUtils.writeUTF8String(buf, String.valueOf(EntityId));
-            ByteBufUtils.writeUTF8String(buf, String.valueOf(Faction));
-            ByteBufUtils.writeUTF8String(buf, Owner);
-
-        }
-
-    }
-
-    public static class SyncPortalHandler implements IMessageHandler<SyncPortalMessage, IMessage> {
-
-        @Override
-        public IMessage onMessage(SyncPortalMessage message, MessageContext ctx) {
-
-            if(ctx.side.isClient()) {
-
-                ItemStack itemStack = ctx.getServerHandler().playerEntity.getCurrentArmor(3);
-
-                if(itemStack != null) {
-
-                    NBTTagCompound nbt = new NBTTagCompound();
-
-                    nbt.setInteger("faction", message.Faction);
-                    nbt.setString("owner", message.Owner);
-
-                    itemStack.setTagCompound(nbt);
-
-                }
-
-            }
-
-            return null;
-
-        }
-
-    }
-
     public static final String MODID = "ingresscraft";
     public static final String VERSION = "0.0.1";
 
     @Mod.Instance(MODID)
     public static IngressCraft Instance;
+
+    public static final CreativeTabs CreativeTab = new CreativeTabs("ingress") {
+
+        @Override
+        public Item getTabIconItem() {
+
+            return ResonatorItem;
+
+        }
+
+    };
 
     public static final ScannerItem ScannerItem = new ScannerItem();
     public static final ResonatorItem ResonatorItem = new ResonatorItem();
@@ -176,7 +126,15 @@ public class IngressCraft
     public static CommonProxy Proxy;
 
     public static SimpleNetworkWrapper LoginScannerChannel = NetworkRegistry.INSTANCE.newSimpleChannel("LoginScanner");
-    public static SimpleNetworkWrapper SyncPortalChannel = NetworkRegistry.INSTANCE.newSimpleChannel("SyncPortal");
+
+    public Configuration Config;
+
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+
+        Config = new Configuration(event.getSuggestedConfigurationFile());
+
+    }
 
     @EventHandler
     public void init(FMLInitializationEvent event)
@@ -201,7 +159,6 @@ public class IngressCraft
         NetworkRegistry.INSTANCE.registerGuiHandler(Instance, Proxy);
 
         LoginScannerChannel.registerMessage(LoginScannerHandler.class, LoginScannerMessage.class, 0, Side.SERVER);
-        SyncPortalChannel.registerMessage(SyncPortalHandler.class, SyncPortalMessage.class, 0, Side.CLIENT);
 
     }
 

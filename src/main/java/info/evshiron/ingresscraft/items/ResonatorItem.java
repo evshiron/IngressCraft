@@ -5,7 +5,6 @@ import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.entities.PortalEntity;
 import info.evshiron.ingresscraft.entities.ResonatorEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,7 +28,7 @@ public class ResonatorItem extends Item {
         super();
 
         setUnlocalizedName(NAME);
-        setCreativeTab(CreativeTabs.tabInventory);
+        setCreativeTab(IngressCraft.CreativeTab);
         setTextureName(IngressCraft.MODID + ":" + NAME);
 
     }
