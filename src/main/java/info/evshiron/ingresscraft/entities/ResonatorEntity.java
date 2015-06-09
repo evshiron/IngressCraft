@@ -4,23 +4,17 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
-import info.evshiron.ingresscraft.client.gui.ScannerGUI;
 import info.evshiron.ingresscraft.items.ScannerItem;
-import info.evshiron.ingresscraft.items.XMPBursterItem;
 import info.evshiron.ingresscraft.utils.IngressHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.Potion;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 
-import javax.sound.sampled.Port;
 import java.util.List;
 
 /**
@@ -33,6 +27,7 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
     public int Level = 0;
     public int Faction = Constants.Faction.NEUTRAL;
     public String Owner = "NIA";
+    public EntityPlayer AttackingAgent = null;
 
     public ResonatorEntity(World world) {
 
@@ -109,7 +104,7 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
             PortalEntity portal = portals.get(i);
 
-            if(portal.mFaction == Constants.Faction.NEUTRAL) {
+            if(portal.Faction == Constants.Faction.NEUTRAL) {
 
                 portal.SetFaction(Faction);
                 portal.SetOwner(Owner);
@@ -122,7 +117,7 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
         if(getHealth() <= 0) {
 
-            onDeath(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", attackingPlayer));
+            onDeath(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", AttackingAgent));
 
         }
 
@@ -147,7 +142,7 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
             if(scanner.getItem() instanceof ScannerItem && scanner.getTagCompound().getInteger("faction") != Faction) {
 
-                attackingPlayer = player;
+                AttackingAgent = player;
 
                 float xmpBursterRange = 10;
                 // Should be fetched as below when leveling available.

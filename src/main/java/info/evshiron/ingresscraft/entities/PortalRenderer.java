@@ -2,12 +2,10 @@ package info.evshiron.ingresscraft.entities;
 
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
-import info.evshiron.ingresscraft.items.ScannerItem;
 import info.evshiron.ingresscraft.utils.IngressDeserializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -181,7 +179,7 @@ public class PortalRenderer extends RenderEntity {
 
         GL20.glUseProgram(mShaderProgram);
 
-        applyBaseColorByFaction(entity.mFaction);
+        applyBaseColorByFaction(entity.Faction);
 
         GL20.glUniform1f(GL20.glGetUniformLocation(mShaderProgram, "u_rotation"), (float) getRotation());
         GL20.glUniform1f(GL20.glGetUniformLocation(mShaderProgram, "u_rampTarget"), (float) getRampTarget());

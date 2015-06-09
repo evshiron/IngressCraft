@@ -120,7 +120,7 @@ public class ResonatorItem extends Item {
 
                 PortalEntity portal = (PortalEntity) portals.get(i);
 
-                if(nbt.getInteger("faction") != portal.mFaction && portal.mFaction != Constants.Faction.NEUTRAL) {
+                if(nbt.getInteger("faction") != portal.Faction && portal.Faction != Constants.Faction.NEUTRAL) {
 
                     String broadcast = String.format("Resonator can't be deployed within opponent's Portal.");
                     player.addChatMessage(new ChatComponentText(broadcast));

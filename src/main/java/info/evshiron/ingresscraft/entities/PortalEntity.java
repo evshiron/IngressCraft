@@ -2,35 +2,21 @@ package info.evshiron.ingresscraft.entities;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
-import info.evshiron.ingresscraft.client.gui.PortalGUI;
-import info.evshiron.ingresscraft.items.ResonatorItem;
 import info.evshiron.ingresscraft.items.ScannerItem;
 import info.evshiron.ingresscraft.items.XMPBursterItem;
 import info.evshiron.ingresscraft.utils.IngressHelper;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.potion.Potion;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.List;
 
 /**
@@ -40,11 +26,9 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
     public static final String NAME = "portal";
 
-    public int mFaction = Constants.Faction.NEUTRAL;
-
-    public String mOwner = "NIA";
-
-    public EntityPlayer mAttackingAgent = null;
+    public int Faction = Constants.Faction.NEUTRAL;
+    public String Owner = "NIA";
+    public EntityPlayer AttackingAgent = null;
 
     public PortalEntity(World world) {
 
@@ -54,21 +38,39 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
     public void SetFaction(int faction) {
 
-        mFaction = faction;
+        Faction = faction;
 
     }
 
     public void SetOwner(String owner) {
 
-        mOwner = owner;
+        Owner = owner;
+
+    }
+
+    public int GetLevel() {
+
+        int levels = 0;
+
+        List<ResonatorEntity> resonators = IngressHelper.GetEntitiesAround(worldObj, ResonatorEntity.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
+
+        for(int i = 0; i < resonators.size(); i++) {
+
+            ResonatorEntity resonator = resonators.get(i);
+
+            levels += resonator.Level;
+
+        }
+
+        return levels / resonators.size();
 
     }
 
     @Override
     public void writeEntityToNBT(NBTTagCompound nbt) {
 
-        nbt.setInteger("faction", mFaction);
-        nbt.setString("owner", mOwner);
+        nbt.setInteger("faction", Faction);
+        nbt.setString("owner", Owner);
 
         super.writeEntityToNBT(nbt);
 
@@ -79,24 +81,24 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
         super.readEntityFromNBT(nbt);
 
-        mFaction = nbt.getInteger("faction");
-        mOwner = nbt.getString("owner");
+        Faction = nbt.getInteger("faction");
+        Owner = nbt.getString("owner");
 
     }
 
     @Override
     public void writeSpawnData(ByteBuf buffer) {
 
-        ByteBufUtils.writeUTF8String(buffer, String.valueOf(mFaction));
-        ByteBufUtils.writeUTF8String(buffer, mOwner);
+        ByteBufUtils.writeUTF8String(buffer, String.valueOf(Faction));
+        ByteBufUtils.writeUTF8String(buffer, Owner);
 
     }
 
     @Override
     public void readSpawnData(ByteBuf additionalData) {
 
-        mFaction = Integer.parseInt(ByteBufUtils.readUTF8String(additionalData));
-        mOwner = ByteBufUtils.readUTF8String(additionalData);
+        Faction = Integer.parseInt(ByteBufUtils.readUTF8String(additionalData));
+        Owner = ByteBufUtils.readUTF8String(additionalData);
 
     }
 
@@ -114,10 +116,10 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
         List resonators = IngressHelper.GetEntitiesAround(worldObj, ResonatorEntity.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
 
         // When called, the last resonator has not been destoryed.
-        if (mFaction != Constants.Faction.NEUTRAL && resonators.size() == 0) {
+        if (Faction != Constants.Faction.NEUTRAL && resonators.size() == 0) {
 
             // FIXME: But client's faction is not changed. Message needed.
-            onDeath(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", mAttackingAgent));
+            onDeath(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", AttackingAgent));
 
         }
 
@@ -131,24 +133,61 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
         }
 
-        entityAge = 0;
-
         if(source.getEntity() instanceof EntityPlayer) {
 
-            if(((EntityPlayer) source.getEntity()).getCurrentEquippedItem() == null) {
+            EntityPlayer player = (EntityPlayer) source.getEntity();
 
-                EntityPlayer player = (EntityPlayer) source.getEntity();
+            ItemStack scanner;
 
-                dropFewItems(true, 1);
+            if((scanner = player.getCurrentArmor(3)).getItem() instanceof ScannerItem && ((EntityPlayer) source.getEntity()).getCurrentEquippedItem() == null) {
+
+                NBTTagCompound nbt = scanner.getTagCompound();
+
+                int times = rand.nextInt(4);
+                for(int i = 0; i < times; i++) {
+
+                    int type = rand.nextInt(2);
+
+                    int amount;
+                    ItemStack itemStack;
+                    NBTTagCompound nbt1;
+
+                    switch(type) {
+                        case 0: // Resonator.
+
+                            amount = rand.nextInt(3 + GetLevel() / 2 + (nbt.getInteger("faction") == Faction ? 2 : 0));
+
+                            itemStack = new ItemStack(IngressCraft.ResonatorItem, amount, 0);
+                            nbt1 = new NBTTagCompound();
+                            // Math.max let level >= 1, Math.min etc. let level in [x-2, x+2].
+                            nbt1.setInteger("level", Math.max(1, Math.min(nbt.getInteger("level"), GetLevel()) - 2 + rand.nextInt(5)));
+                            itemStack.setTagCompound(nbt1);
+
+                            entityDropItem(itemStack, 0);
+                            break;
+
+                        case 1: // XMPBurster.
+
+                            amount = rand.nextInt(3 + GetLevel() / 2 + (nbt.getInteger("faction") != Faction ? 2 : 0));
+
+                            itemStack = new ItemStack(IngressCraft.XMPBursterItem, amount, 0);
+                            nbt1 = new NBTTagCompound();
+                            nbt1.setInteger("level", Math.max(1, Math.min(nbt.getInteger("level"), GetLevel()) - 2 + rand.nextInt(5)));
+                            itemStack.setTagCompound(nbt1);
+
+                            entityDropItem(itemStack, 0);
+                            break;
+
+                    }
+
+                }
 
                 return true;
 
             }
             else if(((EntityPlayer) source.getEntity()).getCurrentEquippedItem().getItem() instanceof XMPBursterItem) {
 
-                EntityPlayer player = (EntityPlayer) source.getEntity();
-
-                mAttackingAgent = player;
+                AttackingAgent = player;
 
                 return true;
 
@@ -157,50 +196,6 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
         }
 
         return false;
-
-    }
-
-    @Override
-    protected void dropFewItems(boolean isHitRecently, int lootingLevel) {
-
-        int i = rand.nextInt(2);
-        int j = rand.nextInt(3);
-
-        switch(i) {
-
-            case 0:
-
-                if (lootingLevel > 0) {
-
-                    j += rand.nextInt(lootingLevel + 1);
-
-                }
-
-                for (int k = 0; k < j; k++) {
-
-                    dropItem(IngressCraft.ResonatorItem, 1);
-
-                }
-
-                break;
-
-            case 1:
-
-                if (lootingLevel > 0) {
-
-                    j += rand.nextInt(lootingLevel + 1);
-
-                }
-
-                for (int k = 0; k < j; k++) {
-
-                    this.dropItem(IngressCraft.XMPBursterItem, 1);
-
-                }
-
-                break;
-
-        }
 
     }
 
@@ -242,7 +237,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
                 SetFaction(Constants.Faction.NEUTRAL);
                 SetOwner("NIA");
 
-                mAttackingAgent = null;
+                AttackingAgent = null;
 
             }
 
