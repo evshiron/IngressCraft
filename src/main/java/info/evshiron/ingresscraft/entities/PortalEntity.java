@@ -137,9 +137,22 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
             EntityPlayer player = (EntityPlayer) source.getEntity();
 
-            ItemStack scanner;
+            ItemStack scanner = player.getCurrentArmor(3);
 
-            if((scanner = player.getCurrentArmor(3)).getItem() instanceof ScannerItem && ((EntityPlayer) source.getEntity()).getCurrentEquippedItem() == null) {
+            if(!(scanner.getItem() instanceof ScannerItem)) {
+
+                return false;
+
+            }
+
+            if(source.getDamageType().contentEquals(IngressCraft.MODID + ":xmpBurster")) {
+
+                AttackingAgent = player;
+
+                return true;
+
+            }
+            else {
 
                 NBTTagCompound nbt = scanner.getTagCompound();
 
@@ -181,13 +194,6 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
                     }
 
                 }
-
-                return true;
-
-            }
-            else if(((EntityPlayer) source.getEntity()).getCurrentEquippedItem().getItem() instanceof XMPBursterItem) {
-
-                AttackingAgent = player;
 
                 return true;
 
