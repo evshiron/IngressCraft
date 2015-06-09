@@ -48,15 +48,21 @@ public class IngressCraft
     public static class LoginScannerMessage implements IMessage {
 
         public String Codename;
-
         public int Faction;
+        public int AP;
+        public int Level;
+        public int XM;
 
         public LoginScannerMessage() {}
 
-        public LoginScannerMessage(String codename, int faction) {
+        public LoginScannerMessage(NBTTagCompound nbt) {
 
-            Codename = codename;
-            Faction = faction;
+            Codename = nbt.getString("codename");
+            Faction = nbt.getInteger("faction");
+            AP = nbt.getInteger("ap");
+            Level = nbt.getInteger("level");
+            XM = nbt.getInteger("xm");
+
         }
 
         @Override
@@ -64,6 +70,9 @@ public class IngressCraft
 
             Codename = ByteBufUtils.readUTF8String(buf);
             Faction = Integer.parseInt(ByteBufUtils.readUTF8String(buf));
+            AP = Integer.parseInt(ByteBufUtils.readUTF8String(buf));
+            Level = Integer.parseInt(ByteBufUtils.readUTF8String(buf));
+            XM = Integer.parseInt(ByteBufUtils.readUTF8String(buf));
 
         }
 
@@ -72,6 +81,9 @@ public class IngressCraft
 
             ByteBufUtils.writeUTF8String(buf, Codename);
             ByteBufUtils.writeUTF8String(buf, String.valueOf(Faction));
+            ByteBufUtils.writeUTF8String(buf, String.valueOf(AP));
+            ByteBufUtils.writeUTF8String(buf, String.valueOf(Level));
+            ByteBufUtils.writeUTF8String(buf, String.valueOf(XM));
 
         }
 
@@ -86,12 +98,26 @@ public class IngressCraft
 
                 ItemStack itemStack = ctx.getServerHandler().playerEntity.getCurrentArmor(3);
 
-                if(itemStack != null) {
+                if(itemStack != null && itemStack.getItem() instanceof ScannerItem) {
 
-                    NBTTagCompound nbt = new NBTTagCompound();
+                    NBTTagCompound nbt;
+
+                    if(!itemStack.hasTagCompound()) {
+
+                        nbt = new NBTTagCompound();
+
+                    }
+                    else {
+
+                        nbt = itemStack.getTagCompound();
+
+                    }
 
                     nbt.setString("codename", message.Codename);
                     nbt.setInteger("faction", message.Faction);
+                    nbt.setInteger("ap", message.AP);
+                    nbt.setInteger("level", message.Level);
+                    nbt.setInteger("xm", message.XM);
 
                     itemStack.setTagCompound(nbt);
 

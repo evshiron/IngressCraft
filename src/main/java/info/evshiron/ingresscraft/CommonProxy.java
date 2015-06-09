@@ -45,18 +45,7 @@ public class CommonProxy implements IGuiHandler {
 
                 if(helmet.getItem() instanceof ScannerItem) {
 
-                    if(!helmet.hasTagCompound()) {
-
-                        NBTTagCompound nbt = new NBTTagCompound();
-                        nbt.setString("codename", "");
-                        nbt.setInteger("faction", Constants.Faction.NEUTRAL);
-
-                        helmet.setTagCompound(nbt);
-
-                        return new ScannerGUI(player, helmet);
-
-                    }
-                    else if(helmet.getTagCompound().getString("codename").contentEquals("")) {
+                    if(helmet.getTagCompound().getInteger("faction") == Constants.Faction.NEUTRAL) {
 
                         return new ScannerGUI(player, helmet);
 

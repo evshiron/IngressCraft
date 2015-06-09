@@ -61,7 +61,7 @@ public class ScannerGUI extends GuiScreen {
         // new GuiTextField(FontRenderer, x, y, width, height).
         mCodenameInput = new GuiTextField(this.fontRendererObj, (width - 200) / 2, (height - 20) / 2 - 20 - 20, 200, 20);
         mCodenameInput.setFocused(true);
-        mCodenameInput.setText(mScanner.getTagCompound().getString("codename"));
+        mCodenameInput.setText("");
 
         // new GuiButton(id, x, y, (width, height, )String).
         mResistanceButton = new GuiButton(ID_RESISTANCE_BUTTON, (width - 200) / 2, (height - 20) / 2, 200, 20, "RESISTANCE");
@@ -153,6 +153,9 @@ public class ScannerGUI extends GuiScreen {
 
         nbt.setString("codename", mCodenameInput.getText());
         nbt.setInteger("faction", mFaction);
+        nbt.setInteger("ap", 0);
+        nbt.setInteger("level", 1);
+        nbt.setInteger("xm", 1000);
 
         mScanner.setTagCompound(nbt);
 
@@ -163,7 +166,7 @@ public class ScannerGUI extends GuiScreen {
             // Use this to send data back to the server.
             (new PacketBuffer(bytes)).writeItemStackToBuffer(mScanner);
 
-            IngressCraft.LoginScannerChannel.sendToServer(new IngressCraft.LoginScannerMessage(mCodenameInput.getText(), mFaction));
+            IngressCraft.LoginScannerChannel.sendToServer(new IngressCraft.LoginScannerMessage(nbt));
 
             ChatComponentText message = new ChatComponentText("");
             message.appendSibling(

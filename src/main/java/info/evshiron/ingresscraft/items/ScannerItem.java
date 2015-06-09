@@ -3,9 +3,11 @@ package info.evshiron.ingresscraft.items;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.client.gui.ScannerGUI;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
@@ -34,9 +36,60 @@ public class ScannerItem extends ItemArmor {
     @Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List lines, boolean p_77624_4_) {
 
-        if(itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("codename")) {
+        if(!itemStack.hasTagCompound()) {
 
-            lines.add((itemStack.getTagCompound().getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN) + itemStack.getTagCompound().getString("codename"));
+            return;
+
+        }
+
+        NBTTagCompound nbt = itemStack.getTagCompound();
+
+        String codename = "";
+
+        switch(nbt.getInteger("faction")) {
+
+            case Constants.Faction.NEUTRAL:
+
+                codename += EnumChatFormatting.GRAY;
+
+                break;
+
+            case Constants.Faction.RESISTANCE:
+
+                codename += EnumChatFormatting.BLUE;
+
+                break;
+
+            case Constants.Faction.ENLIGHTENED:
+
+                codename += EnumChatFormatting.GREEN;
+
+                break;
+
+        }
+
+        codename += nbt.getString("codename");
+
+        lines.add(codename);
+
+        lines.add(String.format("L%d", nbt.getInteger("level")));
+
+    }
+
+    @Override
+    public void onUpdate(ItemStack itemStack, World world, Entity entity, int p_77663_4_, boolean p_77663_5_) {
+
+        if(!itemStack.hasTagCompound()) {
+
+            NBTTagCompound nbt = new NBTTagCompound();
+
+            nbt.setString("codename", "-UNKNOWN-");
+            nbt.setInteger("faction", Constants.Faction.NEUTRAL);
+            nbt.setInteger("ap", 0);
+            nbt.setInteger("level", 0);
+            nbt.setInteger("xm", 0);
+
+            itemStack.setTagCompound(nbt);
 
         }
 
