@@ -1,5 +1,6 @@
 package info.evshiron.ingresscraft.utils;
 
+import info.evshiron.ingresscraft.IngressCraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
@@ -38,26 +39,39 @@ public class IngressHelper {
 
     public static double GetXMPBursterRange(int level) {
 
+        double range;
+
         switch(level) {
             case 1:
-                return 39;
+                range = 39;
+                break;
             case 2:
-                return 44;
+                range = 44;
+                break;
             case 3:
-                return 54;
+                range = 54;
+                break;
             case 4:
-                return 69;
+                range = 69;
+                break;
             case 5:
-                return 89;
+                range = 89;
+                break;
             case 6:
-                return 109;
+                range = 109;
+                break;
             case 7:
-                return 134;
+                range = 134;
+                break;
             case 8:
-                return 164;
+                range = 164;
+                break;
             default:
-                return 0;
+                range = 0;
+                break;
         }
+
+        return range * IngressCraft.CONFIG_RANGE_FACTOR;
 
     }
 
@@ -83,6 +97,13 @@ public class IngressHelper {
             default:
                 return 0;
         }
+
+    }
+
+    public static double GetCalculatedDamage(double range, double distance, double damage) {
+
+        // Simple linear formula.
+        return (range - distance) / range * damage;
 
     }
 

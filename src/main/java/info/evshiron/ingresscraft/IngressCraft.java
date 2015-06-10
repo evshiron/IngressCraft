@@ -155,6 +155,7 @@ public class IngressCraft
     @Mod.Instance(MODID)
     public static IngressCraft Instance;
 
+    public static double CONFIG_RANGE_FACTOR;
     public static double CONFIG_PORTAL_RANGE;
 
     public static final CreativeTabs CreativeTab = new CreativeTabs("ingress") {
@@ -184,7 +185,8 @@ public class IngressCraft
 
         Config = new Configuration(event.getSuggestedConfigurationFile());
 
-        CONFIG_PORTAL_RANGE = Config.get("general", "PortalRange", 4.0).getDouble();
+        CONFIG_RANGE_FACTOR = Config.get("general", "RangeFactor", 0.1).getDouble();
+        CONFIG_PORTAL_RANGE = 40.0 * CONFIG_RANGE_FACTOR;
 
         Config.save();
 

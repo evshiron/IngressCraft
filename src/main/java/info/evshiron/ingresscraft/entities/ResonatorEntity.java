@@ -5,6 +5,7 @@ import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.items.ScannerItem;
+import info.evshiron.ingresscraft.items.XMPBursterItem;
 import info.evshiron.ingresscraft.utils.IngressHelper;
 import info.evshiron.ingresscraft.utils.IngressNotifier;
 import io.netty.buffer.ByteBuf;
@@ -115,17 +116,17 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
                 AttackingAgent = player;
 
-                float xmpBursterRange = 10;
-                // Should be fetched as below when leveling available.
-                /*
-                if(player.getCurrentEquippedItem().getItem() instanceof XMPBursterItem) {
-                    float xmpBursterRange = XMPBursterItem.GetMaxRangeFromLevel(player.getCurrentEquippedItem().getTagCompound().getInteger("range"));
+                ItemStack xmpBurster;
+
+                if((xmpBurster = player.getCurrentEquippedItem()).getItem() instanceof XMPBursterItem) {
+
+                    double xmpBursterRange = IngressHelper.GetXMPBursterRange(xmpBurster.getTagCompound().getInteger("level"));
+
+                    float newDamage = (float) IngressHelper.GetCalculatedDamage(xmpBursterRange, IngressHelper.GetDistanceBetween(player, this), damage);
+
+                    damageEntity(source, newDamage);
+
                 }
-                */
-
-                float newDamage = (float) (xmpBursterRange - IngressHelper.GetDistanceBetween(player, this)) / xmpBursterRange * damage;
-
-                damageEntity(source, newDamage);
 
             }
 
