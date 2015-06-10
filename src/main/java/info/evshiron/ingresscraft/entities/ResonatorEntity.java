@@ -30,6 +30,7 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
     public int Level = 0;
     public int Faction = Constants.Faction.NEUTRAL;
     public String Owner = "NIA";
+
     public EntityPlayer AttackingAgent = null;
 
     public ResonatorEntity(World world) {
@@ -102,6 +103,15 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
         if(getHealth() <= 0) {
 
             onDeath(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", AttackingAgent));
+
+        }
+
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(IngressHelper.GetResonatorMaxXM(Level));
+
+        if(getHealth() > getMaxHealth()) {
+
+            prevHealth = getMaxHealth();
+            setHealth(prevHealth);
 
         }
 
