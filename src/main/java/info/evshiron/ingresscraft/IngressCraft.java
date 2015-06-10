@@ -163,15 +163,29 @@ public class IngressCraft
         @Override
         public Item getTabIconItem() {
 
-            return ResonatorItem;
+            return L8ResonatorItem;
 
         }
 
     };
 
     public static final ScannerItem ScannerItem = new ScannerItem();
-    public static final ResonatorItem ResonatorItem = new ResonatorItem();
-    public static final XMPBursterItem XMPBursterItem = new XMPBursterItem();
+    public static final ResonatorItem L1ResonatorItem = new ResonatorItem(1);
+    public static final ResonatorItem L2ResonatorItem = new ResonatorItem(2);
+    public static final ResonatorItem L3ResonatorItem = new ResonatorItem(3);
+    public static final ResonatorItem L4ResonatorItem = new ResonatorItem(4);
+    public static final ResonatorItem L5ResonatorItem = new ResonatorItem(5);
+    public static final ResonatorItem L6ResonatorItem = new ResonatorItem(6);
+    public static final ResonatorItem L7ResonatorItem = new ResonatorItem(7);
+    public static final ResonatorItem L8ResonatorItem = new ResonatorItem(8);
+    public static final XMPBursterItem L1XMPBursterItem = new XMPBursterItem(1);
+    public static final XMPBursterItem L2XMPBursterItem = new XMPBursterItem(2);
+    public static final XMPBursterItem L3XMPBursterItem = new XMPBursterItem(3);
+    public static final XMPBursterItem L4XMPBursterItem = new XMPBursterItem(4);
+    public static final XMPBursterItem L5XMPBursterItem = new XMPBursterItem(5);
+    public static final XMPBursterItem L6XMPBursterItem = new XMPBursterItem(6);
+    public static final XMPBursterItem L7XMPBursterItem = new XMPBursterItem(7);
+    public static final XMPBursterItem L8XMPBursterItem = new XMPBursterItem(8);
 
     @SidedProxy(clientSide = "info.evshiron.ingresscraft.ClientProxy", serverSide = "info.evshiron.ingresscraft.CommonProxy")
     public static CommonProxy Proxy;
@@ -179,6 +193,56 @@ public class IngressCraft
     public static SimpleNetworkWrapper SyncScannerChannel = NetworkRegistry.INSTANCE.newSimpleChannel("SyncScanner");
 
     public Configuration Config;
+
+    public static ResonatorItem GetResonatorItem(int level) {
+
+        switch(level) {
+            case 1:
+                return L1ResonatorItem;
+            case 2:
+                return L2ResonatorItem;
+            case 3:
+                return L3ResonatorItem;
+            case 4:
+                return L4ResonatorItem;
+            case 5:
+                return L5ResonatorItem;
+            case 6:
+                return L6ResonatorItem;
+            case 7:
+                return L7ResonatorItem;
+            case 8:
+                return L8ResonatorItem;
+            default:
+                return null;
+        }
+
+    }
+
+    public static XMPBursterItem GetXMPBursterItem(int level) {
+
+        switch(level) {
+            case 1:
+                return L1XMPBursterItem;
+            case 2:
+                return L2XMPBursterItem;
+            case 3:
+                return L3XMPBursterItem;
+            case 4:
+                return L4XMPBursterItem;
+            case 5:
+                return L5XMPBursterItem;
+            case 6:
+                return L6XMPBursterItem;
+            case 7:
+                return L7XMPBursterItem;
+            case 8:
+                return L8XMPBursterItem;
+            default:
+                return null;
+        }
+
+    }
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -196,8 +260,22 @@ public class IngressCraft
     public void init(FMLInitializationEvent event)
     {
         GameRegistry.registerItem(ScannerItem, ScannerItem.NAME);
-        GameRegistry.registerItem(ResonatorItem, ResonatorItem.NAME);
-        GameRegistry.registerItem(XMPBursterItem, XMPBursterItem.NAME);
+        GameRegistry.registerItem(L1ResonatorItem, ResonatorItem.NAME + "1");
+        GameRegistry.registerItem(L2ResonatorItem, ResonatorItem.NAME + "2");
+        GameRegistry.registerItem(L3ResonatorItem, ResonatorItem.NAME + "3");
+        GameRegistry.registerItem(L4ResonatorItem, ResonatorItem.NAME + "4");
+        GameRegistry.registerItem(L5ResonatorItem, ResonatorItem.NAME + "5");
+        GameRegistry.registerItem(L6ResonatorItem, ResonatorItem.NAME + "6");
+        GameRegistry.registerItem(L7ResonatorItem, ResonatorItem.NAME + "7");
+        GameRegistry.registerItem(L8ResonatorItem, ResonatorItem.NAME + "8");
+        GameRegistry.registerItem(L1XMPBursterItem, XMPBursterItem.NAME + "1");
+        GameRegistry.registerItem(L2XMPBursterItem, XMPBursterItem.NAME + "2");
+        GameRegistry.registerItem(L3XMPBursterItem, XMPBursterItem.NAME + "3");
+        GameRegistry.registerItem(L4XMPBursterItem, XMPBursterItem.NAME + "4");
+        GameRegistry.registerItem(L5XMPBursterItem, XMPBursterItem.NAME + "5");
+        GameRegistry.registerItem(L6XMPBursterItem, XMPBursterItem.NAME + "6");
+        GameRegistry.registerItem(L7XMPBursterItem, XMPBursterItem.NAME + "7");
+        GameRegistry.registerItem(L8XMPBursterItem, XMPBursterItem.NAME + "8");
 
         GameRegistry.registerBlock(new XMBlock(), XMBlock.NAME);
 

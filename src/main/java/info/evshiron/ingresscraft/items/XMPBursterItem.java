@@ -24,9 +24,13 @@ public class XMPBursterItem extends Item {
 
     public static final String NAME = "xmpBurster";
 
-    public XMPBursterItem(){
+    public int Level = 0;
+
+    public XMPBursterItem(int level){
 
         super();
+
+        Level = level;
 
         setUnlocalizedName(NAME);
         setCreativeTab(IngressCraft.CreativeTab);
@@ -37,30 +41,7 @@ public class XMPBursterItem extends Item {
     @Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List lines, boolean p_77624_4_) {
 
-        if(!itemStack.hasTagCompound()) {
-
-            return;
-
-        }
-
-        NBTTagCompound nbt = itemStack.getTagCompound();
-
-        lines.add(String.format("L%d", nbt.getInteger("level")));
-
-    }
-
-    @Override
-    public void onUpdate(ItemStack itemStack, World world, Entity entity, int p_77663_4_, boolean p_77663_5_) {
-
-        if(!itemStack.hasTagCompound()) {
-
-            NBTTagCompound nbt = new NBTTagCompound();
-
-            nbt.setInteger("level", 1);
-
-            itemStack.setTagCompound(nbt);
-
-        }
+        lines.add(String.format("Level: %d", Level));
 
     }
 
@@ -80,7 +61,7 @@ public class XMPBursterItem extends Item {
 
         NBTTagCompound nbt = scanner.getTagCompound();
 
-        if(nbt.getInteger("level") < itemStack.getTagCompound().getInteger("level")) {
+        if(nbt.getInteger("level") < Level) {
 
             String broadcast = String.format("You don't have the access to fire this XMP Burster.");
             player.addChatMessage(new ChatComponentText(broadcast));
@@ -89,9 +70,8 @@ public class XMPBursterItem extends Item {
 
         }
 
-        // Should be fetched as below when leveling available.
-        double range = IngressHelper.GetXMPBursterRange(itemStack.getTagCompound().getInteger("level"));
-        double damage = IngressHelper.GetXMPBursterDamage(itemStack.getTagCompound().getInteger("level"));
+        double range = IngressHelper.GetXMPBursterRange(Level);
+        double damage = IngressHelper.GetXMPBursterDamage(Level);
 
         List<ResonatorEntity> resonators = IngressHelper.GetEntitiesAround(world, ResonatorEntity.class, player, range);
 

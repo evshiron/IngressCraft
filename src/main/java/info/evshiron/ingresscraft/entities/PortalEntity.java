@@ -187,33 +187,28 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
                     int type = rand.nextInt(2);
 
                     int amount;
+                    int level;
                     ItemStack itemStack;
-                    NBTTagCompound nbt1;
 
                     switch(type) {
                         case 0: // Resonator.
 
                             amount = rand.nextInt(3 + GetLevel() / 2 + (nbt.getInteger("faction") == Faction ? 2 : 0));
 
-                            itemStack = new ItemStack(IngressCraft.ResonatorItem, amount, 0);
-                            nbt1 = new NBTTagCompound();
                             // Math.max let level >= 1, Math.min etc. let level in [x-2, x+2].
-                            nbt1.setInteger("level", Math.max(1, Math.min(nbt.getInteger("level"), GetLevel()) - 2 + rand.nextInt(5)));
-                            itemStack.setTagCompound(nbt1);
+                            level = Math.max(1, Math.min(nbt.getInteger("level"), GetLevel()) - 2 + rand.nextInt(5));
 
-                            entityDropItem(itemStack, 0);
+                            entityDropItem(new ItemStack(IngressCraft.GetResonatorItem(level), amount, 0), 0);
                             break;
 
                         case 1: // XMPBurster.
 
                             amount = rand.nextInt(3 + GetLevel() / 2 + (nbt.getInteger("faction") != Faction ? 2 : 0));
 
-                            itemStack = new ItemStack(IngressCraft.XMPBursterItem, amount, 0);
-                            nbt1 = new NBTTagCompound();
-                            nbt1.setInteger("level", Math.max(1, Math.min(nbt.getInteger("level"), GetLevel()) - 2 + rand.nextInt(5)));
-                            itemStack.setTagCompound(nbt1);
+                            // Math.max let level >= 1, Math.min etc. let level in [x-2, x+2].
+                            level = Math.max(1, Math.min(nbt.getInteger("level"), GetLevel()) - 2 + rand.nextInt(5));
 
-                            entityDropItem(itemStack, 0);
+                            entityDropItem(new ItemStack(IngressCraft.GetXMPBursterItem(level), amount, 0), 0);
                             break;
 
                     }

@@ -24,9 +24,13 @@ public class ResonatorItem extends Item {
 
     public static final String NAME = "resonator";
 
-    public ResonatorItem() {
+    public int Level = 0;
+
+    public ResonatorItem(int level) {
 
         super();
+
+        Level = level;
 
         setUnlocalizedName(NAME);
         setCreativeTab(IngressCraft.CreativeTab);
@@ -37,30 +41,7 @@ public class ResonatorItem extends Item {
     @Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List lines, boolean p_77624_4_) {
 
-        if(!itemStack.hasTagCompound()) {
-
-            return;
-
-        }
-
-        NBTTagCompound nbt = itemStack.getTagCompound();
-
-        lines.add(String.format("L%d", nbt.getInteger("level")));
-
-    }
-
-    @Override
-    public void onUpdate(ItemStack itemStack, World world, Entity entity, int p_77663_4_, boolean p_77663_5_) {
-
-        if(!itemStack.hasTagCompound()) {
-
-            NBTTagCompound nbt = new NBTTagCompound();
-
-            nbt.setInteger("level", 1);
-
-            itemStack.setTagCompound(nbt);
-
-        }
+        lines.add(String.format("Level: %d", Level));
 
     }
 
@@ -79,7 +60,7 @@ public class ResonatorItem extends Item {
 
         NBTTagCompound nbt = scanner.getTagCompound();
 
-        if(nbt.getInteger("level") < itemStack.getTagCompound().getInteger("level")) {
+        if(nbt.getInteger("level") < Level) {
 
             if(world.isRemote) IngressNotifier.NotifyCantDeployWithoutAccess(player);
 
@@ -89,7 +70,7 @@ public class ResonatorItem extends Item {
 
         ResonatorEntity entity = new ResonatorEntity(world);
 
-        entity.SetLevel(itemStack.getTagCompound().getInteger("level"));
+        entity.SetLevel(Level);
         entity.SetOwner(nbt.getString("codename"));
         entity.SetFaction(nbt.getInteger("faction"));
 
