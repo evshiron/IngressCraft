@@ -97,6 +97,7 @@ public class ScannerGUI extends GuiScreen {
                 write();
 
                 mc.displayGuiScreen(null);
+                mc.setIngameFocus();
 
                 break;
 
@@ -107,14 +108,14 @@ public class ScannerGUI extends GuiScreen {
                 write();
 
                 mc.displayGuiScreen(null);
+                mc.setIngameFocus();
 
                 break;
 
             case ID_CANCEL_BUTTON:
 
                 mc.displayGuiScreen(null);
-
-                //mc.setIngameFocus();
+                mc.setIngameFocus();
 
                 break;
 

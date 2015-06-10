@@ -8,11 +8,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
 
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Created by evshiron on 5/25/15.
@@ -21,7 +23,7 @@ public class ScannerItem extends ItemArmor {
 
     public static final String NAME = "scanner";
 
-    private int mTriggerCounter;
+    public static int GUIDisabler = 0;
 
     public ScannerItem() {
 
@@ -102,15 +104,27 @@ public class ScannerItem extends ItemArmor {
 
         //System.out.println("tick");
 
+        if(GUIDisabler > 0 && GUIDisabler < 32) GUIDisabler++;
+        else if(GUIDisabler >= 32) GUIDisabler = 0;
+
         if(itemStack.getTagCompound().getInteger("faction") == Constants.Faction.NEUTRAL) {
 
-            if(mTriggerCounter == 0){
+            if(world.isRemote) {
 
-                if(world.isRemote) player.openGui(IngressCraft.Instance, ScannerGUI.ID, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+                if(GUIDisabler == 0) {
+
+                    player.openGui(IngressCraft.Instance, ScannerGUI.ID, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+                    GUIDisabler = 1;
+
+                }
+                else {
+
+                    // A trap for the second.
+                    player.addChatMessage(new ChatComponentText("Wait."));
+
+                }
 
             }
-
-            mTriggerCounter++;
 
         }
         else {
