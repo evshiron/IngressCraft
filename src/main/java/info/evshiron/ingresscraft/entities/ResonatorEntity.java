@@ -68,10 +68,6 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
         Faction = nbt.getInteger("faction");
         Owner = nbt.getString("owner");
 
-        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(IngressHelper.GetResonatorMaxXM(Level));
-        // FIXME: XM.
-        setHealth(getMaxHealth());
-
     }
 
     @Override
@@ -89,6 +85,14 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
         Level = Integer.parseInt(ByteBufUtils.readUTF8String(additionalData));
         Faction = Integer.parseInt(ByteBufUtils.readUTF8String(additionalData));
         Owner = ByteBufUtils.readUTF8String(additionalData);
+
+    }
+
+    @Override
+    protected void applyEntityAttributes() {
+        super.applyEntityAttributes();
+
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(6000);
 
     }
 
@@ -125,6 +129,16 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
                     float newDamage = (float) IngressHelper.GetCalculatedDamage(xmpBursterRange, IngressHelper.GetDistanceBetween(player, this), damage);
 
                     damageEntity(source, newDamage);
+
+                    List<PortalEntity> portals = IngressHelper.GetEntitiesAround(worldObj, PortalEntity.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
+
+                    for(int i = 0; i < portals.size(); i++) {
+
+                        PortalEntity portal = portals.get(i);
+
+                        portal.attackEntityFrom(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", AttackingAgent), 0);
+
+                    }
 
                 }
 
