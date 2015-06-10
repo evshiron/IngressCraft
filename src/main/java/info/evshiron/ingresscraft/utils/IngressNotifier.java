@@ -13,6 +13,13 @@ import net.minecraft.util.EnumChatFormatting;
  */
 public class IngressNotifier {
 
+    public static void NotifyLevelUp(EntityPlayer player, int level) {
+
+        String broadcast = String.format("NEW ACCESS LEVEL %d", level);
+        player.addChatMessage(new ChatComponentText(broadcast));
+
+    }
+
     public static void NotifyCantDeployWithoutScanner(EntityPlayer player) {
 
         String broadcast = String.format("Resonator can't be deployed without Scanner.");

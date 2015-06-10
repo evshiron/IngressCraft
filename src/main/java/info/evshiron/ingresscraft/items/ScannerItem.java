@@ -3,6 +3,7 @@ package info.evshiron.ingresscraft.items;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.client.gui.ScannerGUI;
+import info.evshiron.ingresscraft.utils.IngressNotifier;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
@@ -133,24 +134,31 @@ public class ScannerItem extends ItemArmor {
 
             if(nbt.getInteger("level") == 1 && nbt.getInteger("ap") >= 2500) {
                 nbt.setInteger("level", 2);
+                if(world.isRemote) IngressNotifier.NotifyLevelUp(player, 2);
             }
             else if(nbt.getInteger("level") == 2 && nbt.getInteger("ap") >= 20000) {
                 nbt.setInteger("level", 3);
+                if(world.isRemote) IngressNotifier.NotifyLevelUp(player, 3);
             }
             else if(nbt.getInteger("level") == 3 && nbt.getInteger("ap") >= 70000) {
                 nbt.setInteger("level", 4);
+                if(world.isRemote) IngressNotifier.NotifyLevelUp(player, 4);
             }
             else if(nbt.getInteger("level") == 4 && nbt.getInteger("ap") >= 150000) {
                 nbt.setInteger("level", 5);
+                if(world.isRemote) IngressNotifier.NotifyLevelUp(player, 5);
             }
             else if(nbt.getInteger("level") == 5 && nbt.getInteger("ap") >= 300000) {
                 nbt.setInteger("level", 6);
+                if(world.isRemote) IngressNotifier.NotifyLevelUp(player, 6);
             }
             else if(nbt.getInteger("level") == 6 && nbt.getInteger("ap") >= 600000) {
                 nbt.setInteger("level", 7);
+                if(world.isRemote) IngressNotifier.NotifyLevelUp(player, 7);
             }
             else if(nbt.getInteger("level") == 7 && nbt.getInteger("ap") >= 1200000) {
                 nbt.setInteger("level", 8);
+                if(world.isRemote) IngressNotifier.NotifyLevelUp(player, 8);
             }
 
         }
