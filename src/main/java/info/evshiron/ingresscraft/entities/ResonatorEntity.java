@@ -6,10 +6,12 @@ import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.items.ScannerItem;
 import info.evshiron.ingresscraft.utils.IngressHelper;
+import info.evshiron.ingresscraft.utils.IngressNotifier;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
@@ -98,6 +100,12 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
     @Override
     public void onLivingUpdate() {
 
+        if(getHealth() <= 0) {
+
+            onDeath(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", AttackingAgent));
+
+        }
+
         List<PortalEntity> portals = IngressHelper.GetEntitiesAround(worldObj, PortalEntity.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
 
         for(int i = 0; i < portals.size(); i++) {
@@ -109,17 +117,18 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
                 portal.SetFaction(Faction);
                 portal.SetOwner(Owner);
 
-                //break;
+                if(!worldObj.isRemote) {
+
+                    IngressNotifier.BroadcastCapturing(Faction, Owner);
+
+                }
+
+                break;
 
             }
 
         }
 
-        if(getHealth() <= 0) {
-
-            onDeath(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", AttackingAgent));
-
-        }
 
     }
 
@@ -182,24 +191,17 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
     @Override
     public void onDeath(DamageSource source) {
 
+        EntityPlayer player;
         ItemStack scanner;
 
-        if(source.getEntity() instanceof EntityPlayer && (scanner = ((EntityPlayer) source.getEntity()).getCurrentArmor(3)).getItem() instanceof ScannerItem) {
+        if(source.getEntity() instanceof EntityPlayer && (scanner = (player = (EntityPlayer) source.getEntity()).getCurrentArmor(3)).getItem() instanceof ScannerItem) {
 
             NBTTagCompound nbt = scanner.getTagCompound();
 
-            ChatComponentText message = new ChatComponentText("");
-            message.appendSibling(
-                new ChatComponentText(nbt.getString("codename"))
-                .setChatStyle(
-                    new ChatStyle()
-                    .setColor(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
-                )
-            );
-            message.appendSibling(new ChatComponentText(" has destroyed a Resonator."));
-            Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
+            IngressNotifier.BroadcastDestroying(nbt);
 
             nbt.setInteger("ap", nbt.getInteger("ap") + 75);
+            IngressCraft.SyncScannerChannel.sendTo(new IngressCraft.SyncScannerMessage(nbt), (EntityPlayerMP) player);
 
         }
 

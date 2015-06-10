@@ -1,12 +1,8 @@
 package info.evshiron.ingresscraft;
 
-import com.google.common.eventbus.Subscribe;
-import com.sun.corba.se.impl.orbutil.concurrent.Sync;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -16,7 +12,6 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import info.evshiron.ingresscraft.blocks.XMBlock;
-import info.evshiron.ingresscraft.client.gui.PortalGUI;
 import info.evshiron.ingresscraft.entities.PortalEntity;
 import info.evshiron.ingresscraft.entities.ResonatorEntity;
 import info.evshiron.ingresscraft.items.ResonatorItem;
@@ -32,20 +27,13 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.event.world.WorldEvent;
-import scala.tools.nsc.backend.icode.Members;
-import sun.nio.ch.Net;
-
-import javax.swing.text.html.parser.Entity;
-import java.io.File;
 
 @Mod(modid = IngressCraft.MODID, version = IngressCraft.VERSION)
 public class IngressCraft
 {
 
-    public static class LoginScannerMessage implements IMessage {
+    public static class SyncScannerMessage implements IMessage {
 
         public String Codename;
         public int Faction;
@@ -53,9 +41,9 @@ public class IngressCraft
         public int AP;
         public int XM;
 
-        public LoginScannerMessage() {}
+        public SyncScannerMessage() {}
 
-        public LoginScannerMessage(NBTTagCompound nbt) {
+        public SyncScannerMessage(NBTTagCompound nbt) {
 
             Codename = nbt.getString("codename");
             Faction = nbt.getInteger("faction");
@@ -89,14 +77,44 @@ public class IngressCraft
 
     }
 
-    public static class LoginScannerHandler implements IMessageHandler<LoginScannerMessage, IMessage> {
+    public static class SyncScannerHandler implements IMessageHandler<SyncScannerMessage, IMessage> {
 
         @Override
-        public IMessage onMessage(LoginScannerMessage message, MessageContext ctx) {
+        public IMessage onMessage(SyncScannerMessage message, MessageContext ctx) {
 
             if(ctx.side.isServer()) {
 
                 ItemStack itemStack = ctx.getServerHandler().playerEntity.getCurrentArmor(3);
+
+                if(itemStack != null && itemStack.getItem() instanceof ScannerItem) {
+
+                    NBTTagCompound nbt;
+
+                    if(!itemStack.hasTagCompound()) {
+
+                        nbt = new NBTTagCompound();
+
+                    }
+                    else {
+
+                        nbt = itemStack.getTagCompound();
+
+                    }
+
+                    nbt.setString("codename", message.Codename);
+                    nbt.setInteger("faction", message.Faction);
+                    nbt.setInteger("level", message.Level);
+                    nbt.setInteger("ap", message.AP);
+                    nbt.setInteger("xm", message.XM);
+
+                    itemStack.setTagCompound(nbt);
+
+                }
+
+            }
+            else {
+
+                ItemStack itemStack = Minecraft.getMinecraft().thePlayer.getCurrentArmor(3);
 
                 if(itemStack != null && itemStack.getItem() instanceof ScannerItem) {
 
@@ -157,7 +175,7 @@ public class IngressCraft
     @SidedProxy(clientSide = "info.evshiron.ingresscraft.ClientProxy", serverSide = "info.evshiron.ingresscraft.CommonProxy")
     public static CommonProxy Proxy;
 
-    public static SimpleNetworkWrapper LoginScannerChannel = NetworkRegistry.INSTANCE.newSimpleChannel("LoginScanner");
+    public static SimpleNetworkWrapper SyncScannerChannel = NetworkRegistry.INSTANCE.newSimpleChannel("SyncScanner");
 
     public Configuration Config;
 
@@ -194,7 +212,7 @@ public class IngressCraft
 
         NetworkRegistry.INSTANCE.registerGuiHandler(Instance, Proxy);
 
-        LoginScannerChannel.registerMessage(LoginScannerHandler.class, LoginScannerMessage.class, 0, Side.SERVER);
+        SyncScannerChannel.registerMessage(SyncScannerHandler.class, SyncScannerMessage.class, 0, Side.SERVER);
 
     }
 

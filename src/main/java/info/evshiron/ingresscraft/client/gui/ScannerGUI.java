@@ -8,19 +8,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.util.*;
-import net.minecraft.world.World;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by evshiron on 6/6/15.
@@ -166,7 +160,7 @@ public class ScannerGUI extends GuiScreen {
             // Use this to send data back to the server.
             (new PacketBuffer(bytes)).writeItemStackToBuffer(mScanner);
 
-            IngressCraft.LoginScannerChannel.sendToServer(new IngressCraft.LoginScannerMessage(nbt));
+            IngressCraft.SyncScannerChannel.sendToServer(new IngressCraft.SyncScannerMessage(nbt));
 
             ChatComponentText message = new ChatComponentText("");
             message.appendSibling(

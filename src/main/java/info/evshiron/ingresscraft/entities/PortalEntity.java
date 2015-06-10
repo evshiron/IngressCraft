@@ -7,6 +7,7 @@ import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.items.ScannerItem;
 import info.evshiron.ingresscraft.items.XMPBursterItem;
 import info.evshiron.ingresscraft.utils.IngressHelper;
+import info.evshiron.ingresscraft.utils.IngressNotifier;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
@@ -227,16 +228,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
                 NBTTagCompound nbt = scanner.getTagCompound();
 
-                ChatComponentText message = new ChatComponentText("");
-                message.appendSibling(
-                    new ChatComponentText(nbt.getString("codename"))
-                    .setChatStyle(
-                        new ChatStyle()
-                        .setColor(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
-                    )
-                );
-                message.appendSibling(new ChatComponentText(" has neutralized a Portal."));
-                Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
+                IngressNotifier.BroadcastNeutralizing(nbt);
 
                 // Show effects.
 
