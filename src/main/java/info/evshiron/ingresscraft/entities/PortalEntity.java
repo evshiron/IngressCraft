@@ -114,11 +114,41 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     @Override
     public void onLivingUpdate() {
 
-        List resonators = IngressHelper.GetEntitiesAround(worldObj, ResonatorEntity.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
+        List<ResonatorEntity> resonators = IngressHelper.GetEntitiesAround(worldObj, ResonatorEntity.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
 
         if (Faction != Constants.Faction.NEUTRAL && AttackingAgent != null && resonators.size() == 0) {
 
             onDeath(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", AttackingAgent));
+
+        }
+        else if(resonators.size() == 0) {
+
+            SetFaction(Constants.Faction.NEUTRAL);
+            SetOwner("NIA");
+
+        }
+        else if(Faction == Constants.Faction.NEUTRAL && resonators.size() > 0) {
+
+            int faction = resonators.get(0).Faction;
+
+            for(int i = 1; i < resonators.size(); i++) {
+
+                ResonatorEntity resonator = resonators.get(i);
+
+                if(resonator.Faction != faction) {
+
+                    return;
+
+                }
+
+            }
+
+            Faction = faction;
+
+        }
+        else {
+
+
 
         }
 
