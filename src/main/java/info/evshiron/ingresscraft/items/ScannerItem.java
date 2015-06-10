@@ -102,44 +102,41 @@ public class ScannerItem extends ItemArmor {
 
         //System.out.println("tick");
 
-        if(world.isRemote){
+        if(itemStack.getTagCompound().getInteger("faction") == Constants.Faction.NEUTRAL) {
 
-            if(itemStack.getTagCompound().getInteger("faction") == Constants.Faction.NEUTRAL) {
+            if(mTriggerCounter == 0){
 
-                if(mTriggerCounter == 0){
+                if(world.isRemote) player.openGui(IngressCraft.Instance, ScannerGUI.ID, world, (int) player.posX, (int) player.posY, (int) player.posZ);
 
-                    player.openGui(IngressCraft.Instance, ScannerGUI.ID, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+            }
 
-                }
+            mTriggerCounter++;
 
-                mTriggerCounter++;
+        }
+        else {
 
-            }else{
+            NBTTagCompound nbt = itemStack.getTagCompound();
 
-                NBTTagCompound nbt = itemStack.getTagCompound();
-
-                if(nbt.getInteger("level") == 1 && nbt.getInteger("ap") >= 2500) {
-                    nbt.setInteger("level", 2);
-                }
-                else if(nbt.getInteger("level") == 2 && nbt.getInteger("ap") >= 20000) {
-                    nbt.setInteger("level", 3);
-                }
-                else if(nbt.getInteger("level") == 3 && nbt.getInteger("ap") >= 70000) {
-                    nbt.setInteger("level", 4);
-                }
-                else if(nbt.getInteger("level") == 4 && nbt.getInteger("ap") >= 150000) {
-                    nbt.setInteger("level", 5);
-                }
-                else if(nbt.getInteger("level") == 5 && nbt.getInteger("ap") >= 300000) {
-                    nbt.setInteger("level", 6);
-                }
-                else if(nbt.getInteger("level") == 6 && nbt.getInteger("ap") >= 600000) {
-                    nbt.setInteger("level", 7);
-                }
-                else if(nbt.getInteger("level") == 7 && nbt.getInteger("ap") >= 1200000) {
-                    nbt.setInteger("level", 8);
-                }
-
+            if(nbt.getInteger("level") == 1 && nbt.getInteger("ap") >= 2500) {
+                nbt.setInteger("level", 2);
+            }
+            else if(nbt.getInteger("level") == 2 && nbt.getInteger("ap") >= 20000) {
+                nbt.setInteger("level", 3);
+            }
+            else if(nbt.getInteger("level") == 3 && nbt.getInteger("ap") >= 70000) {
+                nbt.setInteger("level", 4);
+            }
+            else if(nbt.getInteger("level") == 4 && nbt.getInteger("ap") >= 150000) {
+                nbt.setInteger("level", 5);
+            }
+            else if(nbt.getInteger("level") == 5 && nbt.getInteger("ap") >= 300000) {
+                nbt.setInteger("level", 6);
+            }
+            else if(nbt.getInteger("level") == 6 && nbt.getInteger("ap") >= 600000) {
+                nbt.setInteger("level", 7);
+            }
+            else if(nbt.getInteger("level") == 7 && nbt.getInteger("ap") >= 1200000) {
+                nbt.setInteger("level", 8);
             }
 
         }

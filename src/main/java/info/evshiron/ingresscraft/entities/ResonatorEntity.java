@@ -67,6 +67,10 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
         Faction = nbt.getInteger("faction");
         Owner = nbt.getString("owner");
 
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(IngressHelper.GetResonatorMaxXM(Level));
+        // FIXME: XM.
+        setHealth(getMaxHealth());
+
     }
 
     @Override
@@ -88,16 +92,6 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
     }
 
     @Override
-    protected void applyEntityAttributes() {
-
-        super.applyEntityAttributes();
-
-        // FIXME: Leveling.
-        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(1000);
-
-    }
-
-    @Override
     public void onLivingUpdate() {
 
         if(getHealth() <= 0) {
@@ -106,42 +100,10 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
         }
 
-        List<PortalEntity> portals = IngressHelper.GetEntitiesAround(worldObj, PortalEntity.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
-
-        for(int i = 0; i < portals.size(); i++) {
-
-            PortalEntity portal = portals.get(i);
-
-            if(portal.Faction == Constants.Faction.NEUTRAL) {
-
-                portal.SetFaction(Faction);
-                portal.SetOwner(Owner);
-
-                if(!worldObj.isRemote) {
-
-                    IngressNotifier.BroadcastCapturing(Faction, Owner);
-
-                }
-
-                break;
-
-            }
-
-        }
-
-
     }
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
-
-        if(worldObj.isRemote) {
-
-            return false;
-
-        }
-
-        entityAge = 0;
 
         if(source.getDamageType().contentEquals(IngressCraft.MODID + ":xmpBurster")) {
 
@@ -198,10 +160,11 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
             NBTTagCompound nbt = scanner.getTagCompound();
 
-            IngressNotifier.BroadcastDestroying(nbt);
+            if(!worldObj.isRemote) IngressNotifier.BroadcastDestroying(nbt);
 
             nbt.setInteger("ap", nbt.getInteger("ap") + 75);
-            IngressCraft.SyncScannerChannel.sendTo(new IngressCraft.SyncScannerMessage(nbt), (EntityPlayerMP) player);
+
+            if(!worldObj.isRemote) IngressCraft.SyncScannerChannel.sendTo(new IngressCraft.SyncScannerMessage(nbt), (EntityPlayerMP) player);
 
         }
 

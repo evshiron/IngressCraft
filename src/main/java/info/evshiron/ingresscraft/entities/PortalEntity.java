@@ -116,10 +116,8 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
         List resonators = IngressHelper.GetEntitiesAround(worldObj, ResonatorEntity.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
 
-        // When called, the last resonator has not been destoryed.
-        if (Faction != Constants.Faction.NEUTRAL && resonators.size() == 0) {
+        if (Faction != Constants.Faction.NEUTRAL && AttackingAgent != null && resonators.size() == 0) {
 
-            // FIXME: But client's faction is not changed. Message needed.
             onDeath(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", AttackingAgent));
 
         }
@@ -127,12 +125,6 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     }
 
     public boolean attackEntityFrom(DamageSource source, float damage) {
-
-        if(worldObj.isRemote) {
-
-            return false;
-
-        }
 
         if(source.getEntity() instanceof EntityPlayer) {
 
@@ -154,6 +146,8 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
             }
             else {
+
+                if(worldObj.isRemote) return false;
 
                 NBTTagCompound nbt = scanner.getTagCompound();
 
@@ -207,20 +201,9 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     }
 
     @Override
-    protected void damageEntity(DamageSource source, float damage) {
-
-        prevHealth = getHealth();
-
-        setHealth(getHealth() - damage);
-
-    }
-
-    @Override
     public void onDeath(DamageSource source) {
 
         if(source.getEntity() instanceof EntityPlayer) {
-
-            // FIXME: Never called.
 
             ItemStack scanner = ((EntityPlayer) source.getEntity()).getCurrentArmor(3);
 
@@ -228,7 +211,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
                 NBTTagCompound nbt = scanner.getTagCompound();
 
-                IngressNotifier.BroadcastNeutralizing(nbt);
+                if(!worldObj.isRemote) IngressNotifier.BroadcastNeutralizing(nbt);
 
                 // Show effects.
 

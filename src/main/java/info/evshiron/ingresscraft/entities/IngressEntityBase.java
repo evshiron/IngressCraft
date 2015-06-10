@@ -35,7 +35,7 @@ public class IngressEntityBase extends EntityLiving {
 
     // Use to block knockBack.
     @Override
-    public void knockBack(net.minecraft.entity.Entity p_70653_1_, float p_70653_2_, double p_70653_3_, double p_70653_5_) {
+    public void knockBack(Entity p_70653_1_, float p_70653_2_, double p_70653_3_, double p_70653_5_) {
 
     }
 

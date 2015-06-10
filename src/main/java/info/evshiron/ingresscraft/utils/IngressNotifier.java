@@ -13,6 +13,27 @@ import net.minecraft.util.EnumChatFormatting;
  */
 public class IngressNotifier {
 
+    public static void NotifyCantDeployWithoutScanner(EntityPlayer player) {
+
+        String broadcast = String.format("Resonator can't be deployed without Scanner.");
+        player.addChatMessage(new ChatComponentText(broadcast));
+
+    }
+
+    public static void NotifyCantDeployWithoutAccess(EntityPlayer player) {
+
+        String broadcast = String.format("Resonator can't be deployed without access.");
+        player.addChatMessage(new ChatComponentText(broadcast));
+
+    }
+
+    public static void NotifyCantDeployFarFromPortal(EntityPlayer player) {
+
+        String broadcast = String.format("Resonator can't be deployed far from Portal.");
+        player.addChatMessage(new ChatComponentText(broadcast));
+
+    }
+
     public static void NotifyCantDeployWithinOpponentPortal(EntityPlayer player) {
 
         String broadcast = String.format("Resonator can't be deployed within opponent's Portal.");
@@ -27,7 +48,7 @@ public class IngressNotifier {
 
     }
 
-    public static void BroadcastDeployingResonator(NBTTagCompound nbt) {
+    public static void BroadcastDeploying(NBTTagCompound nbt) {
 
         ChatComponentText message = new ChatComponentText("");
         message.appendSibling(
@@ -42,14 +63,14 @@ public class IngressNotifier {
 
     }
 
-    public static void BroadcastCapturing(int faction, String codename) {
+    public static void BroadcastCapturing(NBTTagCompound nbt) {
 
         ChatComponentText message = new ChatComponentText("");
         message.appendSibling(
-                new ChatComponentText(codename)
+                new ChatComponentText(nbt.getString("codename"))
                         .setChatStyle(
                                 new ChatStyle()
-                                        .setColor(faction == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
+                                        .setColor(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
                         )
         );
         message.appendSibling(new ChatComponentText(" has captured a Portal."));
