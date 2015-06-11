@@ -4,6 +4,7 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
+import info.evshiron.ingresscraft.client.gui.PortalGUI;
 import info.evshiron.ingresscraft.items.ScannerItem;
 import info.evshiron.ingresscraft.items.XMPBursterItem;
 import info.evshiron.ingresscraft.utils.IngressHelper;
@@ -27,13 +28,21 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
     public static final String NAME = "portal";
 
+    public String Name = "";
     public int Faction = Constants.Faction.NEUTRAL;
     public String Owner = "NIA";
+
     public EntityPlayer AttackingAgent = null;
 
     public PortalEntity(World world) {
 
         super(world);
+
+    }
+
+    public void SetName(String name) {
+
+        Name = name;
 
     }
 
@@ -70,6 +79,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     @Override
     public void writeEntityToNBT(NBTTagCompound nbt) {
 
+        nbt.setString("name", Name);
         nbt.setInteger("faction", Faction);
         nbt.setString("owner", Owner);
 
@@ -82,6 +92,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
         super.readEntityFromNBT(nbt);
 
+        Name = nbt.getString("name");
         Faction = nbt.getInteger("faction");
         Owner = nbt.getString("owner");
 
@@ -90,6 +101,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     @Override
     public void writeSpawnData(ByteBuf buffer) {
 
+        ByteBufUtils.writeUTF8String(buffer, Name);
         ByteBufUtils.writeUTF8String(buffer, String.valueOf(Faction));
         ByteBufUtils.writeUTF8String(buffer, Owner);
 
@@ -98,6 +110,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     @Override
     public void readSpawnData(ByteBuf additionalData) {
 
+        Name = ByteBufUtils.readUTF8String(additionalData);
         Faction = Integer.parseInt(ByteBufUtils.readUTF8String(additionalData));
         Owner = ByteBufUtils.readUTF8String(additionalData);
 
@@ -151,6 +164,15 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
 
         }
+
+    }
+
+    @Override
+    protected boolean interact(EntityPlayer player) {
+
+        player.openGui(IngressCraft.Instance, PortalGUI.ID, worldObj, (int) posX, (int) posY, getEntityId());
+
+        return true;
 
     }
 

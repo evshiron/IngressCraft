@@ -1,5 +1,6 @@
 package info.evshiron.ingresscraft;
 
+import info.evshiron.ingresscraft.entities.PortalEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.network.IGuiHandler;
 import info.evshiron.ingresscraft.client.gui.PortalGUI;
@@ -65,7 +66,10 @@ public class CommonProxy implements IGuiHandler {
 
             case PortalGUI.ID:
 
-                return new PortalGUI();
+                // FIXME: Find a clean way to fetch the interacting Portal.
+                int portalId = z;
+
+                return new PortalGUI(player, (PortalEntity) world.getEntityByID(portalId));
 
             default:
 

@@ -19,7 +19,9 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import info.evshiron.ingresscraft.items.ScannerItem;
+import info.evshiron.ingresscraft.items.PortalItem;
 import info.evshiron.ingresscraft.items.XMPBursterItem;
+import info.evshiron.ingresscraft.messages.SyncPortalMessage;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
@@ -170,6 +172,8 @@ public class IngressCraft
     };
 
     public static final ScannerItem ScannerItem = new ScannerItem();
+
+    public static final PortalItem PortalItem = new PortalItem();
     public static final ResonatorItem L1ResonatorItem = new ResonatorItem(1);
     public static final ResonatorItem L2ResonatorItem = new ResonatorItem(2);
     public static final ResonatorItem L3ResonatorItem = new ResonatorItem(3);
@@ -191,6 +195,7 @@ public class IngressCraft
     public static CommonProxy Proxy;
 
     public static SimpleNetworkWrapper SyncScannerChannel = NetworkRegistry.INSTANCE.newSimpleChannel("SyncScanner");
+    public static SimpleNetworkWrapper SyncPortalChannel = NetworkRegistry.INSTANCE.newSimpleChannel("SyncPortal");
 
     public Configuration Config;
 
@@ -259,7 +264,9 @@ public class IngressCraft
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
+
         GameRegistry.registerItem(ScannerItem, ScannerItem.NAME);
+        GameRegistry.registerItem(PortalItem, PortalItem.NAME);
         GameRegistry.registerItem(L1ResonatorItem, ResonatorItem.NAME + "1");
         GameRegistry.registerItem(L2ResonatorItem, ResonatorItem.NAME + "2");
         GameRegistry.registerItem(L3ResonatorItem, ResonatorItem.NAME + "3");
@@ -282,7 +289,6 @@ public class IngressCraft
         int portalEntityId = EntityRegistry.findGlobalUniqueEntityId();
         EntityRegistry.registerGlobalEntityID(PortalEntity.class, PortalEntity.NAME, portalEntityId);
         EntityRegistry.registerModEntity(PortalEntity.class, PortalEntity.NAME, portalEntityId, Instance, 64, 1, true);
-        EntityList.entityEggs.put(portalEntityId, new EntityList.EntityEggInfo(portalEntityId, 0, 0));
 
         int resonatorEntityId = EntityRegistry.findGlobalUniqueEntityId();
         EntityRegistry.registerGlobalEntityID(ResonatorEntity.class, ResonatorEntity.NAME, resonatorEntityId);
@@ -293,6 +299,7 @@ public class IngressCraft
         NetworkRegistry.INSTANCE.registerGuiHandler(Instance, Proxy);
 
         SyncScannerChannel.registerMessage(SyncScannerHandler.class, SyncScannerMessage.class, 0, Side.SERVER);
+        SyncPortalChannel.registerMessage(SyncPortalMessage.Handler.class, SyncPortalMessage.class, 1, Side.SERVER);
 
     }
 
