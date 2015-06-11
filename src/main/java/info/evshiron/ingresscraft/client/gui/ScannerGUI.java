@@ -2,6 +2,8 @@ package info.evshiron.ingresscraft.client.gui;
 
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
+import info.evshiron.ingresscraft.messages.SyncScannerMessage;
+import info.evshiron.ingresscraft.utils.IngressNotifier;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
@@ -23,14 +25,14 @@ public class ScannerGUI extends GuiScreen {
 
     public static final int ID = 10001;
 
-    public static final int ID_RESISTANCE_BUTTON = 10005;
-    public static final int ID_ENLIGHTENED_BUTTON = 10006;
-    public static final int ID_CANCEL_BUTTON = 10007;
+    public static final int ID_RESISTANCE_BUTTON = 0;
+    public static final int ID_ENLIGHTENED_BUTTON = 1;
+    public static final int ID_CANCEL_BUTTON = 2;
 
     EntityPlayer mPlayer;
     ItemStack mScanner;
 
-    GuiTextField mCodenameInput;
+    GuiTextField mCodenameField;
 
     int mFaction;
 
@@ -53,14 +55,14 @@ public class ScannerGUI extends GuiScreen {
     public void initGui() {
 
         // new GuiTextField(FontRenderer, x, y, width, height).
-        mCodenameInput = new GuiTextField(this.fontRendererObj, (width - 200) / 2, (height - 20) / 2 - 20 - 20, 200, 20);
-        mCodenameInput.setFocused(true);
-        mCodenameInput.setText("");
+        mCodenameField = new GuiTextField(this.fontRendererObj, (width - 200) / 2, 20, 200, 20);
+        mCodenameField.setFocused(true);
+        mCodenameField.setText("");
 
         // new GuiButton(id, x, y, (width, height, )String).
-        mResistanceButton = new GuiButton(ID_RESISTANCE_BUTTON, (width - 200) / 2, (height - 20) / 2, 200, 20, "RESISTANCE");
-        mEnlightenedButton = new GuiButton(ID_ENLIGHTENED_BUTTON, (width - 200) / 2, (height - 20) / 2 + 20, 200, 20, "ENLIGHTENED");
-        mCancelButton = new GuiButton(ID_CANCEL_BUTTON, (width - 200) / 2, (height - 20) / 2 + 40, 200, 20, "#你怎么还在玩这个游戏");
+        mResistanceButton = new GuiButton(ID_RESISTANCE_BUTTON, (width - 200) / 2, height - 80 - 20, 200, 20, "RESISTANCE");
+        mEnlightenedButton = new GuiButton(ID_ENLIGHTENED_BUTTON, (width - 200) / 2, height - 60 - 10, 200, 20, "ENLIGHTENED");
+        mCancelButton = new GuiButton(ID_CANCEL_BUTTON, (width - 200) / 2, height - 40, 200, 20, "#你怎么还在玩这个游戏");
 
         buttonList.add(mResistanceButton);
         buttonList.add(mEnlightenedButton);
@@ -72,9 +74,7 @@ public class ScannerGUI extends GuiScreen {
     protected void keyTyped(char p_73869_1_, int p_73869_2_) {
         //super.keyTyped(p_73869_1_, p_73869_2_);
 
-        System.out.println(p_73869_1_);
-
-        if(mCodenameInput.textboxKeyTyped(p_73869_1_, p_73869_2_)) {
+        if(mCodenameField.textboxKeyTyped(p_73869_1_, p_73869_2_)) {
 
         }
         else {
@@ -130,7 +130,7 @@ public class ScannerGUI extends GuiScreen {
 
         drawDefaultBackground();
 
-        mCodenameInput.drawTextBox();
+        mCodenameField.drawTextBox();
 
         for(int i = 0; i < buttonList.size(); i++) {
 
@@ -142,11 +142,11 @@ public class ScannerGUI extends GuiScreen {
 
     }
 
-    public void write() {
+    void write() {
 
         NBTTagCompound nbt = mScanner.getTagCompound();
 
-        nbt.setString("codename", mCodenameInput.getText());
+        nbt.setString("codename", mCodenameField.getText());
         nbt.setInteger("faction", mFaction);
         nbt.setInteger("level", 1);
         nbt.setInteger("ap", 0);
@@ -154,40 +154,9 @@ public class ScannerGUI extends GuiScreen {
 
         mScanner.setTagCompound(nbt);
 
-        ByteBuf bytes = Unpooled.buffer();
+        IngressCraft.SyncScannerChannel.sendToServer(new SyncScannerMessage(mScanner));
 
-        try {
-
-            // Use this to send data back to the server.
-            (new PacketBuffer(bytes)).writeItemStackToBuffer(mScanner);
-
-            IngressCraft.SyncScannerChannel.sendToServer(new IngressCraft.SyncScannerMessage(nbt));
-
-            ChatComponentText message = new ChatComponentText("");
-            message.appendSibling(
-                new ChatComponentText(nbt.getString("codename"))
-                .setChatStyle(
-                    new ChatStyle()
-                    .setColor(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
-                )
-            );
-            message.appendSibling(new ChatComponentText(" has joined the "));
-            message.appendSibling(
-                new ChatComponentText(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? "Resistance" : "Enlightened")
-                .setChatStyle(
-                    new ChatStyle()
-                    .setColor(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
-                )
-            );
-            message.appendSibling(new ChatComponentText("."));
-            Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally {
-            bytes.release();
-        }
+        IngressNotifier.BroadcastJoining(nbt);
 
     }
 

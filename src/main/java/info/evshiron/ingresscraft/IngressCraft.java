@@ -22,6 +22,7 @@ import info.evshiron.ingresscraft.items.ScannerItem;
 import info.evshiron.ingresscraft.items.PortalItem;
 import info.evshiron.ingresscraft.items.XMPBursterItem;
 import info.evshiron.ingresscraft.messages.SyncPortalMessage;
+import info.evshiron.ingresscraft.messages.SyncScannerMessage;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
@@ -34,122 +35,6 @@ import net.minecraftforge.common.config.Configuration;
 @Mod(modid = IngressCraft.MODID, version = IngressCraft.VERSION)
 public class IngressCraft
 {
-
-    public static class SyncScannerMessage implements IMessage {
-
-        public String Codename;
-        public int Faction;
-        public int Level;
-        public int AP;
-        public int XM;
-
-        public SyncScannerMessage() {}
-
-        public SyncScannerMessage(NBTTagCompound nbt) {
-
-            Codename = nbt.getString("codename");
-            Faction = nbt.getInteger("faction");
-            Level = nbt.getInteger("level");
-            AP = nbt.getInteger("ap");
-            XM = nbt.getInteger("xm");
-
-        }
-
-        @Override
-        public void fromBytes(ByteBuf buf) {
-
-            Codename = ByteBufUtils.readUTF8String(buf);
-            Faction = Integer.parseInt(ByteBufUtils.readUTF8String(buf));
-            Level = Integer.parseInt(ByteBufUtils.readUTF8String(buf));
-            AP = Integer.parseInt(ByteBufUtils.readUTF8String(buf));
-            XM = Integer.parseInt(ByteBufUtils.readUTF8String(buf));
-
-        }
-
-        @Override
-        public void toBytes(ByteBuf buf) {
-
-            ByteBufUtils.writeUTF8String(buf, Codename);
-            ByteBufUtils.writeUTF8String(buf, String.valueOf(Faction));
-            ByteBufUtils.writeUTF8String(buf, String.valueOf(Level));
-            ByteBufUtils.writeUTF8String(buf, String.valueOf(AP));
-            ByteBufUtils.writeUTF8String(buf, String.valueOf(XM));
-
-        }
-
-    }
-
-    public static class SyncScannerHandler implements IMessageHandler<SyncScannerMessage, IMessage> {
-
-        @Override
-        public IMessage onMessage(SyncScannerMessage message, MessageContext ctx) {
-
-            if(ctx.side.isServer()) {
-
-                ItemStack itemStack = ctx.getServerHandler().playerEntity.getCurrentArmor(3);
-
-                if(itemStack != null && itemStack.getItem() instanceof ScannerItem) {
-
-                    NBTTagCompound nbt;
-
-                    if(!itemStack.hasTagCompound()) {
-
-                        nbt = new NBTTagCompound();
-
-                    }
-                    else {
-
-                        nbt = itemStack.getTagCompound();
-
-                    }
-
-                    nbt.setString("codename", message.Codename);
-                    nbt.setInteger("faction", message.Faction);
-                    nbt.setInteger("level", message.Level);
-                    nbt.setInteger("ap", message.AP);
-                    nbt.setInteger("xm", message.XM);
-
-                    itemStack.setTagCompound(nbt);
-
-                }
-
-            }
-            else {
-
-                ItemStack itemStack = Minecraft.getMinecraft().thePlayer.getCurrentArmor(3);
-
-                if(itemStack != null && itemStack.getItem() instanceof ScannerItem) {
-
-                    NBTTagCompound nbt;
-
-                    if(!itemStack.hasTagCompound()) {
-
-                        nbt = new NBTTagCompound();
-
-                    }
-                    else {
-
-                        nbt = itemStack.getTagCompound();
-
-                    }
-
-                    nbt.setString("codename", message.Codename);
-                    nbt.setInteger("faction", message.Faction);
-                    nbt.setInteger("level", message.Level);
-                    nbt.setInteger("ap", message.AP);
-                    nbt.setInteger("xm", message.XM);
-
-                    itemStack.setTagCompound(nbt);
-
-                }
-
-            }
-
-            return null;
-
-        }
-
-    }
 
     public static final String MODID = "ingresscraft";
     public static final String VERSION = "0.0.1";
@@ -298,7 +183,7 @@ public class IngressCraft
 
         NetworkRegistry.INSTANCE.registerGuiHandler(Instance, Proxy);
 
-        SyncScannerChannel.registerMessage(SyncScannerHandler.class, SyncScannerMessage.class, 0, Side.SERVER);
+        SyncScannerChannel.registerMessage(SyncScannerMessage.Handler.class, SyncScannerMessage.class, 0, Side.SERVER);
         SyncPortalChannel.registerMessage(SyncPortalMessage.Handler.class, SyncPortalMessage.class, 1, Side.SERVER);
 
     }

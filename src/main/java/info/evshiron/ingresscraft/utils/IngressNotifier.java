@@ -55,6 +55,29 @@ public class IngressNotifier {
 
     }
 
+    public static void BroadcastJoining(NBTTagCompound nbt) {
+
+        ChatComponentText message = new ChatComponentText("");
+        message.appendSibling(
+                new ChatComponentText(nbt.getString("codename"))
+                        .setChatStyle(
+                                new ChatStyle()
+                                        .setColor(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
+                        )
+        );
+        message.appendSibling(new ChatComponentText(" has joined the "));
+        message.appendSibling(
+                new ChatComponentText(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? "Resistance" : "Enlightened")
+                        .setChatStyle(
+                                new ChatStyle()
+                                        .setColor(nbt.getInteger("faction") == Constants.Faction.RESISTANCE ? EnumChatFormatting.BLUE : EnumChatFormatting.GREEN)
+                        )
+        );
+        message.appendSibling(new ChatComponentText("."));
+        Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
+
+    }
+
     public static void BroadcastDeploying(NBTTagCompound nbt) {
 
         ChatComponentText message = new ChatComponentText("");

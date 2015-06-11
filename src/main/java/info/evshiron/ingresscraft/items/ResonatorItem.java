@@ -4,6 +4,7 @@ import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.entities.PortalEntity;
 import info.evshiron.ingresscraft.entities.ResonatorEntity;
+import info.evshiron.ingresscraft.messages.SyncScannerMessage;
 import info.evshiron.ingresscraft.utils.IngressHelper;
 import info.evshiron.ingresscraft.utils.IngressNotifier;
 import net.minecraft.entity.Entity;
@@ -121,13 +122,13 @@ public class ResonatorItem extends Item {
 
                     nbt.setInteger("ap", nbt.getInteger("ap") + 625);
 
-                    if(!world.isRemote) IngressCraft.SyncScannerChannel.sendTo(new IngressCraft.SyncScannerMessage(nbt), (EntityPlayerMP) player);
+                    if(!world.isRemote) IngressCraft.SyncScannerChannel.sendTo(new SyncScannerMessage(scanner), (EntityPlayerMP) player);
 
                     break;
 
                 }
 
-                if(!world.isRemote) IngressCraft.SyncScannerChannel.sendTo(new IngressCraft.SyncScannerMessage(nbt), (EntityPlayerMP) player);
+                if(!world.isRemote) IngressCraft.SyncScannerChannel.sendTo(new SyncScannerMessage(scanner), (EntityPlayerMP) player);
 
             }
 

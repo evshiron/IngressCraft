@@ -6,6 +6,7 @@ import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.items.ScannerItem;
 import info.evshiron.ingresscraft.items.XMPBursterItem;
+import info.evshiron.ingresscraft.messages.SyncScannerMessage;
 import info.evshiron.ingresscraft.utils.IngressHelper;
 import info.evshiron.ingresscraft.utils.IngressNotifier;
 import io.netty.buffer.ByteBuf;
@@ -189,7 +190,7 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
             nbt.setInteger("ap", nbt.getInteger("ap") + 75);
 
-            if(!worldObj.isRemote) IngressCraft.SyncScannerChannel.sendTo(new IngressCraft.SyncScannerMessage(nbt), (EntityPlayerMP) player);
+            if(!worldObj.isRemote) IngressCraft.SyncScannerChannel.sendTo(new SyncScannerMessage(scanner), (EntityPlayerMP) player);
 
         }
 
