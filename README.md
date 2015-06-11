@@ -21,6 +21,16 @@ cd IngressCraft
 
 ```
 
+## Build
+
+```
+
+git clone https://github.com/evshiron/IngressCraft.git
+cd IngressCraft
+./gradlew build
+
+```
+
 ## Directives
 
 A Portal is an Entity that accepts left click (Hack), right click with hand (Inspect, and further linking).
@@ -35,9 +45,10 @@ A Power Cube?
 
 ## TODO
 
+* Portal creation.
+* Portal Key acquirement.
 * Prevent Links from going through solid blocks.
-* Make Resonator managed by Portal.
-* Make the position of a Resonator reasonable.
+* Fix deployed Resonators' position.
 
 ## Decompiled Code Comments
 
