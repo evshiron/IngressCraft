@@ -256,9 +256,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
             if(scanner.getItem() instanceof ScannerItem) {
 
-                NBTTagCompound nbt = scanner.getTagCompound();
-
-                if(!worldObj.isRemote) IngressNotifier.BroadcastNeutralizing(nbt);
+                if(!worldObj.isRemote) IngressNotifier.BroadcastNeutralizing(scanner);
 
                 // Show effects.
 

@@ -109,7 +109,7 @@ public class ResonatorItem extends Item {
 
                 if(!world.isRemote) world.spawnEntityInWorld(entity);
 
-                if(!world.isRemote) IngressNotifier.BroadcastDeploying(nbt);
+                if(!world.isRemote) IngressNotifier.BroadcastDeploying(scanner);
 
                 nbt.setInteger("ap", nbt.getInteger("ap") + 125);
 
@@ -118,7 +118,7 @@ public class ResonatorItem extends Item {
                     portal.SetFaction(nbt.getInteger("faction"));
                     portal.SetOwner(nbt.getString("codename"));
 
-                    if(!world.isRemote) IngressNotifier.BroadcastCapturing(nbt);
+                    if(!world.isRemote) IngressNotifier.BroadcastCapturing(scanner);
 
                     nbt.setInteger("ap", nbt.getInteger("ap") + 625);
 

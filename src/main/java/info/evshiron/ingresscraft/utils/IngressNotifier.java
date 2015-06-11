@@ -3,6 +3,7 @@ package info.evshiron.ingresscraft.utils;
 import info.evshiron.ingresscraft.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
@@ -55,7 +56,9 @@ public class IngressNotifier {
 
     }
 
-    public static void BroadcastJoining(NBTTagCompound nbt) {
+    public static void BroadcastJoining(ItemStack scanner) {
+
+        NBTTagCompound nbt = scanner.getTagCompound();
 
         ChatComponentText message = new ChatComponentText("");
         message.appendSibling(
@@ -78,7 +81,9 @@ public class IngressNotifier {
 
     }
 
-    public static void BroadcastDeploying(NBTTagCompound nbt) {
+    public static void BroadcastDeploying(ItemStack scanner) {
+
+        NBTTagCompound nbt = scanner.getTagCompound();
 
         ChatComponentText message = new ChatComponentText("");
         message.appendSibling(
@@ -93,7 +98,9 @@ public class IngressNotifier {
 
     }
 
-    public static void BroadcastCapturing(NBTTagCompound nbt) {
+    public static void BroadcastCapturing(ItemStack scanner) {
+
+        NBTTagCompound nbt = scanner.getTagCompound();
 
         ChatComponentText message = new ChatComponentText("");
         message.appendSibling(
@@ -108,7 +115,9 @@ public class IngressNotifier {
 
     }
 
-    public static void BroadcastDestroying(NBTTagCompound nbt) {
+    public static void BroadcastDestroying(ItemStack scanner) {
+
+        NBTTagCompound nbt = scanner.getTagCompound();
 
         ChatComponentText message = new ChatComponentText("");
         message.appendSibling(
@@ -123,7 +132,9 @@ public class IngressNotifier {
 
     }
 
-    public static void BroadcastNeutralizing(NBTTagCompound nbt) {
+    public static void BroadcastNeutralizing(ItemStack scanner) {
+
+        NBTTagCompound nbt = scanner.getTagCompound();
 
         ChatComponentText message = new ChatComponentText("");
         message.appendSibling(

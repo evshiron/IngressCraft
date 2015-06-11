@@ -186,7 +186,7 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
             NBTTagCompound nbt = scanner.getTagCompound();
 
-            if(!worldObj.isRemote) IngressNotifier.BroadcastDestroying(nbt);
+            if(!worldObj.isRemote) IngressNotifier.BroadcastDestroying(scanner);
 
             nbt.setInteger("ap", nbt.getInteger("ap") + 75);
 

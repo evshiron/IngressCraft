@@ -156,7 +156,7 @@ public class ScannerGUI extends GuiScreen {
 
         IngressCraft.SyncScannerChannel.sendToServer(new SyncScannerMessage(mScanner));
 
-        IngressNotifier.BroadcastJoining(nbt);
+        IngressNotifier.BroadcastJoining(mScanner);
 
     }
 
