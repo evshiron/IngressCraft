@@ -1,7 +1,12 @@
 package info.evshiron.ingresscraft.utils;
 
 import info.evshiron.ingresscraft.IngressCraft;
+import info.evshiron.ingresscraft.entities.PortalEntity;
+import info.evshiron.ingresscraft.items.PortalKeyItem;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -104,6 +109,54 @@ public class IngressHelper {
 
         // Simple linear formula.
         return (range - distance) / range * damage;
+
+    }
+
+    public static PortalEntity GetPortalByUuid(World world, String uuid) {
+
+        List<Entity> entities = world.getLoadedEntityList();
+
+        for(int i = 0; i < entities.size(); i++) {
+
+            Entity entity = entities.get(i);
+
+            if(entity instanceof PortalEntity) {
+
+                PortalEntity portal = (PortalEntity) entity;
+
+                if(portal.Uuid.contentEquals(uuid)) {
+
+                    return portal;
+
+                }
+
+            }
+
+        }
+
+        return null;
+
+    }
+
+    public static boolean HasPortalKey(EntityPlayer player, ItemStack portalKey) {
+
+        for(int i = 0; i < player.inventory.mainInventory.length; i++) {
+
+            ItemStack itemStack = player.inventory.mainInventory[i];
+
+            if(itemStack != null && itemStack.getItem() instanceof PortalKeyItem) {
+
+                if(itemStack.getTagCompound().getString("portalUuid").contentEquals(portalKey.getTagCompound().getString("portalUuid"))) {
+
+                    return true;
+
+                }
+
+            }
+
+        }
+
+        return false;
 
     }
 

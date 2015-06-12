@@ -2,6 +2,7 @@ package info.evshiron.ingresscraft.items;
 
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.entities.PortalEntity;
+import info.evshiron.ingresscraft.utils.IngressHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -11,6 +12,7 @@ import net.minecraft.world.World;
 
 import javax.sound.sampled.Port;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by evshiron on 6/12/15.
@@ -35,8 +37,8 @@ public class PortalKeyItem extends Item {
         if(itemStack.hasTagCompound()) {
 
             NBTTagCompound nbt = itemStack.getTagCompound();
-            int portalId = nbt.getInteger("portalId");
-            Entity entity = player.worldObj.getEntityByID(portalId);
+            String portalUuid = nbt.getString("portalUuid");
+            Entity entity = IngressHelper.GetPortalByUuid(player.worldObj, portalUuid);
             if(entity instanceof PortalEntity) {
 
                 PortalEntity portal = (PortalEntity) entity;
@@ -56,7 +58,7 @@ public class PortalKeyItem extends Item {
 
             NBTTagCompound nbt = new NBTTagCompound();
 
-            nbt.setInteger("portalId", 0);
+            nbt.setString("portalUuid", UUID.randomUUID().toString());
 
             itemStack.setTagCompound(nbt);
 

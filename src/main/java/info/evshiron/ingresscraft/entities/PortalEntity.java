@@ -20,6 +20,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by evshiron on 5/26/15.
@@ -28,6 +29,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
     public static final String NAME = "portal";
 
+    public String Uuid = "";
     public String Name = "";
     public int Faction = Constants.Faction.NEUTRAL;
     public String Owner = "NIA";
@@ -37,6 +39,8 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     public PortalEntity(World world) {
 
         super(world);
+
+        Uuid = UUID.randomUUID().toString();
 
     }
 
@@ -79,6 +83,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     @Override
     public void writeEntityToNBT(NBTTagCompound nbt) {
 
+        nbt.setString("uuid", Uuid);
         nbt.setString("name", Name);
         nbt.setInteger("faction", Faction);
         nbt.setString("owner", Owner);
@@ -92,6 +97,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
         super.readEntityFromNBT(nbt);
 
+        Uuid = nbt.getString("uuid");
         Name = nbt.getString("name");
         Faction = nbt.getInteger("faction");
         Owner = nbt.getString("owner");
@@ -101,6 +107,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     @Override
     public void writeSpawnData(ByteBuf buffer) {
 
+        ByteBufUtils.writeUTF8String(buffer, Uuid);
         ByteBufUtils.writeUTF8String(buffer, Name);
         ByteBufUtils.writeUTF8String(buffer, String.valueOf(Faction));
         ByteBufUtils.writeUTF8String(buffer, Owner);
@@ -110,6 +117,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     @Override
     public void readSpawnData(ByteBuf additionalData) {
 
+        Uuid = ByteBufUtils.readUTF8String(additionalData);
         Name = ByteBufUtils.readUTF8String(additionalData);
         Faction = Integer.parseInt(ByteBufUtils.readUTF8String(additionalData));
         Owner = ByteBufUtils.readUTF8String(additionalData);
@@ -240,9 +248,9 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
                 // Portal Key.
                 ItemStack portalKey = new ItemStack(IngressCraft.PortalKeyItem, 1, 0);
                 NBTTagCompound nbt1 = new NBTTagCompound();
-                nbt1.setInteger("portalId", getEntityId());
+                nbt1.setString("portalUuid", Uuid);
                 portalKey.setTagCompound(nbt1);
-                if(!player.inventory.hasItemStack(portalKey)) entityDropItem(portalKey, 0);
+                if(!IngressHelper.HasPortalKey(player, portalKey)) entityDropItem(portalKey, 0);
 
                 return true;
 
