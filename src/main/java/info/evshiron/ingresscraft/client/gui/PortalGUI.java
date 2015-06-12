@@ -18,14 +18,16 @@ public class PortalGUI extends GuiScreen {
 
     public static final int ID_LINK_BUTTON = 0;
     public static final int ID_DONE_BUTTON = 1;
+    public static final int ID_BACK_BUTTON = 2;
+    public static final int ID_EDIT_BUTTON = 3;
 
     EntityPlayer mPlayer;
     PortalEntity mPortal;
 
-    boolean mIsEditing = false;
-
     GuiTextField mPortalNameField;
 
+    GuiButton mBackButton;
+    GuiButton mEditButton;
     GuiButton mLinkButton;
     GuiButton mDoneButton;
 
@@ -34,8 +36,6 @@ public class PortalGUI extends GuiScreen {
         mPlayer = player;
         mPortal = portal;
 
-        mIsEditing = mPlayer.capabilities.isCreativeMode || mPortal.Name.contentEquals("");
-
     }
 
     @Override
@@ -43,16 +43,16 @@ public class PortalGUI extends GuiScreen {
 
         mPortalNameField = new GuiTextField(fontRendererObj, (width - 200) / 2, 20, 200, 20);
 
-        if(mIsEditing) mPortalNameField.setFocused(true);
-
         mPortalNameField.setText(mPortal.Name);
 
-        mLinkButton = new GuiButton(ID_LINK_BUTTON, (width - 200) / 2, height - 60 - 10, 200, 20, "LINK");
-        mDoneButton = new GuiButton(ID_DONE_BUTTON, (width - 200) / 2, height - 40, 200, 20, "Done");
+        mBackButton = new GuiButton(ID_BACK_BUTTON, 0, 0, 40, 20, " < ");
+        mEditButton = new GuiButton(ID_EDIT_BUTTON, 0, 20 + 10, 80, 20, "Edit");
+        mDoneButton = new GuiButton(ID_DONE_BUTTON, 0, 40 + 20, 80, 20, "Done");
+        mLinkButton = new GuiButton(ID_LINK_BUTTON, (width - 200) / 2, height - 40, 200, 20, "LINK");
 
+        buttonList.add(mBackButton);
+        buttonList.add(mEditButton);
         buttonList.add(mLinkButton);
-
-        if(mIsEditing) buttonList.add(mDoneButton);
 
     }
 
@@ -76,7 +76,18 @@ public class PortalGUI extends GuiScreen {
 
         switch(button.id) {
 
-            case ID_LINK_BUTTON:
+            case ID_BACK_BUTTON:
+
+                mc.displayGuiScreen(null);
+                mc.setIngameFocus();
+
+                break;
+
+            case ID_EDIT_BUTTON:
+
+                mPortalNameField.setFocused(true);
+
+                buttonList.add(mDoneButton);
 
                 break;
 
@@ -86,6 +97,10 @@ public class PortalGUI extends GuiScreen {
 
                 mc.displayGuiScreen(null);
                 mc.setIngameFocus();
+
+                break;
+
+            case ID_LINK_BUTTON:
 
                 break;
 
