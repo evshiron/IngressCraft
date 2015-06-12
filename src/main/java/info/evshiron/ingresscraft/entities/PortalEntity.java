@@ -184,7 +184,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
             ItemStack scanner = player.getCurrentArmor(3);
 
-            if(!(scanner.getItem() instanceof ScannerItem)) {
+            if(scanner == null || !(scanner.getItem() instanceof ScannerItem)) {
 
                 return false;
 
