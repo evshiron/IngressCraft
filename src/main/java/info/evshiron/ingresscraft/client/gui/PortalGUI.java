@@ -89,6 +89,8 @@ public class PortalGUI extends GuiScreen {
 
                 buttonList.add(mDoneButton);
 
+                buttonList.remove(mEditButton);
+
                 break;
 
             case ID_DONE_BUTTON:
