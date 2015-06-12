@@ -1,5 +1,7 @@
 # IngressCraft
 
+[![Build Status](http://i.evshiron.info:8080/job/IngressCraft/badge/icon)](http://i.evshiron.info:8080/job/IngressCraft/)
+
 A whim of making Ingress in MineCraft 1.7.10 with Forge.
 
 ## Brief
@@ -45,36 +47,13 @@ A Power Cube?
 
 ## TODO
 
-* Portal creation.
-* Portal Key acquirement.
+* Link and Control Field.
 * Prevent Links from going through solid blocks.
 * Fix deployed Resonators' position.
 
-## Decompiled Code Comments
+## Screenshots
 
-```
-
-// Box related. Just for reference, this rendering method has huge limitation.
-
-// upperCorner? = lowerCorner? + offset?;
-
-ModelRenderer.addBox(
-	float lowerCornerX, float lowerCornerY, float lowerCornerZ,
-	float offsetX, float offsetY, float offsetZ
-);
-
-ModelBox(
-	ModelRenderer renderer, int textureOffsetX, int textureOffsetY,
-	float lowerCornerX, float lowerCornerY, float lowerCornerZ,
-	float offsetX, float offsetY, float offsetZ,	float unknownOffset
-);
-
-PositionTextureVertex(
-	float x, float y, float z,
-	float u, float v
-);
-
-```
+Coming soon.
 
 ## References
 
