@@ -14,13 +14,10 @@ import cpw.mods.fml.relauncher.Side;
 import info.evshiron.ingresscraft.blocks.XMBlock;
 import info.evshiron.ingresscraft.entities.PortalEntity;
 import info.evshiron.ingresscraft.entities.ResonatorEntity;
-import info.evshiron.ingresscraft.items.ResonatorItem;
+import info.evshiron.ingresscraft.items.*;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import info.evshiron.ingresscraft.items.ScannerItem;
-import info.evshiron.ingresscraft.items.PortalItem;
-import info.evshiron.ingresscraft.items.XMPBursterItem;
 import info.evshiron.ingresscraft.messages.SyncPortalMessage;
 import info.evshiron.ingresscraft.messages.SyncScannerMessage;
 import io.netty.buffer.ByteBuf;
@@ -59,6 +56,8 @@ public class IngressCraft
     public static final ScannerItem ScannerItem = new ScannerItem();
 
     public static final PortalItem PortalItem = new PortalItem();
+    public static final PortalKeyItem PortalKeyItem = new PortalKeyItem();
+
     public static final ResonatorItem L1ResonatorItem = new ResonatorItem(1);
     public static final ResonatorItem L2ResonatorItem = new ResonatorItem(2);
     public static final ResonatorItem L3ResonatorItem = new ResonatorItem(3);
@@ -152,6 +151,7 @@ public class IngressCraft
 
         GameRegistry.registerItem(ScannerItem, ScannerItem.NAME);
         GameRegistry.registerItem(PortalItem, PortalItem.NAME);
+        GameRegistry.registerItem(PortalKeyItem, PortalKeyItem.NAME);
         GameRegistry.registerItem(L1ResonatorItem, ResonatorItem.NAME + "1");
         GameRegistry.registerItem(L2ResonatorItem, ResonatorItem.NAME + "2");
         GameRegistry.registerItem(L3ResonatorItem, ResonatorItem.NAME + "3");
