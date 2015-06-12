@@ -160,12 +160,6 @@ public class IngressHelper {
 
     }
 
-    public static double GetDistanceBetween(Entity entityA, Entity entityB) {
-
-        return Math.sqrt(Math.pow(entityA.posX - entityB.posX, 2) + Math.pow(entityA.posY - entityB.posY, 2) + Math.pow(entityA.posZ - entityB.posZ, 2));
-
-    }
-
     public static List GetEntitiesAround(World world, Class cls, Entity entity, double range) {
 
         List matches = new ArrayList();
@@ -176,7 +170,7 @@ public class IngressHelper {
 
             Entity entity1 = entities.get(i);
 
-            if(GetDistanceBetween(entity, entity1) <= range) {
+            if(entity.getDistanceToEntity(entity1) <= range) {
 
                 matches.add(entity1);
 

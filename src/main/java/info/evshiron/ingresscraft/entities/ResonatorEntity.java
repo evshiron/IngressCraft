@@ -137,7 +137,7 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
                     double xmpBursterRange = IngressHelper.GetXMPBursterRange(((XMPBursterItem) xmpBurster.getItem()).Level);
 
-                    float newDamage = (float) IngressHelper.GetCalculatedDamage(xmpBursterRange, IngressHelper.GetDistanceBetween(player, this), damage);
+                    float newDamage = (float) IngressHelper.GetCalculatedDamage(xmpBursterRange, player.getDistanceToEntity(this), damage);
 
                     damageEntity(source, newDamage);
 
