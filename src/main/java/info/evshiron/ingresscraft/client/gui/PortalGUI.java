@@ -136,6 +136,7 @@ public class PortalGUI extends GuiScreen {
         CommonProxy.CurrentScreenId = 0;
 
         super.onGuiClosed();
+
     }
 
     void write() {

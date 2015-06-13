@@ -24,6 +24,8 @@ public class ScannerItem extends ItemArmor {
 
     public static final String NAME = "scanner";
 
+    public static int GUIDisabler = 0;
+
     public ScannerItem() {
 
         super(EnumHelper.addArmorMaterial("XM", 33, new int[]{ 1, 3, 2, 1 }, 0), 0, 0);
@@ -103,15 +105,19 @@ public class ScannerItem extends ItemArmor {
 
         //System.out.println("tick");
 
+        if(GUIDisabler > 0) GUIDisabler++;
+        if(GUIDisabler > 32) GUIDisabler = 0;
+
         if(itemStack.getTagCompound().getInteger("faction") == Constants.Faction.NEUTRAL) {
 
             if(world.isRemote) {
 
-                if(CommonProxy.CurrentScreenId != ScannerGUI.ID) {
+                if(GUIDisabler == 0 && CommonProxy.CurrentScreenId != ScannerGUI.ID) {
 
                     player.openGui(IngressCraft.Instance, ScannerGUI.ID, world, (int) player.posX, (int) player.posY, (int) player.posZ);
 
                 }
+
             }
 
         }

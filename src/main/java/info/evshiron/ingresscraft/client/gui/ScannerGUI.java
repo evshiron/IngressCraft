@@ -3,6 +3,7 @@ package info.evshiron.ingresscraft.client.gui;
 import info.evshiron.ingresscraft.CommonProxy;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
+import info.evshiron.ingresscraft.items.ScannerItem;
 import info.evshiron.ingresscraft.messages.SyncScannerMessage;
 import info.evshiron.ingresscraft.utils.IngressNotifier;
 import io.netty.buffer.ByteBuf;
@@ -129,6 +130,8 @@ public class ScannerGUI extends GuiScreen {
     public void drawScreen(int p_73863_1_, int p_73863_2_, float p_73863_3_) {
         //super.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
 
+        ScannerItem.GUIDisabler = 1;
+
         drawDefaultBackground();
 
         mCodenameField.drawTextBox();
@@ -149,6 +152,7 @@ public class ScannerGUI extends GuiScreen {
         CommonProxy.CurrentScreenId = 0;
 
         super.onGuiClosed();
+
     }
 
     void write() {
