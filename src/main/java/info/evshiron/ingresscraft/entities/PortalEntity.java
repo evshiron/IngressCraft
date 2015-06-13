@@ -30,9 +30,9 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     public static final String NAME = "portal";
 
     public String Uuid = "";
-    public String Name = "";
+    public String Name = "-UNKNOWN-";
     public int Faction = Constants.Faction.NEUTRAL;
-    public String Owner = "NIA";
+    public String Owner = "-UNKNOWN-";
 
     public EntityPlayer AttackingAgent = null;
 
@@ -145,7 +145,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
         else if(resonators.size() == 0) {
 
             SetFaction(Constants.Faction.NEUTRAL);
-            SetOwner("NIA");
+            SetOwner("-UNKNOWN-");
 
         }
         else if(Faction == Constants.Faction.NEUTRAL && resonators.size() > 0) {
@@ -276,7 +276,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
                 // Show effects.
 
                 SetFaction(Constants.Faction.NEUTRAL);
-                SetOwner("NIA");
+                SetOwner("-UNKNOWN-");
 
                 AttackingAgent = null;
 
@@ -286,7 +286,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
         else if(source.getEntity() == null) {
 
             SetFaction(Constants.Faction.NEUTRAL);
-            SetOwner("NIA");
+            SetOwner("-UNKNOWN-");
 
         }
 
