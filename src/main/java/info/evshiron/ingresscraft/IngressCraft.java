@@ -149,25 +149,25 @@ public class IngressCraft
     public void init(FMLInitializationEvent event)
     {
 
-        GameRegistry.registerItem(ScannerItem, ScannerItem.NAME);
-        GameRegistry.registerItem(PortalItem, PortalItem.NAME);
-        GameRegistry.registerItem(PortalKeyItem, PortalKeyItem.NAME);
-        GameRegistry.registerItem(L1ResonatorItem, ResonatorItem.NAME + "1");
-        GameRegistry.registerItem(L2ResonatorItem, ResonatorItem.NAME + "2");
-        GameRegistry.registerItem(L3ResonatorItem, ResonatorItem.NAME + "3");
-        GameRegistry.registerItem(L4ResonatorItem, ResonatorItem.NAME + "4");
-        GameRegistry.registerItem(L5ResonatorItem, ResonatorItem.NAME + "5");
-        GameRegistry.registerItem(L6ResonatorItem, ResonatorItem.NAME + "6");
-        GameRegistry.registerItem(L7ResonatorItem, ResonatorItem.NAME + "7");
-        GameRegistry.registerItem(L8ResonatorItem, ResonatorItem.NAME + "8");
-        GameRegistry.registerItem(L1XMPBursterItem, XMPBursterItem.NAME + "1");
-        GameRegistry.registerItem(L2XMPBursterItem, XMPBursterItem.NAME + "2");
-        GameRegistry.registerItem(L3XMPBursterItem, XMPBursterItem.NAME + "3");
-        GameRegistry.registerItem(L4XMPBursterItem, XMPBursterItem.NAME + "4");
-        GameRegistry.registerItem(L5XMPBursterItem, XMPBursterItem.NAME + "5");
-        GameRegistry.registerItem(L6XMPBursterItem, XMPBursterItem.NAME + "6");
-        GameRegistry.registerItem(L7XMPBursterItem, XMPBursterItem.NAME + "7");
-        GameRegistry.registerItem(L8XMPBursterItem, XMPBursterItem.NAME + "8");
+        GameRegistry.registerItem(ScannerItem.setCreativeTab(CreativeTab), ScannerItem.NAME);
+        GameRegistry.registerItem(PortalItem.setCreativeTab(CreativeTab), PortalItem.NAME);
+        GameRegistry.registerItem(PortalKeyItem.setCreativeTab(CreativeTab), PortalKeyItem.NAME);
+        GameRegistry.registerItem(L1ResonatorItem.setCreativeTab(CreativeTab), "l1" + ResonatorItem.NAME);
+        GameRegistry.registerItem(L2ResonatorItem.setCreativeTab(CreativeTab), "l2" + ResonatorItem.NAME);
+        GameRegistry.registerItem(L3ResonatorItem.setCreativeTab(CreativeTab), "l3" + ResonatorItem.NAME);
+        GameRegistry.registerItem(L4ResonatorItem.setCreativeTab(CreativeTab), "l4" + ResonatorItem.NAME);
+        GameRegistry.registerItem(L5ResonatorItem.setCreativeTab(CreativeTab), "l5" + ResonatorItem.NAME);
+        GameRegistry.registerItem(L6ResonatorItem.setCreativeTab(CreativeTab), "l6" + ResonatorItem.NAME);
+        GameRegistry.registerItem(L7ResonatorItem.setCreativeTab(CreativeTab), "l7" + ResonatorItem.NAME);
+        GameRegistry.registerItem(L8ResonatorItem.setCreativeTab(CreativeTab), "l8" + ResonatorItem.NAME);
+        GameRegistry.registerItem(L1XMPBursterItem.setCreativeTab(CreativeTab), "l1" + XMPBursterItem.NAME);
+        GameRegistry.registerItem(L2XMPBursterItem.setCreativeTab(CreativeTab), "l2" + XMPBursterItem.NAME);
+        GameRegistry.registerItem(L3XMPBursterItem.setCreativeTab(CreativeTab), "l3" + XMPBursterItem.NAME);
+        GameRegistry.registerItem(L4XMPBursterItem.setCreativeTab(CreativeTab), "l4" + XMPBursterItem.NAME);
+        GameRegistry.registerItem(L5XMPBursterItem.setCreativeTab(CreativeTab), "l5" + XMPBursterItem.NAME);
+        GameRegistry.registerItem(L6XMPBursterItem.setCreativeTab(CreativeTab), "l6" + XMPBursterItem.NAME);
+        GameRegistry.registerItem(L7XMPBursterItem.setCreativeTab(CreativeTab), "l7" + XMPBursterItem.NAME);
+        GameRegistry.registerItem(L8XMPBursterItem.setCreativeTab(CreativeTab), "l8" + XMPBursterItem.NAME);
 
         GameRegistry.registerBlock(new XMBlock(), XMBlock.NAME);
 

@@ -1,5 +1,7 @@
 itemGroup.ingress=Ingress
 item.scanner.name=Scanner
+item.portal.name=Portal
+item.portalKey.name=Portal Key
 item.resonator.name=Resonator
 item.xmpBurster.name=XMP Burster
 entity.portal.name=Portal

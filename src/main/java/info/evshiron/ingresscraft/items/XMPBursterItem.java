@@ -33,8 +33,8 @@ public class XMPBursterItem extends Item {
         Level = level;
 
         setUnlocalizedName(NAME);
-        setCreativeTab(IngressCraft.CreativeTab);
-        setTextureName(IngressCraft.MODID + ":" + NAME);
+        //setCreativeTab(IngressCraft.CreativeTab);
+        setTextureName(IngressCraft.MODID + ":l" + Level + NAME);
 
     }
 
