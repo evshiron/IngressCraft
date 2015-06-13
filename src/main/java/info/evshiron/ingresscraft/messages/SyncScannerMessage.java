@@ -4,7 +4,9 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.items.ScannerItem;
+import info.evshiron.ingresscraft.utils.IngressNotifier;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -26,18 +28,11 @@ public class SyncScannerMessage implements IMessage {
 
                 if(itemStack != null && itemStack.getItem() instanceof ScannerItem) {
 
-                    NBTTagCompound nbt;
+                    NBTTagCompound nbt = itemStack.getTagCompound();
 
-                    if(!itemStack.hasTagCompound()) {
+                    boolean isNew = false;
 
-                        nbt = new NBTTagCompound();
-
-                    }
-                    else {
-
-                        nbt = itemStack.getTagCompound();
-
-                    }
+                    if(nbt.getInteger("faction") == Constants.Faction.NEUTRAL) isNew = true;
 
                     nbt.setString("codename", message.Codename);
                     nbt.setInteger("faction", message.Faction);
@@ -46,6 +41,8 @@ public class SyncScannerMessage implements IMessage {
                     nbt.setInteger("xm", message.XM);
 
                     itemStack.setTagCompound(nbt);
+
+                    if(isNew) IngressNotifier.BroadcastJoining(itemStack);
 
                 }
 
@@ -56,18 +53,7 @@ public class SyncScannerMessage implements IMessage {
 
                 if(itemStack != null && itemStack.getItem() instanceof ScannerItem) {
 
-                    NBTTagCompound nbt;
-
-                    if(!itemStack.hasTagCompound()) {
-
-                        nbt = new NBTTagCompound();
-
-                    }
-                    else {
-
-                        nbt = itemStack.getTagCompound();
-
-                    }
+                    NBTTagCompound nbt = itemStack.getTagCompound();
 
                     nbt.setString("codename", message.Codename);
                     nbt.setInteger("faction", message.Faction);

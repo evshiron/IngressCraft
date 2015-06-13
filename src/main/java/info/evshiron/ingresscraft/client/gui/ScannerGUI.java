@@ -1,5 +1,6 @@
 package info.evshiron.ingresscraft.client.gui;
 
+import info.evshiron.ingresscraft.CommonProxy;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.messages.SyncScannerMessage;
@@ -142,6 +143,14 @@ public class ScannerGUI extends GuiScreen {
 
     }
 
+    @Override
+    public void onGuiClosed() {
+
+        CommonProxy.CurrentScreenId = 0;
+
+        super.onGuiClosed();
+    }
+
     void write() {
 
         NBTTagCompound nbt = mScanner.getTagCompound();
@@ -155,8 +164,6 @@ public class ScannerGUI extends GuiScreen {
         mScanner.setTagCompound(nbt);
 
         IngressCraft.SyncScannerChannel.sendToServer(new SyncScannerMessage(mScanner));
-
-        IngressNotifier.BroadcastJoining(mScanner);
 
     }
 

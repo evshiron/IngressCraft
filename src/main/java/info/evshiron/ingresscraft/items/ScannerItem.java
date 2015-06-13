@@ -1,5 +1,6 @@
 package info.evshiron.ingresscraft.items;
 
+import info.evshiron.ingresscraft.CommonProxy;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.client.gui.ScannerGUI;
@@ -15,7 +16,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
 
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Created by evshiron on 5/25/15.
@@ -23,8 +23,6 @@ import java.util.Scanner;
 public class ScannerItem extends ItemArmor {
 
     public static final String NAME = "scanner";
-
-    public static int GUIDisabler = 0;
 
     public ScannerItem() {
 
@@ -105,26 +103,15 @@ public class ScannerItem extends ItemArmor {
 
         //System.out.println("tick");
 
-        if(GUIDisabler > 0 && GUIDisabler < 32) GUIDisabler++;
-        else if(GUIDisabler >= 32) GUIDisabler = 0;
-
         if(itemStack.getTagCompound().getInteger("faction") == Constants.Faction.NEUTRAL) {
 
             if(world.isRemote) {
 
-                if(GUIDisabler == 0) {
+                if(CommonProxy.CurrentScreenId != ScannerGUI.ID) {
 
                     player.openGui(IngressCraft.Instance, ScannerGUI.ID, world, (int) player.posX, (int) player.posY, (int) player.posZ);
-                    GUIDisabler = 1;
 
                 }
-                else {
-
-                    // A trap for the second.
-                    player.addChatMessage(new ChatComponentText("Wait."));
-
-                }
-
             }
 
         }

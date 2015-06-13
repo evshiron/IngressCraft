@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
@@ -77,7 +78,7 @@ public class IngressNotifier {
                         )
         );
         message.appendSibling(new ChatComponentText("."));
-        Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
+        MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);
 
     }
 
@@ -94,7 +95,7 @@ public class IngressNotifier {
                         )
         );
         message.appendSibling(new ChatComponentText(" has deployed a Resonator."));
-        Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
+        MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);
 
     }
 
@@ -111,7 +112,7 @@ public class IngressNotifier {
                         )
         );
         message.appendSibling(new ChatComponentText(" has captured a Portal."));
-        Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
+        MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);
 
     }
 
@@ -128,7 +129,7 @@ public class IngressNotifier {
                         )
         );
         message.appendSibling(new ChatComponentText(" has destroyed a Resonator."));
-        Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
+        MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);
 
     }
 
@@ -145,7 +146,7 @@ public class IngressNotifier {
                         )
         );
         message.appendSibling(new ChatComponentText(" has neutralized a Portal."));
-        Minecraft.getMinecraft().getIntegratedServer().getConfigurationManager().sendChatMsg(message);
+        MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);
 
     }
 

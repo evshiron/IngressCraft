@@ -6,16 +6,15 @@ import cpw.mods.fml.common.network.IGuiHandler;
 import info.evshiron.ingresscraft.client.gui.PortalGUI;
 import info.evshiron.ingresscraft.client.gui.ScannerGUI;
 import info.evshiron.ingresscraft.items.ScannerItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 /**
  * Created by evshiron on 5/27/15.
  */
 public class CommonProxy implements IGuiHandler {
+
+    public static int CurrentScreenId = 0;
 
     public void RegisterRenderers() {
 
@@ -48,6 +47,7 @@ public class CommonProxy implements IGuiHandler {
 
                     if(helmet.getTagCompound().getInteger("faction") == Constants.Faction.NEUTRAL) {
 
+                        CurrentScreenId = id;
                         return new ScannerGUI(player, helmet);
 
                     }
@@ -69,6 +69,7 @@ public class CommonProxy implements IGuiHandler {
                 // FIXME: Find a clean way to fetch the interacting Portal.
                 int portalId = z;
 
+                CurrentScreenId = id;
                 return new PortalGUI(player, (PortalEntity) world.getEntityByID(portalId));
 
             default:

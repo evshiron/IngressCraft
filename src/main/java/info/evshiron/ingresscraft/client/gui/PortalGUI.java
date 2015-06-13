@@ -1,5 +1,6 @@
 package info.evshiron.ingresscraft.client.gui;
 
+import info.evshiron.ingresscraft.CommonProxy;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.entities.PortalEntity;
@@ -127,6 +128,14 @@ public class PortalGUI extends GuiScreen {
 
         }
 
+    }
+
+    @Override
+    public void onGuiClosed() {
+
+        CommonProxy.CurrentScreenId = 0;
+
+        super.onGuiClosed();
     }
 
     void write() {
