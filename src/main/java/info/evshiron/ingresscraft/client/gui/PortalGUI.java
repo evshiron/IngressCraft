@@ -103,7 +103,7 @@ public class PortalGUI extends GuiScreen {
             // 32x32 icon with a border of 4.
             mParent.renderIcon(new ItemStack(IngressCraft.PortalKeyItem), left + 4, top + 4, 32, 32);
 
-            mParent.drawCenteredString(mParent.fontRendererObj, item.Portal.Name, left + (40 + listWidth) / 2, top + 20 + 2 - mParent.fontRendererObj.FONT_HEIGHT, 0xffffff);
+            mParent.drawCenteredString(mParent.fontRendererObj, item.Portal.Name, left + (40 + listWidth) / 2, top + 24 - mParent.fontRendererObj.FONT_HEIGHT, 0xffffff);
 
         }
 
@@ -415,7 +415,7 @@ public class PortalGUI extends GuiScreen {
 
             renderIcon(itemStack, x1, y1, 32, 32);
 
-            renderHealth(itemStack, x1 + 2, y1 + 32 + 2, 30, 1);
+            renderHealth(itemStack, x1 + 1, y1 + 32 + 2, 30, 1);
 
             drawCenteredString(fontRendererObj, resonator.Owner, x1 + 16, y1 + 32 + 2 + 2, resonator.Faction == Constants.Faction.RESISTANCE ? 0x5555ff : 0x55ff55);
 
