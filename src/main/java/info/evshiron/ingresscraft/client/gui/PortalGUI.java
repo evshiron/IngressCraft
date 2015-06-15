@@ -1,15 +1,18 @@
 package info.evshiron.ingresscraft.client.gui;
 
+import cpw.mods.fml.client.GuiScrollingList;
 import cpw.mods.fml.common.registry.GameRegistry;
 import info.evshiron.ingresscraft.CommonProxy;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.entities.PortalEntity;
 import info.evshiron.ingresscraft.entities.ResonatorEntity;
+import info.evshiron.ingresscraft.items.PortalKeyItem;
 import info.evshiron.ingresscraft.messages.SyncPortalMessage;
 import info.evshiron.ingresscraft.utils.IngressHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.RenderHelper;
@@ -25,12 +28,86 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import javax.sound.sampled.Port;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by evshiron on 6/6/15.
  */
 public class PortalGUI extends GuiScreen {
+
+    public static class GuiLinkablePortalList extends GuiScrollingList {
+
+        public static class Item {
+
+            public PortalEntity Portal;
+
+            public Item(PortalEntity portal) {
+
+                Portal = portal;
+
+            }
+
+        }
+
+        public ArrayList<Item> Items;
+
+        PortalGUI mParent;
+        int mSelectedItemIndex;
+
+        public GuiLinkablePortalList(PortalGUI parent, int left, int top, int width, int height, int entryHeight) {
+
+            super(parent.mc, width, parent.height, top, height, left, entryHeight);
+
+            mParent = parent;
+
+            Items = new ArrayList<Item>();
+
+        }
+
+        @Override
+        protected int getSize() {
+            return Items.size();
+        }
+
+        @Override
+        protected void elementClicked(int index, boolean doubleClick) {
+
+            if(!doubleClick) {
+
+                mSelectedItemIndex = index;
+            }
+            else {
+
+                // TODO: Time to link!
+
+            }
+
+        }
+
+        @Override
+        protected boolean isSelected(int index) {
+            return mSelectedItemIndex == index;
+        }
+
+        @Override
+        protected void drawBackground() {
+
+        }
+
+        @Override
+        protected void drawSlot(int index, int var2, int top, int var4, Tessellator tessellator) {
+
+            Item item = Items.get(index);
+
+            // 32x32 icon with a border of 4.
+            mParent.renderIcon(new ItemStack(IngressCraft.PortalKeyItem), left + 4, top + 4, 32, 32);
+
+            mParent.drawCenteredString(mParent.fontRendererObj, item.Portal.Name, left + (40 + listWidth) / 2, top + 20 + 2 - mParent.fontRendererObj.FONT_HEIGHT, 0xffffff);
+
+        }
+
+    }
 
     public static final int ID = 10000;
 
@@ -41,11 +118,14 @@ public class PortalGUI extends GuiScreen {
     EntityPlayer mPlayer;
     PortalEntity mPortal;
     List<ResonatorEntity> mResonators;
+    List<ItemStack> mPortalKeys;
 
     boolean mIsEditing = false;
     boolean mIsLinking = false;
 
     GuiTextField mPortalNameField;
+
+    GuiLinkablePortalList mLinkablePortalList;
 
     GuiButton mBackButton;
     GuiButton mEditButton;
@@ -57,6 +137,20 @@ public class PortalGUI extends GuiScreen {
         mPortal = portal;
         mResonators = IngressHelper.GetEntitiesAround(portal.worldObj, ResonatorEntity.class, portal, IngressCraft.CONFIG_PORTAL_RANGE);
 
+        mPortalKeys = new ArrayList<ItemStack>();
+
+        for(int i = 0; i < mPlayer.inventory.mainInventory.length; i++) {
+
+            ItemStack itemStack = mPlayer.inventory.mainInventory[i];
+
+            if(itemStack != null && itemStack.getItem() instanceof PortalKeyItem) {
+
+                mPortalKeys.add(itemStack);
+
+            }
+
+        }
+
     }
 
     @Override
@@ -65,6 +159,8 @@ public class PortalGUI extends GuiScreen {
         mPortalNameField = new GuiTextField(fontRendererObj, (width - 200) / 2, 20, 200, 20);
 
         mPortalNameField.setText(mPortal.Name);
+
+        mLinkablePortalList = new GuiLinkablePortalList(this, (width - 200) / 2, 20 + 20 + 10, 200, 190, 40);
 
         mBackButton = new GuiButton(ID_BACK_BUTTON, 0, 0, 40, 20, " < ");
         mEditButton = new GuiButton(ID_EDIT_BUTTON, 0, 20 + 10, 80, 20, "Edit");
@@ -146,6 +242,27 @@ public class PortalGUI extends GuiScreen {
 
                     mIsLinking = true;
 
+                    mLinkablePortalList.Items.clear();
+
+                    for(int i = 0; i < mPortalKeys.size(); i++) {
+
+                        ItemStack portalKey = mPortalKeys.get(i);
+
+                        String uuid;
+                        if(portalKey.hasTagCompound() && (uuid = portalKey.getTagCompound().getString("portalUuid")) != null) {
+
+                            PortalEntity portal = IngressHelper.GetPortalByUuid(mPlayer.worldObj, uuid);
+                            if(portal != null && portal != mPortal) {
+
+                                // TODO: And not blocked by links.
+                                mLinkablePortalList.Items.add(new GuiLinkablePortalList.Item(portal));
+
+                            }
+
+                        }
+
+                    }
+
                 }
                 else {
 
@@ -197,7 +314,7 @@ public class PortalGUI extends GuiScreen {
         }
         else {
 
-            drawLinkablePortals();
+            mLinkablePortalList.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
 
         }
 
@@ -221,6 +338,51 @@ public class PortalGUI extends GuiScreen {
         tessellator.addVertex((double) (x + width), (double) (y + height), itemRender.zLevel);
         tessellator.addVertex((double) (x + width), (double) (y + 0), itemRender.zLevel);
         tessellator.draw();
+
+    }
+
+    void renderIcon(ItemStack itemStack, int x, int y, int width, int height) {
+
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+
+        GL11.glColor4d(1.0, 1.0, 1.0, 1.0);
+
+        IIcon icon = itemStack.getIconIndex();
+        TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
+        textureManager.bindTexture(textureManager.getResourceLocation(itemStack.getItemSpriteNumber()));
+
+        itemRender.renderIcon(x, y, icon, width, height);
+
+        GL11.glPopAttrib();
+
+    }
+
+    void renderHealth(ItemStack itemStack, int x, int y, int width, int height) {
+
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+
+        //GL11.glDisable(GL11.GL_DEPTH_TEST);
+        //GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+
+        double health = itemStack.getItem().getDurabilityForDisplay(itemStack);
+        int k = (int) Math.round(255.0D - health * 255.0D);
+        Tessellator tessellator = Tessellator.instance;
+        int l = 255 - k << 16 | k << 8;
+        int i1 = (255 - k) / 4 << 16 | 16128;
+
+        renderQuad(tessellator, x, y, width + 1, height + 1, 0);
+        renderQuad(tessellator, x, y, width, height, i1);
+        renderQuad(tessellator, x, y, (int) (width * (1.0 - health)), height, l);
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        //GL11.glEnable(GL11.GL_ALPHA_TEST);
+        //GL11.glEnable(GL11.GL_DEPTH_TEST);
+
+        GL11.glPopAttrib();
 
     }
 
@@ -249,49 +411,13 @@ public class PortalGUI extends GuiScreen {
 
             ItemStack itemStack = new ItemStack(IngressCraft.GetResonatorItem(resonator.Level), 1, damage);
 
-            {
+            //RenderHelper.enableGUIStandardItemLighting();
 
-                //RenderHelper.enableGUIStandardItemLighting();
-                GL11.glEnable(GL11.GL_BLEND);
-                GL11.glEnable(GL11.GL_TEXTURE_2D);
+            renderIcon(itemStack, x1, y1, 32, 32);
 
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            renderHealth(itemStack, x1 + 2, y1 + 32 + 2, 30, 1);
 
-                IIcon icon = itemStack.getIconIndex();
-                TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-                textureManager.bindTexture(textureManager.getResourceLocation(itemStack.getItemSpriteNumber()));
-
-                itemRender.renderIcon(x1, y1, icon, 32, 32);
-
-            }
-
-            {
-
-                //GL11.glDisable(GL11.GL_DEPTH_TEST);
-                //GL11.glDisable(GL11.GL_ALPHA_TEST);
-                GL11.glDisable(GL11.GL_TEXTURE_2D);
-
-                double health = itemStack.getItem().getDurabilityForDisplay(itemStack);
-                int k = (int) Math.round(255.0D - health * 255.0D);
-                Tessellator tessellator = Tessellator.instance;
-                int l = 255 - k << 16 | k << 8;
-                int i1 = (255 - k) / 4 << 16 | 16128;
-
-                renderQuad(tessellator, x1 + 2, y1 + 32 + 2, 31, 2, 0);
-                renderQuad(tessellator, x1 + 2, y1 + 32 + 2, 30, 1, i1);
-                renderQuad(tessellator, x1 + 2, y1 + 32 + 2, (int) (30 * (1.0 - health)), 1, l);
-
-                GL11.glEnable(GL11.GL_TEXTURE_2D);
-                //GL11.glEnable(GL11.GL_ALPHA_TEST);
-                //GL11.glEnable(GL11.GL_DEPTH_TEST);
-
-            }
-
-            {
-
-                drawCenteredString(fontRendererObj, resonator.Owner, x1 + 16, y1 + 32 + 2 + 2, resonator.Faction == Constants.Faction.RESISTANCE ? 0x5555ff : 0x55ff55);
-
-            }
+            drawCenteredString(fontRendererObj, resonator.Owner, x1 + 16, y1 + 32 + 2 + 2, resonator.Faction == Constants.Faction.RESISTANCE ? 0x5555ff : 0x55ff55);
 
             //RenderHelper.enableGUIStandardItemLighting();
 
@@ -302,10 +428,6 @@ public class PortalGUI extends GuiScreen {
     }
 
     void drawMods() {
-
-    }
-
-    void drawLinkablePortals() {
 
     }
 
