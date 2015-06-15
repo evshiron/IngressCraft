@@ -50,7 +50,6 @@ public class PortalGUI extends GuiScreen {
     GuiButton mBackButton;
     GuiButton mEditButton;
     GuiButton mLinkButton;
-    GuiButton mDoneButton;
 
     public PortalGUI(EntityPlayer player, PortalEntity portal) {
 
@@ -101,7 +100,9 @@ public class PortalGUI extends GuiScreen {
 
                 if(mIsEditing) {
 
-                    mIsLinking = false;
+                    mPortalNameField.setFocused(false);
+
+                    mIsEditing = false;
 
                 }
                 else if(mIsLinking) {
