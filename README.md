@@ -10,7 +10,7 @@ This project is developed by @evshiron and @orz3969 on 2015 Unique Hack Day, as 
 
 ## Resources
 
-This project includes some resource files from ingress.apk. Will be removed in some commits.
+This project includes some resource files from ingress.apk, and most shaders are modified to fit this project. Niantic Labs owns those files.
 
 ## Setup
 
@@ -47,7 +47,11 @@ A Power Cube?
 
 ## TODO
 
+* Hack, cool down and burn out.
 * Link and Control Field.
+  * Data store and visual effects.
+  * Power, level and range.
+* Safe places to store data.
 * Prevent Links from going through solid blocks.
 * Fix deployed Resonators' position.
 
@@ -72,11 +76,13 @@ A Power Cube?
 * [Technical Q&A QA1679: Deprecated built-in variables in GLSL Shaders](https://developer.apple.com/library/ios/qa/qa1679/_index.html)
 * [Basic GUI - Minecraft Forge](http://www.minecraftforge.net/wiki/Basic_GUI)
 * [[1.4.7][forge]Blaueseichoern's GUI Tutorial - Tutorials - Archive - Minecraft Forum - Minecraft Forum](http://www.minecraftforum.net/forums/archive/tutorials/931088-1-4-7-forge-blaueseichoerns-gui-tutorial)
+* [GuiScrollingList (Forge API)](http://cmicro.github.io/NeatCraft/forge-javadoc/)
 
 ## Credits
 
   * `evshiron@github`
   * `orz3969@github`
+  * Niantic Labs
 
 ## License
 
