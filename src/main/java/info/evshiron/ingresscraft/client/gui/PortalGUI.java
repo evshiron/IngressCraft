@@ -248,18 +248,27 @@ public class PortalGUI extends GuiScreen {
 
             ItemStack itemStack = new ItemStack(IngressCraft.GetResonatorItem(resonator.Level), 1, damage);
 
-            //RenderHelper.enableGUIStandardItemLighting();
-            GL11.glEnable(GL11.GL_BLEND);
+            {
 
-            IIcon icon = itemStack.getIconIndex();
-            TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-            textureManager.bindTexture(textureManager.getResourceLocation(itemStack.getItemSpriteNumber()));
+                //RenderHelper.enableGUIStandardItemLighting();
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glEnable(GL11.GL_TEXTURE_2D);
 
-            itemRender.renderIcon(x1, y1, icon, 32, 32);
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+                IIcon icon = itemStack.getIconIndex();
+                TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
+                textureManager.bindTexture(textureManager.getResourceLocation(itemStack.getItemSpriteNumber()));
+
+                itemRender.renderIcon(x1, y1, icon, 32, 32);
+
+            }
 
             {
 
-                GL11.glDisable(GL11.GL_BLEND);
+                //GL11.glDisable(GL11.GL_DEPTH_TEST);
+                //GL11.glDisable(GL11.GL_ALPHA_TEST);
+                GL11.glDisable(GL11.GL_TEXTURE_2D);
 
                 double health = itemStack.getItem().getDurabilityForDisplay(itemStack);
                 int k = (int) Math.round(255.0D - health * 255.0D);
@@ -271,7 +280,15 @@ public class PortalGUI extends GuiScreen {
                 renderQuad(tessellator, x1 + 2, y1 + 32 + 2, 30, 1, i1);
                 renderQuad(tessellator, x1 + 2, y1 + 32 + 2, (int) (30 * (1.0 - health)), 1, l);
 
-                //GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GL11.glEnable(GL11.GL_TEXTURE_2D);
+                //GL11.glEnable(GL11.GL_ALPHA_TEST);
+                //GL11.glEnable(GL11.GL_DEPTH_TEST);
+
+            }
+
+            {
+
+                drawCenteredString(fontRendererObj, resonator.Owner, x1 + 16, y1 + 32 + 2 + 2, resonator.Faction == Constants.Faction.RESISTANCE ? 0x5555ff : 0x55ff55);
 
             }
 
