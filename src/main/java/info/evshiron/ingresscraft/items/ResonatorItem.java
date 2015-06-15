@@ -37,6 +37,8 @@ public class ResonatorItem extends Item {
         //setCreativeTab(IngressCraft.CreativeTab);
         setTextureName(IngressCraft.MODID + ":l" + Level + NAME);
 
+        setMaxDamage((int) IngressHelper.GetResonatorMaxXM(Level));
+
     }
 
     @Override

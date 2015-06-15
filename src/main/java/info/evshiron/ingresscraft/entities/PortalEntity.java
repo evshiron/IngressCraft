@@ -42,6 +42,8 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
         Uuid = UUID.randomUUID().toString();
 
+        setSize(1, 3);
+
     }
 
     public void SetName(String name) {
@@ -178,9 +180,18 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     @Override
     protected boolean interact(EntityPlayer player) {
 
-        player.openGui(IngressCraft.Instance, PortalGUI.ID, worldObj, (int) posX, (int) posY, getEntityId());
+        if(player.getCurrentEquippedItem().getItem() instanceof XMPBursterItem) {
 
-        return true;
+            return false;
+
+        }
+        else {
+
+            player.openGui(IngressCraft.Instance, PortalGUI.ID, worldObj, (int) posX, (int) posY, getEntityId());
+
+            return true;
+
+        }
 
     }
 

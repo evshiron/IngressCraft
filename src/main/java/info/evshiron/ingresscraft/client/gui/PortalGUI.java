@@ -8,15 +8,21 @@ import info.evshiron.ingresscraft.entities.PortalEntity;
 import info.evshiron.ingresscraft.entities.ResonatorEntity;
 import info.evshiron.ingresscraft.messages.SyncPortalMessage;
 import info.evshiron.ingresscraft.utils.IngressHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import javax.sound.sampled.Port;
 import java.util.List;
@@ -204,7 +210,76 @@ public class PortalGUI extends GuiScreen {
 
     }
 
+    void renderQuad(Tessellator tessellator, int x, int y, int width, int height, int color)
+    {
+
+        tessellator.startDrawingQuads();
+        tessellator.setColorOpaque_I(color);
+        tessellator.addVertex((double) (x + 0), (double) (y + 0), itemRender.zLevel);
+        tessellator.addVertex((double) (x + 0), (double) (y + height), itemRender.zLevel);
+        tessellator.addVertex((double) (x + width), (double) (y + height), itemRender.zLevel);
+        tessellator.addVertex((double) (x + width), (double) (y + 0), itemRender.zLevel);
+        tessellator.draw();
+
+    }
+
     void drawResonators() {
+
+        GL11.glPushMatrix();
+
+        for(int i = 0; i < mResonators.size(); i++) {
+
+            ResonatorEntity resonator = mResonators.get(i);
+
+            int column = i % 4;
+            int row = i / 4;
+
+            int left = (width / 2) - 100;
+            int top = 50;
+            // Each grid sizes 32x32 and 50x50 with and without borders.
+            int x1 = left + 9 + 50 * column;
+            int y1 = top + 9 + 50 * row;
+            int x2 = x1 + 32;
+            int y2 = y1 + 32;
+
+            //drawRect(x1, y1, x2, y2, 0xffffffff);
+
+            int damage = (int) (resonator.getMaxHealth() - resonator.getHealth());
+
+            ItemStack itemStack = new ItemStack(IngressCraft.GetResonatorItem(resonator.Level), 1, damage);
+
+            //RenderHelper.enableGUIStandardItemLighting();
+            GL11.glEnable(GL11.GL_BLEND);
+
+            IIcon icon = itemStack.getIconIndex();
+            TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
+            textureManager.bindTexture(textureManager.getResourceLocation(itemStack.getItemSpriteNumber()));
+
+            itemRender.renderIcon(x1, y1, icon, 32, 32);
+
+            {
+
+                GL11.glDisable(GL11.GL_BLEND);
+
+                double health = itemStack.getItem().getDurabilityForDisplay(itemStack);
+                int k = (int) Math.round(255.0D - health * 255.0D);
+                Tessellator tessellator = Tessellator.instance;
+                int l = 255 - k << 16 | k << 8;
+                int i1 = (255 - k) / 4 << 16 | 16128;
+
+                renderQuad(tessellator, x1 + 2, y1 + 32 + 2, 31, 2, 0);
+                renderQuad(tessellator, x1 + 2, y1 + 32 + 2, 30, 1, i1);
+                renderQuad(tessellator, x1 + 2, y1 + 32 + 2, (int) (30 * (1.0 - health)), 1, l);
+
+                //GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+            }
+
+            //RenderHelper.enableGUIStandardItemLighting();
+
+        }
+
+        GL11.glPopMatrix();
 
     }
 

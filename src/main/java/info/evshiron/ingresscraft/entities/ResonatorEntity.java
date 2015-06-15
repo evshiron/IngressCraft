@@ -38,6 +38,8 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
         super(world);
 
+        setSize(0.2f, 0.2f);
+
     }
 
     public void SetLevel(int level) { Level = level; }
