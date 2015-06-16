@@ -38,12 +38,28 @@ public class PortalKeyItem extends Item {
 
             NBTTagCompound nbt = itemStack.getTagCompound();
             String portalUuid = nbt.getString("portalUuid");
+            String portalName = nbt.getString("portalName");
+
             Entity entity = IngressHelper.GetPortalByUuid(player.worldObj, portalUuid);
             if(entity instanceof PortalEntity) {
 
                 PortalEntity portal = (PortalEntity) entity;
 
                 lines.add(String.format("Name: %s", portal.Name));
+                lines.add(String.format("Level: %d", portal.GetLevel()));
+                lines.add(String.format("Position: %.2f, %.2f, %.2f", portal.posX, portal.posY, portal.posZ));
+                lines.add(String.format("Distance: %.2f", player.getDistanceToEntity(portal)));
+
+            }
+            else if(!portalName.contentEquals("-UNKNOWN-")) {
+
+                lines.add(String.format("Name: %s", portalName));
+                lines.add(String.format("Action failed"));
+
+            }
+            else {
+
+                lines.add(String.format(Long.toHexString(UUID.fromString(portalUuid).getMostSignificantBits())));
 
             }
 
@@ -59,6 +75,7 @@ public class PortalKeyItem extends Item {
             NBTTagCompound nbt = new NBTTagCompound();
 
             nbt.setString("portalUuid", UUID.randomUUID().toString());
+            nbt.setString("portalName", "-UNKNOWN-");
 
             itemStack.setTagCompound(nbt);
 

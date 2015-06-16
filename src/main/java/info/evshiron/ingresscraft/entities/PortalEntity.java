@@ -260,6 +260,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
                 ItemStack portalKey = new ItemStack(IngressCraft.PortalKeyItem, 1, 0);
                 NBTTagCompound nbt1 = new NBTTagCompound();
                 nbt1.setString("portalUuid", Uuid);
+                nbt1.setString("portalName", Name);
                 portalKey.setTagCompound(nbt1);
                 if(!IngressHelper.HasPortalKey(player, portalKey)) entityDropItem(portalKey, 0);
 
