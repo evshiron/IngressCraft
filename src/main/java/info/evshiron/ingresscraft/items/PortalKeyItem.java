@@ -45,6 +45,12 @@ public class PortalKeyItem extends Item {
 
                 PortalEntity portal = (PortalEntity) entity;
 
+                if(!portal.Name.contentEquals(portalName)) {
+
+                    nbt.setString("portalName", portal.Name);
+
+                }
+
                 lines.add(String.format("Name: %s", portal.Name));
                 lines.add(String.format("Level: %d", portal.GetLevel()));
                 lines.add(String.format("Position: %.2f, %.2f, %.2f", portal.posX, portal.posY, portal.posZ));
