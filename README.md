@@ -4,6 +4,8 @@
 
 A whim of making Ingress in MineCraft 1.7.10 with Forge.
 
+Recently I am busy preparing for final exams, plus I have met some problems implementing Link and Linking. Let me take a rest, hopefully not too long :)
+
 ## Brief
 
 This project is developed by @evshiron and @orz3969 on 2015 Unique Hack Day, as a gift for all Ingress agents joining that event. Many thanks to @orz3969.
