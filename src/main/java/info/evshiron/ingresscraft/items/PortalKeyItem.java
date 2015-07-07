@@ -37,37 +37,36 @@ public class PortalKeyItem extends Item {
         if(itemStack.hasTagCompound()) {
 
             NBTTagCompound nbt = itemStack.getTagCompound();
-            String portalUuid = nbt.getString("portalUuid");
-            String portalName = nbt.getString("portalName");
+            String uuid = nbt.getString("uuid");
 
-            Entity entity = IngressHelper.GetPortalByUuid(player.worldObj, portalUuid);
-            if(entity instanceof PortalEntity) {
+            PortalEntity portal = IngressHelper.GetPortalByUuid(player.worldObj, uuid);
+            if(portal != null) {
 
-                PortalEntity portal = (PortalEntity) entity;
+                nbt.setString("name", portal.Name);
+                nbt.setInteger("level", portal.GetLevel());
+                nbt.setDouble("x", portal.posX);
+                nbt.setDouble("y", portal.posY);
+                nbt.setDouble("z", portal.posZ);
 
-                if(!portal.Name.contentEquals(portalName)) {
-
-                    nbt.setString("portalName", portal.Name);
-
-                }
-
-                lines.add(String.format("Name: %s", portal.Name));
-                lines.add(String.format("Level: %d", portal.GetLevel()));
-                lines.add(String.format("Position: %.2f, %.2f, %.2f", portal.posX, portal.posY, portal.posZ));
-                lines.add(String.format("Distance: %.2f", player.getDistanceToEntity(portal)));
-
-            }
-            else if(!portalName.contentEquals("-UNKNOWN-")) {
-
-                lines.add(String.format("Name: %s", portalName));
-                lines.add(String.format("Action failed"));
+                lines.add("Found");
 
             }
             else {
 
-                lines.add(String.format(Long.toHexString(UUID.fromString(portalUuid).getMostSignificantBits())));
+                lines.add("Cached");
 
             }
+
+            String name = nbt.getString("name");
+            int level = nbt.getInteger("level");
+            double x = nbt.getDouble("x");
+            double y = nbt.getDouble("y");
+            double z = nbt.getDouble("z");
+
+            lines.add(String.format("Name: %s", name));
+            lines.add(String.format("Level: %d", level));
+            lines.add(String.format("Position: %.2f, %.2f, %.2f", x, y, z));
+            lines.add(String.format("Distance: %.2f", Math.sqrt(Math.pow(x - player.posX, 2) + Math.pow(y - player.posY, 2) + Math.pow(z - player.posZ, 2))));
 
         }
 
@@ -80,8 +79,12 @@ public class PortalKeyItem extends Item {
 
             NBTTagCompound nbt = new NBTTagCompound();
 
-            nbt.setString("portalUuid", UUID.randomUUID().toString());
-            nbt.setString("portalName", "-UNKNOWN-");
+            nbt.setString("uuid", UUID.randomUUID().toString());
+            nbt.setString("name", "-UNKNOWN-");
+            nbt.setInteger("level", 0);
+            nbt.setDouble("x", 0);
+            nbt.setDouble("y", 0);
+            nbt.setDouble("z", 0);
 
             itemStack.setTagCompound(nbt);
 
