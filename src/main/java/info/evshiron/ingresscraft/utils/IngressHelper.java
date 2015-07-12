@@ -1,12 +1,11 @@
 package info.evshiron.ingresscraft.utils;
 
 import info.evshiron.ingresscraft.IngressCraft;
-import info.evshiron.ingresscraft.entities.PortalEntity;
-import info.evshiron.ingresscraft.items.PortalKeyItem;
+import info.evshiron.ingresscraft.entities.EntityPortal;
+import info.evshiron.ingresscraft.items.ItemPortalKey;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -112,7 +111,7 @@ public class IngressHelper {
 
     }
 
-    public static PortalEntity GetPortalByUuid(World world, String uuid) {
+    public static EntityPortal GetPortalByUuid(World world, String uuid) {
 
         List<Entity> entities = world.getLoadedEntityList();
 
@@ -120,9 +119,9 @@ public class IngressHelper {
 
             Entity entity = entities.get(i);
 
-            if(entity instanceof PortalEntity) {
+            if(entity instanceof EntityPortal) {
 
-                PortalEntity portal = (PortalEntity) entity;
+                EntityPortal portal = (EntityPortal) entity;
 
                 if(portal.Uuid.contentEquals(uuid)) {
 
@@ -144,7 +143,7 @@ public class IngressHelper {
 
             ItemStack itemStack = player.inventory.mainInventory[i];
 
-            if(itemStack != null && itemStack.getItem() instanceof PortalKeyItem) {
+            if(itemStack != null && itemStack.getItem() instanceof ItemPortalKey) {
 
                 if(itemStack.getTagCompound().getString("portalUuid").contentEquals(portalKey.getTagCompound().getString("portalUuid"))) {
 

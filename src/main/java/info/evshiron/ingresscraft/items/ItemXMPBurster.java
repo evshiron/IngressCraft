@@ -1,18 +1,15 @@
 package info.evshiron.ingresscraft.items;
 
-import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
-import info.evshiron.ingresscraft.entities.PortalEntity;
-import info.evshiron.ingresscraft.entities.ResonatorEntity;
+import info.evshiron.ingresscraft.entities.EntityPortal;
+import info.evshiron.ingresscraft.entities.EntityResonator;
 import info.evshiron.ingresscraft.utils.IngressHelper;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EntityDamageSource;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -20,13 +17,13 @@ import java.util.List;
 /**
  * Created by evshiron on 5/25/15
  */
-public class XMPBursterItem extends Item {
+public class ItemXMPBurster extends Item {
 
     public static final String NAME = "xmpBurster";
 
     public int Level = 0;
 
-    public XMPBursterItem(int level){
+    public ItemXMPBurster(int level){
 
         super();
 
@@ -50,7 +47,7 @@ public class XMPBursterItem extends Item {
 
         ItemStack scanner = player.getCurrentArmor(3);
 
-        if(scanner == null || !(scanner.getItem() instanceof ScannerItem)) {
+        if(scanner == null || !(scanner.getItem() instanceof ItemScanner)) {
 
             String broadcast = String.format("XMP Burster can't be fired without Scanner.");
             player.addChatMessage(new ChatComponentText(broadcast));
@@ -73,21 +70,21 @@ public class XMPBursterItem extends Item {
         double range = IngressHelper.GetXMPBursterRange(Level);
         double damage = IngressHelper.GetXMPBursterDamage(Level);
 
-        List<ResonatorEntity> resonators = IngressHelper.GetEntitiesAround(world, ResonatorEntity.class, player, range);
+        List<EntityResonator> resonators = IngressHelper.GetEntitiesAround(world, EntityResonator.class, player, range);
 
         for(int i = 0; i < resonators.size(); i++) {
 
-            ResonatorEntity resonator = resonators.get(i);
+            EntityResonator resonator = resonators.get(i);
 
             resonator.attackEntityFrom(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", player), (float) damage);
 
         }
 
-        List<PortalEntity> portals = IngressHelper.GetEntitiesAround(world, PortalEntity.class, player, range);
+        List<EntityPortal> portals = IngressHelper.GetEntitiesAround(world, EntityPortal.class, player, range);
 
         for(int i = 0; i < portals.size(); i++) {
 
-            PortalEntity portal = portals.get(i);
+            EntityPortal portal = portals.get(i);
 
             portal.attackEntityFrom(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", player), (float) damage);
 

@@ -2,31 +2,23 @@ package info.evshiron.ingresscraft;
 
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
-import info.evshiron.ingresscraft.blocks.XMBlock;
-import info.evshiron.ingresscraft.entities.PortalEntity;
-import info.evshiron.ingresscraft.entities.ResonatorEntity;
+import info.evshiron.ingresscraft.blocks.BlockXM;
+import info.evshiron.ingresscraft.entities.EntityPortal;
+import info.evshiron.ingresscraft.entities.EntityResonator;
 import info.evshiron.ingresscraft.items.*;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import info.evshiron.ingresscraft.messages.SyncPortalMessage;
-import info.evshiron.ingresscraft.messages.SyncScannerMessage;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
+import info.evshiron.ingresscraft.messages.MessageHandler;
+import info.evshiron.ingresscraft.messages.MessageSyncPortal;
+import info.evshiron.ingresscraft.messages.MessageSyncScanner;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
 
 @Mod(modid = IngressCraft.MODID, version = IngressCraft.VERSION)
@@ -53,37 +45,34 @@ public class IngressCraft
 
     };
 
-    public static final ScannerItem ScannerItem = new ScannerItem();
+    public static final ItemScanner ScannerItem = new ItemScanner();
 
-    public static final PortalItem PortalItem = new PortalItem();
-    public static final PortalKeyItem PortalKeyItem = new PortalKeyItem();
+    public static final ItemPortal PortalItem = new ItemPortal();
+    public static final ItemPortalKey PortalKeyItem = new ItemPortalKey();
 
-    public static final ResonatorItem L1ResonatorItem = new ResonatorItem(1);
-    public static final ResonatorItem L2ResonatorItem = new ResonatorItem(2);
-    public static final ResonatorItem L3ResonatorItem = new ResonatorItem(3);
-    public static final ResonatorItem L4ResonatorItem = new ResonatorItem(4);
-    public static final ResonatorItem L5ResonatorItem = new ResonatorItem(5);
-    public static final ResonatorItem L6ResonatorItem = new ResonatorItem(6);
-    public static final ResonatorItem L7ResonatorItem = new ResonatorItem(7);
-    public static final ResonatorItem L8ResonatorItem = new ResonatorItem(8);
-    public static final XMPBursterItem L1XMPBursterItem = new XMPBursterItem(1);
-    public static final XMPBursterItem L2XMPBursterItem = new XMPBursterItem(2);
-    public static final XMPBursterItem L3XMPBursterItem = new XMPBursterItem(3);
-    public static final XMPBursterItem L4XMPBursterItem = new XMPBursterItem(4);
-    public static final XMPBursterItem L5XMPBursterItem = new XMPBursterItem(5);
-    public static final XMPBursterItem L6XMPBursterItem = new XMPBursterItem(6);
-    public static final XMPBursterItem L7XMPBursterItem = new XMPBursterItem(7);
-    public static final XMPBursterItem L8XMPBursterItem = new XMPBursterItem(8);
+    public static final ItemResonator L1ResonatorItem = new ItemResonator(1);
+    public static final ItemResonator L2ResonatorItem = new ItemResonator(2);
+    public static final ItemResonator L3ResonatorItem = new ItemResonator(3);
+    public static final ItemResonator L4ResonatorItem = new ItemResonator(4);
+    public static final ItemResonator L5ResonatorItem = new ItemResonator(5);
+    public static final ItemResonator L6ResonatorItem = new ItemResonator(6);
+    public static final ItemResonator L7ResonatorItem = new ItemResonator(7);
+    public static final ItemResonator L8ResonatorItem = new ItemResonator(8);
+    public static final ItemXMPBurster L1XMPBursterItem = new ItemXMPBurster(1);
+    public static final ItemXMPBurster L2XMPBursterItem = new ItemXMPBurster(2);
+    public static final ItemXMPBurster L3XMPBursterItem = new ItemXMPBurster(3);
+    public static final ItemXMPBurster L4XMPBursterItem = new ItemXMPBurster(4);
+    public static final ItemXMPBurster L5XMPBursterItem = new ItemXMPBurster(5);
+    public static final ItemXMPBurster L6XMPBursterItem = new ItemXMPBurster(6);
+    public static final ItemXMPBurster L7XMPBursterItem = new ItemXMPBurster(7);
+    public static final ItemXMPBurster L8XMPBursterItem = new ItemXMPBurster(8);
 
-    @SidedProxy(clientSide = "info.evshiron.ingresscraft.ClientProxy", serverSide = "info.evshiron.ingresscraft.CommonProxy")
+    @SidedProxy(clientSide = "info.evshiron.ingresscraft.client.ClientProxy", serverSide = "info.evshiron.ingresscraft.CommonProxy")
     public static CommonProxy Proxy;
-
-    public static SimpleNetworkWrapper SyncScannerChannel = NetworkRegistry.INSTANCE.newSimpleChannel("SyncScanner");
-    public static SimpleNetworkWrapper SyncPortalChannel = NetworkRegistry.INSTANCE.newSimpleChannel("SyncPortal");
 
     public Configuration Config;
 
-    public static ResonatorItem GetResonatorItem(int level) {
+    public static ItemResonator GetResonatorItem(int level) {
 
         switch(level) {
             case 1:
@@ -108,7 +97,7 @@ public class IngressCraft
 
     }
 
-    public static XMPBursterItem GetXMPBursterItem(int level) {
+    public static ItemXMPBurster GetXMPBursterItem(int level) {
 
         switch(level) {
             case 1:
@@ -152,39 +141,38 @@ public class IngressCraft
         GameRegistry.registerItem(ScannerItem.setCreativeTab(CreativeTab), ScannerItem.NAME);
         GameRegistry.registerItem(PortalItem.setCreativeTab(CreativeTab), PortalItem.NAME);
         GameRegistry.registerItem(PortalKeyItem.setCreativeTab(CreativeTab), PortalKeyItem.NAME);
-        GameRegistry.registerItem(L1ResonatorItem.setCreativeTab(CreativeTab), "l1" + ResonatorItem.NAME);
-        GameRegistry.registerItem(L2ResonatorItem.setCreativeTab(CreativeTab), "l2" + ResonatorItem.NAME);
-        GameRegistry.registerItem(L3ResonatorItem.setCreativeTab(CreativeTab), "l3" + ResonatorItem.NAME);
-        GameRegistry.registerItem(L4ResonatorItem.setCreativeTab(CreativeTab), "l4" + ResonatorItem.NAME);
-        GameRegistry.registerItem(L5ResonatorItem.setCreativeTab(CreativeTab), "l5" + ResonatorItem.NAME);
-        GameRegistry.registerItem(L6ResonatorItem.setCreativeTab(CreativeTab), "l6" + ResonatorItem.NAME);
-        GameRegistry.registerItem(L7ResonatorItem.setCreativeTab(CreativeTab), "l7" + ResonatorItem.NAME);
-        GameRegistry.registerItem(L8ResonatorItem.setCreativeTab(CreativeTab), "l8" + ResonatorItem.NAME);
-        GameRegistry.registerItem(L1XMPBursterItem.setCreativeTab(CreativeTab), "l1" + XMPBursterItem.NAME);
-        GameRegistry.registerItem(L2XMPBursterItem.setCreativeTab(CreativeTab), "l2" + XMPBursterItem.NAME);
-        GameRegistry.registerItem(L3XMPBursterItem.setCreativeTab(CreativeTab), "l3" + XMPBursterItem.NAME);
-        GameRegistry.registerItem(L4XMPBursterItem.setCreativeTab(CreativeTab), "l4" + XMPBursterItem.NAME);
-        GameRegistry.registerItem(L5XMPBursterItem.setCreativeTab(CreativeTab), "l5" + XMPBursterItem.NAME);
-        GameRegistry.registerItem(L6XMPBursterItem.setCreativeTab(CreativeTab), "l6" + XMPBursterItem.NAME);
-        GameRegistry.registerItem(L7XMPBursterItem.setCreativeTab(CreativeTab), "l7" + XMPBursterItem.NAME);
-        GameRegistry.registerItem(L8XMPBursterItem.setCreativeTab(CreativeTab), "l8" + XMPBursterItem.NAME);
+        GameRegistry.registerItem(L1ResonatorItem.setCreativeTab(CreativeTab), "l1" + ItemResonator.NAME);
+        GameRegistry.registerItem(L2ResonatorItem.setCreativeTab(CreativeTab), "l2" + ItemResonator.NAME);
+        GameRegistry.registerItem(L3ResonatorItem.setCreativeTab(CreativeTab), "l3" + ItemResonator.NAME);
+        GameRegistry.registerItem(L4ResonatorItem.setCreativeTab(CreativeTab), "l4" + ItemResonator.NAME);
+        GameRegistry.registerItem(L5ResonatorItem.setCreativeTab(CreativeTab), "l5" + ItemResonator.NAME);
+        GameRegistry.registerItem(L6ResonatorItem.setCreativeTab(CreativeTab), "l6" + ItemResonator.NAME);
+        GameRegistry.registerItem(L7ResonatorItem.setCreativeTab(CreativeTab), "l7" + ItemResonator.NAME);
+        GameRegistry.registerItem(L8ResonatorItem.setCreativeTab(CreativeTab), "l8" + ItemResonator.NAME);
+        GameRegistry.registerItem(L1XMPBursterItem.setCreativeTab(CreativeTab), "l1" + ItemXMPBurster.NAME);
+        GameRegistry.registerItem(L2XMPBursterItem.setCreativeTab(CreativeTab), "l2" + ItemXMPBurster.NAME);
+        GameRegistry.registerItem(L3XMPBursterItem.setCreativeTab(CreativeTab), "l3" + ItemXMPBurster.NAME);
+        GameRegistry.registerItem(L4XMPBursterItem.setCreativeTab(CreativeTab), "l4" + ItemXMPBurster.NAME);
+        GameRegistry.registerItem(L5XMPBursterItem.setCreativeTab(CreativeTab), "l5" + ItemXMPBurster.NAME);
+        GameRegistry.registerItem(L6XMPBursterItem.setCreativeTab(CreativeTab), "l6" + ItemXMPBurster.NAME);
+        GameRegistry.registerItem(L7XMPBursterItem.setCreativeTab(CreativeTab), "l7" + ItemXMPBurster.NAME);
+        GameRegistry.registerItem(L8XMPBursterItem.setCreativeTab(CreativeTab), "l8" + ItemXMPBurster.NAME);
 
-        GameRegistry.registerBlock(new XMBlock(), XMBlock.NAME);
+        GameRegistry.registerBlock(new BlockXM(), BlockXM.NAME);
 
         int portalEntityId = EntityRegistry.findGlobalUniqueEntityId();
-        EntityRegistry.registerGlobalEntityID(PortalEntity.class, PortalEntity.NAME, portalEntityId);
-        EntityRegistry.registerModEntity(PortalEntity.class, PortalEntity.NAME, portalEntityId, Instance, 64, 1, true);
+        EntityRegistry.registerGlobalEntityID(EntityPortal.class, EntityPortal.NAME, portalEntityId);
+        EntityRegistry.registerModEntity(EntityPortal.class, EntityPortal.NAME, portalEntityId, Instance, 64, 1, true);
 
         int resonatorEntityId = EntityRegistry.findGlobalUniqueEntityId();
-        EntityRegistry.registerGlobalEntityID(ResonatorEntity.class, ResonatorEntity.NAME, resonatorEntityId);
-        EntityRegistry.registerModEntity(ResonatorEntity.class, ResonatorEntity.NAME, resonatorEntityId, Instance, 64, 1, true);
+        EntityRegistry.registerGlobalEntityID(EntityResonator.class, EntityResonator.NAME, resonatorEntityId);
+        EntityRegistry.registerModEntity(EntityResonator.class, EntityResonator.NAME, resonatorEntityId, Instance, 64, 1, true);
 
         Proxy.RegisterRenderers();
 
         NetworkRegistry.INSTANCE.registerGuiHandler(Instance, Proxy);
 
-        SyncScannerChannel.registerMessage(SyncScannerMessage.Handler.class, SyncScannerMessage.class, 0, Side.SERVER);
-        SyncPortalChannel.registerMessage(SyncPortalMessage.Handler.class, SyncPortalMessage.class, 1, Side.SERVER);
+        MessageHandler.Setup();
 
     }
 

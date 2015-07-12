@@ -1,24 +1,14 @@
-package info.evshiron.ingresscraft.entities;
+package info.evshiron.ingresscraft.client.renderers;
 
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
+import info.evshiron.ingresscraft.entities.EntityResonator;
 import info.evshiron.ingresscraft.utils.IngressDeserializer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderEntity;
-import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.client.model.AdvancedModelLoader;
-import net.minecraftforge.client.model.IModelCustom;
-import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.opengl.*;
-import org.lwjgl.util.glu.GLU;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import java.io.*;
@@ -156,11 +146,11 @@ public class ResonatorRenderer extends RenderEntity {
     @Override
     public void doRender(Entity entity, double x, double y, double z, float param5, float param6) {
 
-        doRender((ResonatorEntity) entity, x, y, z, param5, param6);
+        doRender((EntityResonator) entity, x, y, z, param5, param6);
 
     }
 
-    void doRender(ResonatorEntity entity, double x, double y, double z, float param5, float param6) {
+    void doRender(EntityResonator entity, double x, double y, double z, float param5, float param6) {
 
         if(mRingShaderProgram == 0 || mRingShaderProgram == 0) {
 

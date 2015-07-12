@@ -2,18 +2,17 @@ package info.evshiron.ingresscraft.items;
 
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
-import info.evshiron.ingresscraft.entities.PortalEntity;
-import info.evshiron.ingresscraft.entities.ResonatorEntity;
-import info.evshiron.ingresscraft.messages.SyncScannerMessage;
+import info.evshiron.ingresscraft.entities.EntityPortal;
+import info.evshiron.ingresscraft.entities.EntityResonator;
+import info.evshiron.ingresscraft.messages.MessageHandler;
+import info.evshiron.ingresscraft.messages.MessageSyncScanner;
 import info.evshiron.ingresscraft.utils.IngressHelper;
 import info.evshiron.ingresscraft.utils.IngressNotifier;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -21,13 +20,13 @@ import java.util.List;
 /**
  * Created by evshiron on 5/25/15.
  */
-public class ResonatorItem extends Item {
+public class ItemResonator extends Item {
 
     public static final String NAME = "resonator";
 
     public int Level = 0;
 
-    public ResonatorItem(int level) {
+    public ItemResonator(int level) {
 
         super();
 
@@ -53,7 +52,7 @@ public class ResonatorItem extends Item {
 
         ItemStack scanner = player.getCurrentArmor(3);
 
-        if(scanner == null || !(scanner.getItem() instanceof ScannerItem)) {
+        if(scanner == null || !(scanner.getItem() instanceof ItemScanner)) {
 
             if(world.isRemote) IngressNotifier.NotifyCantDeployWithoutScanner(player);
 
@@ -71,7 +70,7 @@ public class ResonatorItem extends Item {
 
         }
 
-        ResonatorEntity entity = new ResonatorEntity(world);
+        EntityResonator entity = new EntityResonator(world);
 
         entity.SetLevel(Level);
         entity.SetOwner(nbt.getString("codename"));
@@ -79,7 +78,7 @@ public class ResonatorItem extends Item {
 
         entity.setPosition(x + targetX, y + targetY, z + targetZ);
 
-        List<PortalEntity> portals = IngressHelper.GetEntitiesAround(world, PortalEntity.class, entity, IngressCraft.CONFIG_PORTAL_RANGE);
+        List<EntityPortal> portals = IngressHelper.GetEntitiesAround(world, EntityPortal.class, entity, IngressCraft.CONFIG_PORTAL_RANGE);
 
         if(portals.size() == 0) {
 
@@ -92,7 +91,7 @@ public class ResonatorItem extends Item {
 
             for(int i = 0; i < portals.size(); i++) {
 
-                PortalEntity portal = portals.get(i);
+                EntityPortal portal = portals.get(i);
 
                 if(nbt.getInteger("faction") != portal.Faction && portal.Faction != Constants.Faction.NEUTRAL) {
 
@@ -101,7 +100,7 @@ public class ResonatorItem extends Item {
                     return false;
 
                 }
-                else if(IngressHelper.GetEntitiesAround(world, ResonatorEntity.class, portal, IngressCraft.CONFIG_PORTAL_RANGE).size() >= 8) {
+                else if(IngressHelper.GetEntitiesAround(world, EntityResonator.class, portal, IngressCraft.CONFIG_PORTAL_RANGE).size() >= 8) {
 
                     if(world.isRemote) IngressNotifier.NotifyCantDeployOnThisPortal(player);
 
@@ -124,13 +123,13 @@ public class ResonatorItem extends Item {
 
                     nbt.setInteger("ap", nbt.getInteger("ap") + 625);
 
-                    if(!world.isRemote) IngressCraft.SyncScannerChannel.sendTo(new SyncScannerMessage(scanner), (EntityPlayerMP) player);
+                    if(!world.isRemote) MessageHandler.Wrapper.sendTo(new MessageSyncScanner(scanner), (EntityPlayerMP) player);
 
                     break;
 
                 }
 
-                if(!world.isRemote) IngressCraft.SyncScannerChannel.sendTo(new SyncScannerMessage(scanner), (EntityPlayerMP) player);
+                if(!world.isRemote) MessageHandler.Wrapper.sendTo(new MessageSyncScanner(scanner), (EntityPlayerMP) player);
 
             }
 

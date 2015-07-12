@@ -1,7 +1,7 @@
 package info.evshiron.ingresscraft.items;
 
 import info.evshiron.ingresscraft.IngressCraft;
-import info.evshiron.ingresscraft.entities.PortalEntity;
+import info.evshiron.ingresscraft.entities.EntityPortal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,11 +10,11 @@ import net.minecraft.world.World;
 /**
  * Created by evshiron on 6/12/15.
  */
-public class PortalItem extends Item {
+public class ItemPortal extends Item {
 
     public static final String NAME = "portal";
 
-    public PortalItem() {
+    public ItemPortal() {
 
         super();
 
@@ -27,7 +27,7 @@ public class PortalItem extends Item {
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int targetSide, float targetX, float targetY, float targetZ) {
 
-        PortalEntity entity = new PortalEntity(world);
+        EntityPortal entity = new EntityPortal(world);
 
         entity.setPosition(x + targetX, y + targetY, z + targetZ);
 

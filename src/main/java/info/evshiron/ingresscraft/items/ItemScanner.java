@@ -3,14 +3,13 @@ package info.evshiron.ingresscraft.items;
 import info.evshiron.ingresscraft.CommonProxy;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
-import info.evshiron.ingresscraft.client.gui.ScannerGUI;
+import info.evshiron.ingresscraft.client.gui.GUIScanner;
 import info.evshiron.ingresscraft.utils.IngressNotifier;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
@@ -20,13 +19,13 @@ import java.util.List;
 /**
  * Created by evshiron on 5/25/15.
  */
-public class ScannerItem extends ItemArmor {
+public class ItemScanner extends ItemArmor {
 
     public static final String NAME = "scanner";
 
     public static int GUIDisabler = 0;
 
-    public ScannerItem() {
+    public ItemScanner() {
 
         super(EnumHelper.addArmorMaterial("XM", 33, new int[]{ 1, 3, 2, 1 }, 0), 0, 0);
 
@@ -112,9 +111,9 @@ public class ScannerItem extends ItemArmor {
 
             if(world.isRemote) {
 
-                if(GUIDisabler == 0 && CommonProxy.CurrentScreenId != ScannerGUI.ID) {
+                if(GUIDisabler == 0 && CommonProxy.CurrentScreenId != GUIScanner.ID) {
 
-                    player.openGui(IngressCraft.Instance, ScannerGUI.ID, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+                    player.openGui(IngressCraft.Instance, GUIScanner.ID, world, (int) player.posX, (int) player.posY, (int) player.posZ);
 
                 }
 

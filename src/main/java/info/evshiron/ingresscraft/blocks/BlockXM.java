@@ -8,11 +8,11 @@ import net.minecraft.creativetab.CreativeTabs;
 /**
  * Created by evshiron on 5/27/15.
  */
-public class XMBlock extends Block {
+public class BlockXM extends Block {
 
     public static final String NAME = "xm_block";
 
-    public XMBlock() {
+    public BlockXM() {
 
         super(Material.ground);
 

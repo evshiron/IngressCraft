@@ -4,16 +4,13 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
-import info.evshiron.ingresscraft.client.gui.PortalGUI;
-import info.evshiron.ingresscraft.items.ScannerItem;
-import info.evshiron.ingresscraft.items.XMPBursterItem;
+import info.evshiron.ingresscraft.client.gui.GUIPortal;
+import info.evshiron.ingresscraft.items.ItemScanner;
+import info.evshiron.ingresscraft.items.ItemXMPBurster;
 import info.evshiron.ingresscraft.utils.IngressHelper;
 import info.evshiron.ingresscraft.utils.IngressNotifier;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
@@ -25,7 +22,7 @@ import java.util.UUID;
 /**
  * Created by evshiron on 5/26/15.
  */
-public class PortalEntity extends IngressEntityBase implements IEntityAdditionalSpawnData {
+public class EntityPortal extends EntityIngressBase implements IEntityAdditionalSpawnData {
 
     public static final String NAME = "portal";
 
@@ -36,7 +33,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
     public EntityPlayer AttackingAgent = null;
 
-    public PortalEntity(World world) {
+    public EntityPortal(World world) {
 
         super(world);
 
@@ -68,11 +65,11 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
         int levels = 0;
 
-        List<ResonatorEntity> resonators = IngressHelper.GetEntitiesAround(worldObj, ResonatorEntity.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
+        List<EntityResonator> resonators = IngressHelper.GetEntitiesAround(worldObj, EntityResonator.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
 
         for(int i = 0; i < resonators.size(); i++) {
 
-            ResonatorEntity resonator = resonators.get(i);
+            EntityResonator resonator = resonators.get(i);
 
             levels += resonator.Level;
 
@@ -137,7 +134,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     @Override
     public void onLivingUpdate() {
 
-        List<ResonatorEntity> resonators = IngressHelper.GetEntitiesAround(worldObj, ResonatorEntity.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
+        List<EntityResonator> resonators = IngressHelper.GetEntitiesAround(worldObj, EntityResonator.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
 
         if (Faction != Constants.Faction.NEUTRAL && AttackingAgent != null && resonators.size() == 0) {
 
@@ -156,7 +153,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
             for(int i = 1; i < resonators.size(); i++) {
 
-                ResonatorEntity resonator = resonators.get(i);
+                EntityResonator resonator = resonators.get(i);
 
                 if(resonator.Faction != faction) {
 
@@ -180,14 +177,14 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
     @Override
     protected boolean interact(EntityPlayer player) {
 
-        if(player.getCurrentEquippedItem().getItem() instanceof XMPBursterItem) {
+        if(player.getCurrentEquippedItem().getItem() instanceof ItemXMPBurster) {
 
             return false;
 
         }
         else {
 
-            player.openGui(IngressCraft.Instance, PortalGUI.ID, worldObj, (int) posX, (int) posY, getEntityId());
+            player.openGui(IngressCraft.Instance, GUIPortal.ID, worldObj, (int) posX, (int) posY, getEntityId());
 
             return true;
 
@@ -203,7 +200,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
             ItemStack scanner = player.getCurrentArmor(3);
 
-            if(scanner == null || !(scanner.getItem() instanceof ScannerItem)) {
+            if(scanner == null || !(scanner.getItem() instanceof ItemScanner)) {
 
                 return false;
 
@@ -287,7 +284,7 @@ public class PortalEntity extends IngressEntityBase implements IEntityAdditional
 
             ItemStack scanner = ((EntityPlayer) source.getEntity()).getCurrentArmor(3);
 
-            if(scanner.getItem() instanceof ScannerItem) {
+            if(scanner.getItem() instanceof ItemScanner) {
 
                 if(!worldObj.isRemote) IngressNotifier.BroadcastNeutralizing(scanner);
 

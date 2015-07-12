@@ -3,27 +3,20 @@ package info.evshiron.ingresscraft.client.gui;
 import info.evshiron.ingresscraft.CommonProxy;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
-import info.evshiron.ingresscraft.items.ScannerItem;
-import info.evshiron.ingresscraft.messages.SyncScannerMessage;
-import info.evshiron.ingresscraft.utils.IngressNotifier;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import net.minecraft.client.Minecraft;
+import info.evshiron.ingresscraft.items.ItemScanner;
+import info.evshiron.ingresscraft.messages.MessageHandler;
+import info.evshiron.ingresscraft.messages.MessageSyncScanner;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.*;
-
-import java.io.IOException;
 
 /**
  * Created by evshiron on 6/6/15.
  */
-public class ScannerGUI extends GuiScreen {
+public class GUIScanner extends GuiScreen {
 
     public static final int ID = 10001;
 
@@ -43,7 +36,7 @@ public class ScannerGUI extends GuiScreen {
 
     GuiButton mCancelButton;
 
-    public ScannerGUI(EntityPlayer player, ItemStack scanner) {
+    public GUIScanner(EntityPlayer player, ItemStack scanner) {
         super();
 
         mPlayer = player;
@@ -130,7 +123,7 @@ public class ScannerGUI extends GuiScreen {
     public void drawScreen(int p_73863_1_, int p_73863_2_, float p_73863_3_) {
         //super.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
 
-        ScannerItem.GUIDisabler = 1;
+        ItemScanner.GUIDisabler = 1;
 
         drawDefaultBackground();
 
@@ -167,7 +160,7 @@ public class ScannerGUI extends GuiScreen {
 
         mScanner.setTagCompound(nbt);
 
-        IngressCraft.SyncScannerChannel.sendToServer(new SyncScannerMessage(mScanner));
+        MessageHandler.Wrapper.sendToServer(new MessageSyncScanner(mScanner));
 
     }
 

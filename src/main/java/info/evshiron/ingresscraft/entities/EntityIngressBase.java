@@ -8,9 +8,9 @@ import net.minecraft.world.World;
 /**
  * Created by evshiron on 5/31/15.
  */
-public class IngressEntityBase extends EntityLiving {
+public class EntityIngressBase extends EntityLiving {
 
-    public IngressEntityBase(World world) {
+    public EntityIngressBase(World world) {
 
         super(world);
 

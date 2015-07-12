@@ -1,48 +1,41 @@
 package info.evshiron.ingresscraft.client.gui;
 
 import cpw.mods.fml.client.GuiScrollingList;
-import cpw.mods.fml.common.registry.GameRegistry;
 import info.evshiron.ingresscraft.CommonProxy;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
-import info.evshiron.ingresscraft.entities.PortalEntity;
-import info.evshiron.ingresscraft.entities.ResonatorEntity;
-import info.evshiron.ingresscraft.items.PortalKeyItem;
-import info.evshiron.ingresscraft.messages.SyncPortalMessage;
+import info.evshiron.ingresscraft.entities.EntityPortal;
+import info.evshiron.ingresscraft.entities.EntityResonator;
+import info.evshiron.ingresscraft.items.ItemPortalKey;
+import info.evshiron.ingresscraft.messages.MessageHandler;
+import info.evshiron.ingresscraft.messages.MessageSyncPortal;
 import info.evshiron.ingresscraft.utils.IngressHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
-import javax.sound.sampled.Port;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by evshiron on 6/6/15.
  */
-public class PortalGUI extends GuiScreen {
+public class GUIPortal extends GuiScreen {
 
     public static class GuiLinkablePortalList extends GuiScrollingList {
 
         public static class Item {
 
-            public PortalEntity Portal;
+            public EntityPortal Portal;
 
-            public Item(PortalEntity portal) {
+            public Item(EntityPortal portal) {
 
                 Portal = portal;
 
@@ -52,10 +45,10 @@ public class PortalGUI extends GuiScreen {
 
         public ArrayList<Item> Items;
 
-        PortalGUI mParent;
+        GUIPortal mParent;
         int mSelectedItemIndex;
 
-        public GuiLinkablePortalList(PortalGUI parent, int left, int top, int width, int height, int entryHeight) {
+        public GuiLinkablePortalList(GUIPortal parent, int left, int top, int width, int height, int entryHeight) {
 
             super(parent.mc, width, parent.height, top, height, left, entryHeight);
 
@@ -116,8 +109,8 @@ public class PortalGUI extends GuiScreen {
     public static final int ID_LINK_BUTTON = 2;
 
     EntityPlayer mPlayer;
-    PortalEntity mPortal;
-    List<ResonatorEntity> mResonators;
+    EntityPortal mPortal;
+    List<EntityResonator> mResonators;
     List<ItemStack> mPortalKeys;
 
     boolean mIsEditing = false;
@@ -131,11 +124,11 @@ public class PortalGUI extends GuiScreen {
     GuiButton mEditButton;
     GuiButton mLinkButton;
 
-    public PortalGUI(EntityPlayer player, PortalEntity portal) {
+    public GUIPortal(EntityPlayer player, EntityPortal portal) {
 
         mPlayer = player;
         mPortal = portal;
-        mResonators = IngressHelper.GetEntitiesAround(portal.worldObj, ResonatorEntity.class, portal, IngressCraft.CONFIG_PORTAL_RANGE);
+        mResonators = IngressHelper.GetEntitiesAround(portal.worldObj, EntityResonator.class, portal, IngressCraft.CONFIG_PORTAL_RANGE);
 
         mPortalKeys = new ArrayList<ItemStack>();
 
@@ -143,7 +136,7 @@ public class PortalGUI extends GuiScreen {
 
             ItemStack itemStack = mPlayer.inventory.mainInventory[i];
 
-            if(itemStack != null && itemStack.getItem() instanceof PortalKeyItem) {
+            if(itemStack != null && itemStack.getItem() instanceof ItemPortalKey) {
 
                 mPortalKeys.add(itemStack);
 
@@ -251,7 +244,7 @@ public class PortalGUI extends GuiScreen {
                         String uuid;
                         if(portalKey.hasTagCompound() && (uuid = portalKey.getTagCompound().getString("portalUuid")) != null) {
 
-                            PortalEntity portal = IngressHelper.GetPortalByUuid(mPlayer.worldObj, uuid);
+                            EntityPortal portal = IngressHelper.GetPortalByUuid(mPlayer.worldObj, uuid);
                             if(portal != null && portal != mPortal) {
 
                                 // TODO: And not blocked by links.
@@ -392,7 +385,7 @@ public class PortalGUI extends GuiScreen {
 
         for(int i = 0; i < mResonators.size(); i++) {
 
-            ResonatorEntity resonator = mResonators.get(i);
+            EntityResonator resonator = mResonators.get(i);
 
             int column = i % 4;
             int row = i / 4;
@@ -444,7 +437,7 @@ public class PortalGUI extends GuiScreen {
 
         mPortal.SetName(mPortalNameField.getText());
 
-        IngressCraft.SyncPortalChannel.sendToServer(new SyncPortalMessage(mPortal));
+        MessageHandler.Wrapper.sendToServer(new MessageSyncPortal(mPortal));
 
     }
 

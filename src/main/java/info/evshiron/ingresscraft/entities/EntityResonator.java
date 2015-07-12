@@ -4,13 +4,13 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
-import info.evshiron.ingresscraft.items.ScannerItem;
-import info.evshiron.ingresscraft.items.XMPBursterItem;
-import info.evshiron.ingresscraft.messages.SyncScannerMessage;
+import info.evshiron.ingresscraft.items.ItemScanner;
+import info.evshiron.ingresscraft.items.ItemXMPBurster;
+import info.evshiron.ingresscraft.messages.MessageHandler;
+import info.evshiron.ingresscraft.messages.MessageSyncScanner;
 import info.evshiron.ingresscraft.utils.IngressHelper;
 import info.evshiron.ingresscraft.utils.IngressNotifier;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by evshiron on 5/31/15.
  */
-public class ResonatorEntity extends IngressEntityBase implements IEntityAdditionalSpawnData {
+public class EntityResonator extends EntityIngressBase implements IEntityAdditionalSpawnData {
 
     public static String NAME = "resonator";
 
@@ -34,7 +34,7 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
     public EntityPlayer AttackingAgent = null;
 
-    public ResonatorEntity(World world) {
+    public EntityResonator(World world) {
 
         super(world);
 
@@ -129,25 +129,25 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
             ItemStack scanner = player.getCurrentArmor(3);
 
-            if(scanner.getItem() instanceof ScannerItem && scanner.getTagCompound().getInteger("faction") != Faction) {
+            if(scanner.getItem() instanceof ItemScanner && scanner.getTagCompound().getInteger("faction") != Faction) {
 
                 AttackingAgent = player;
 
                 ItemStack xmpBurster;
 
-                if((xmpBurster = player.getCurrentEquippedItem()).getItem() instanceof XMPBursterItem) {
+                if((xmpBurster = player.getCurrentEquippedItem()).getItem() instanceof ItemXMPBurster) {
 
-                    double xmpBursterRange = IngressHelper.GetXMPBursterRange(((XMPBursterItem) xmpBurster.getItem()).Level);
+                    double xmpBursterRange = IngressHelper.GetXMPBursterRange(((ItemXMPBurster) xmpBurster.getItem()).Level);
 
                     float newDamage = (float) IngressHelper.GetCalculatedDamage(xmpBursterRange, player.getDistanceToEntity(this), damage);
 
                     damageEntity(source, newDamage);
 
-                    List<PortalEntity> portals = IngressHelper.GetEntitiesAround(worldObj, PortalEntity.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
+                    List<EntityPortal> portals = IngressHelper.GetEntitiesAround(worldObj, EntityPortal.class, this, IngressCraft.CONFIG_PORTAL_RANGE);
 
                     for(int i = 0; i < portals.size(); i++) {
 
-                        PortalEntity portal = portals.get(i);
+                        EntityPortal portal = portals.get(i);
 
                         portal.attackEntityFrom(new EntityDamageSource(IngressCraft.MODID + ":xmpBurster", AttackingAgent), 0);
 
@@ -184,7 +184,7 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
         EntityPlayer player;
         ItemStack scanner;
 
-        if(source.getEntity() instanceof EntityPlayer && (scanner = (player = (EntityPlayer) source.getEntity()).getCurrentArmor(3)).getItem() instanceof ScannerItem) {
+        if(source.getEntity() instanceof EntityPlayer && (scanner = (player = (EntityPlayer) source.getEntity()).getCurrentArmor(3)).getItem() instanceof ItemScanner) {
 
             NBTTagCompound nbt = scanner.getTagCompound();
 
@@ -192,7 +192,7 @@ public class ResonatorEntity extends IngressEntityBase implements IEntityAdditio
 
             nbt.setInteger("ap", nbt.getInteger("ap") + 75);
 
-            if(!worldObj.isRemote) IngressCraft.SyncScannerChannel.sendTo(new SyncScannerMessage(scanner), (EntityPlayerMP) player);
+            if(!worldObj.isRemote) MessageHandler.Wrapper.sendTo(new MessageSyncScanner(scanner), (EntityPlayerMP) player);
 
         }
 

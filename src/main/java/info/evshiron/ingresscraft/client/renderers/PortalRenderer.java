@@ -1,7 +1,8 @@
-package info.evshiron.ingresscraft.entities;
+package info.evshiron.ingresscraft.client.renderers;
 
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
+import info.evshiron.ingresscraft.entities.EntityPortal;
 import info.evshiron.ingresscraft.utils.IngressDeserializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderEntity;
@@ -125,11 +126,11 @@ public class PortalRenderer extends RenderEntity {
     @Override
     public void doRender(Entity entity, double x, double y, double z, float param5, float param6) {
 
-        doRender((PortalEntity) entity, x, y, z, param5, param6);
+        doRender((EntityPortal) entity, x, y, z, param5, param6);
 
     }
 
-    void doRender(PortalEntity entity, double x, double y, double z, float param5, float param6) {
+    void doRender(EntityPortal entity, double x, double y, double z, float param5, float param6) {
 
         if(mShaderProgram == 0) {
 
