@@ -145,7 +145,7 @@ public class IngressHelper {
 
             if(itemStack != null && itemStack.getItem() instanceof ItemPortalKey) {
 
-                if(itemStack.getTagCompound().getString("portalUuid").contentEquals(portalKey.getTagCompound().getString("portalUuid"))) {
+                if(itemStack.getTagCompound().getString("uuid").contentEquals(portalKey.getTagCompound().getString("uuid"))) {
 
                     return true;
 
