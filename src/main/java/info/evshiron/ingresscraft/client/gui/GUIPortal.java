@@ -7,8 +7,8 @@ import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.entities.EntityPortal;
 import info.evshiron.ingresscraft.entities.EntityResonator;
 import info.evshiron.ingresscraft.items.ItemPortalKey;
+import info.evshiron.ingresscraft.messages.MessageGetPortalLinkability;
 import info.evshiron.ingresscraft.messages.MessageHandler;
-import info.evshiron.ingresscraft.messages.MessageSyncPortal;
 import info.evshiron.ingresscraft.utils.IngressHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -18,26 +18,68 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by evshiron on 6/6/15.
  */
 public class GUIPortal extends GuiScreen {
 
+    public static final int REQUEST_STATE_DONE = -2;
+    public static final int REQUEST_STATE_PENDING = -1;
+    public static final int REQUEST_STATE_ZERO = 0;
+
+    public static NBTTagCompound PortalLinkabilities = new NBTTagCompound();
+    public static NBTTagCompound PortalNames = new NBTTagCompound();
+
+    static int mRequestState = REQUEST_STATE_DONE;
+
+    public static void RequestPortalLinkability(EntityPlayer player, String fromUuid, String toUuid) {
+
+        if(mRequestState <= REQUEST_STATE_PENDING) mRequestState = REQUEST_STATE_ZERO;
+
+        mRequestState++;
+
+        if(!PortalLinkabilities.hasKey(fromUuid)) PortalLinkabilities.setTag(fromUuid, new NBTTagCompound());
+
+        MessageHandler.Wrapper.sendToServer(new MessageGetPortalLinkability(player, fromUuid, toUuid));
+
+    }
+
+    public static void ResponsePortalLinkability(MessageGetPortalLinkability message) {
+
+        NBTTagCompound nbt = PortalLinkabilities.getCompoundTag(message.FromUUID);
+
+        nbt.setBoolean(message.ToUUID, message.Linkability);
+
+        PortalLinkabilities.setTag(message.FromUUID, nbt);
+
+        PortalNames.setString(message.ToUUID, message.Name);
+
+        mRequestState--;
+
+        if(mRequestState == REQUEST_STATE_ZERO) mRequestState = REQUEST_STATE_PENDING;
+
+    }
+
     public static class GuiLinkablePortalList extends GuiScrollingList {
 
         public static class Item {
 
-            public EntityPortal Portal;
+            public String Uuid;
+            public String Name;
 
-            public Item(EntityPortal portal) {
+            public Item(String uuid, String name) {
 
-                Portal = portal;
+                Uuid = uuid;
+                Name = name;
 
             }
 
@@ -96,7 +138,7 @@ public class GUIPortal extends GuiScreen {
             // 32x32 icon with a border of 4.
             mParent.renderIcon(new ItemStack(IngressCraft.PortalKeyItem), left + 4, top + 4, 32, 32);
 
-            mParent.drawCenteredString(mParent.fontRendererObj, item.Portal.Name, left + (40 + listWidth) / 2, top + 24 - mParent.fontRendererObj.FONT_HEIGHT, 0xffffff);
+            mParent.drawCenteredString(mParent.fontRendererObj, item.Name, left + (40 + listWidth) / 2, top + 24 - mParent.fontRendererObj.FONT_HEIGHT, 0xffffff);
 
         }
 
@@ -160,7 +202,8 @@ public class GUIPortal extends GuiScreen {
         mLinkButton = new GuiButton(ID_LINK_BUTTON, (width - 200) / 2, height - 40, 200, 20, "LINK");
 
         buttonList.add(mBackButton);
-        buttonList.add(mEditButton);
+        // TODO: Edit.
+        //buttonList.add(mEditButton);
         buttonList.add(mLinkButton);
 
     }
@@ -242,15 +285,9 @@ public class GUIPortal extends GuiScreen {
                         ItemStack portalKey = mPortalKeys.get(i);
 
                         String uuid;
-                        if(portalKey.hasTagCompound() && (uuid = portalKey.getTagCompound().getString("portalUuid")) != null) {
+                        if(portalKey.hasTagCompound() && (uuid = portalKey.getTagCompound().getString("uuid")) != null) {
 
-                            EntityPortal portal = IngressHelper.GetPortalByUuid(mPlayer.worldObj, uuid);
-                            if(portal != null && portal != mPortal) {
-
-                                // TODO: And not blocked by links.
-                                mLinkablePortalList.Items.add(new GuiLinkablePortalList.Item(portal));
-
-                            }
+                            RequestPortalLinkability(mPlayer, mPortal.UUID, uuid);
 
                         }
 
@@ -306,6 +343,30 @@ public class GUIPortal extends GuiScreen {
 
         }
         else {
+
+            if(mRequestState == REQUEST_STATE_PENDING) {
+
+                NBTTagCompound nbt = PortalLinkabilities.getCompoundTag(mPortal.UUID);
+
+                Set keys = nbt.func_150296_c();
+
+                Iterator iterator = keys.iterator();
+
+                while(iterator.hasNext()) {
+
+                    String uuid = (String) iterator.next();
+
+                    if(nbt.getBoolean(uuid)) {
+
+                        mLinkablePortalList.Items.add(new GuiLinkablePortalList.Item(uuid, PortalNames.getString(uuid)));
+
+                    }
+
+                }
+
+                mRequestState = REQUEST_STATE_DONE;
+
+            }
 
             mLinkablePortalList.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
 
@@ -437,7 +498,7 @@ public class GUIPortal extends GuiScreen {
 
         mPortal.SetName(mPortalNameField.getText());
 
-        MessageHandler.Wrapper.sendToServer(new MessageSyncPortal(mPortal));
+        // TODO: Edit.
 
     }
 

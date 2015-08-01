@@ -15,7 +15,6 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import info.evshiron.ingresscraft.messages.MessageHandler;
-import info.evshiron.ingresscraft.messages.MessageSyncPortal;
 import info.evshiron.ingresscraft.messages.MessageSyncScanner;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;

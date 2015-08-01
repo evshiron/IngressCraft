@@ -1,8 +1,8 @@
 package info.evshiron.ingresscraft.items;
 
 import info.evshiron.ingresscraft.IngressCraft;
-import info.evshiron.ingresscraft.entities.EntityPortal;
-import info.evshiron.ingresscraft.utils.IngressHelper;
+import info.evshiron.ingresscraft.messages.MessageHandler;
+import info.evshiron.ingresscraft.messages.MessageGetPortalInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -11,7 +11,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by evshiron on 6/12/15.
@@ -19,6 +18,46 @@ import java.util.UUID;
 public class ItemPortalKey extends Item {
 
     public static final String NAME = "portalKey";
+
+    static boolean mIsRequesting = false;
+
+    public static String UUID = "";
+    public static String Name = "";
+    public static String Owner = "";
+    public static int Faction = 0;
+    public static int Level = 0;
+    public static double X = 0;
+    public static double Y = 0;
+    public static double Z = 0;
+
+    public static void RequestPortalInfo(EntityPlayer player, String uuid) {
+
+        mIsRequesting = true;
+
+        UUID = uuid;
+        Name = "";
+        Owner = "";
+        Faction = 0;
+        Level = 0;
+        X = 0;
+        Y = 0;
+        Z = 0;
+
+        MessageHandler.Wrapper.sendToServer(new MessageGetPortalInfo(player, uuid));
+
+    }
+
+    public static void ResponsePortalInfo(MessageGetPortalInfo message) {
+
+        UUID = message.UUID;
+        Name = message.Name;
+        X = message.X;
+        Y = message.Y;
+        Z = message.Z;
+
+        mIsRequesting = false;
+
+    }
 
     public ItemPortalKey() {
 
@@ -38,36 +77,16 @@ public class ItemPortalKey extends Item {
             NBTTagCompound nbt = itemStack.getTagCompound();
             String uuid = nbt.getString("uuid");
 
-            EntityPortal portal = IngressHelper.GetPortalByUuid(player.worldObj, uuid);
-            if(portal != null) {
-
-                nbt.setString("name", portal.Name);
-                nbt.setInteger("level", portal.GetLevel());
-                nbt.setDouble("x", portal.posX);
-                nbt.setDouble("y", portal.posY);
-                nbt.setDouble("z", portal.posZ);
-
-                lines.add("Found");
-
-            }
-            else {
-
-                lines.add("Cached");
-
-            }
-
-            String name = nbt.getString("name");
-            int level = nbt.getInteger("level");
-            double x = nbt.getDouble("x");
-            double y = nbt.getDouble("y");
-            double z = nbt.getDouble("z");
-
-            lines.add(String.format("Name: %s", name));
-            lines.add(String.format("Level: %d", level));
-            lines.add(String.format("Position: %.2f, %.2f, %.2f", x, y, z));
-            lines.add(String.format("Distance: %.2f", Math.sqrt(Math.pow(x - player.posX, 2) + Math.pow(y - player.posY, 2) + Math.pow(z - player.posZ, 2))));
+            if(!mIsRequesting && !uuid.contentEquals(UUID)) RequestPortalInfo(player, uuid);
 
         }
+
+        lines.add(String.format("UUID: %s", UUID));
+        lines.add(String.format("Name: %s", Name));
+        lines.add(String.format("Owner: %s", Owner));
+        lines.add(String.format("Level: %d", Level));
+        lines.add(String.format("Position: %f, %f, %f", X, Y, Z));
+        lines.add(String.format("Distance: %f", Math.sqrt(Math.pow(X - player.posX, 2) + Math.pow(Y - player.posY, 2) + Math.pow(Z - player.posZ, 2))));
 
     }
 
@@ -78,7 +97,7 @@ public class ItemPortalKey extends Item {
 
             NBTTagCompound nbt = new NBTTagCompound();
 
-            nbt.setString("uuid", UUID.randomUUID().toString());
+            nbt.setString("uuid", java.util.UUID.randomUUID().toString());
             nbt.setString("name", "-UNKNOWN-");
             nbt.setInteger("level", 0);
             nbt.setDouble("x", 0);

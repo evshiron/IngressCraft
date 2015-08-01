@@ -4,6 +4,7 @@ import info.evshiron.ingresscraft.CommonProxy;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.items.ItemScanner;
+import info.evshiron.ingresscraft.messages.MessageCreateScanner;
 import info.evshiron.ingresscraft.messages.MessageHandler;
 import info.evshiron.ingresscraft.messages.MessageSyncScanner;
 import net.minecraft.client.gui.GuiButton;
@@ -16,7 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 /**
  * Created by evshiron on 6/6/15.
  */
-public class GUIScanner extends GuiScreen {
+public class GUICreateScanner extends GuiScreen {
 
     public static final int ID = 10001;
 
@@ -36,7 +37,7 @@ public class GUIScanner extends GuiScreen {
 
     GuiButton mCancelButton;
 
-    public GUIScanner(EntityPlayer player, ItemStack scanner) {
+    public GUICreateScanner(EntityPlayer player, ItemStack scanner) {
         super();
 
         mPlayer = player;
@@ -160,7 +161,7 @@ public class GUIScanner extends GuiScreen {
 
         mScanner.setTagCompound(nbt);
 
-        MessageHandler.Wrapper.sendToServer(new MessageSyncScanner(mScanner));
+        MessageHandler.Wrapper.sendToServer(new MessageCreateScanner(mPlayer, mCodenameField.getText(), mFaction));
 
     }
 

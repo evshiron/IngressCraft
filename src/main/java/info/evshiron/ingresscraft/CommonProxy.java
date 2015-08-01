@@ -1,10 +1,11 @@
 package info.evshiron.ingresscraft;
 
+import info.evshiron.ingresscraft.client.gui.GUICreatePortal;
 import info.evshiron.ingresscraft.client.gui.GUIPortal;
 import info.evshiron.ingresscraft.entities.EntityPortal;
 import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.network.IGuiHandler;
-import info.evshiron.ingresscraft.client.gui.GUIScanner;
+import info.evshiron.ingresscraft.client.gui.GUICreateScanner;
 import info.evshiron.ingresscraft.items.ItemScanner;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -30,7 +31,7 @@ public class CommonProxy implements IGuiHandler {
 
         switch(id) {
 
-            case GUIScanner.ID:
+            case GUICreateScanner.ID:
 
                 // HELMET = 3.
                 ItemStack helmet = player.getCurrentArmor(3);
@@ -40,7 +41,7 @@ public class CommonProxy implements IGuiHandler {
                     if(helmet.getTagCompound().getInteger("faction") == Constants.Faction.NEUTRAL) {
 
                         CurrentScreenId = id;
-                        return new GUIScanner(player, helmet);
+                        return new GUICreateScanner(player, helmet);
 
                     }
                     else {
@@ -55,6 +56,10 @@ public class CommonProxy implements IGuiHandler {
                     return null;
 
                 }
+
+            case GUICreatePortal.ID:
+
+                return new GUICreatePortal(player, x, y, z);
 
             case GUIPortal.ID:
 

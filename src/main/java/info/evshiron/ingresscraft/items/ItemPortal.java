@@ -1,6 +1,9 @@
 package info.evshiron.ingresscraft.items;
 
 import info.evshiron.ingresscraft.IngressCraft;
+import info.evshiron.ingresscraft.IngressData;
+import info.evshiron.ingresscraft.client.gui.GUICreatePortal;
+import info.evshiron.ingresscraft.client.gui.GUICreateScanner;
 import info.evshiron.ingresscraft.entities.EntityPortal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -27,13 +30,9 @@ public class ItemPortal extends Item {
     @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int targetSide, float targetX, float targetY, float targetZ) {
 
-        EntityPortal entity = new EntityPortal(world);
+        player.openGui(IngressCraft.Instance, GUICreatePortal.ID, world, (int) (x + targetX), (int) (y + targetY), (int) (z + targetZ));
 
-        entity.setPosition(x + targetX, y + targetY, z + targetZ);
-
-        if(!world.isRemote) world.spawnEntityInWorld(entity);
-
-        return true;
+        return false;
 
     }
 

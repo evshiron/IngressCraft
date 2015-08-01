@@ -192,7 +192,7 @@ public class EntityResonator extends EntityIngressBase implements IEntityAdditio
 
             nbt.setInteger("ap", nbt.getInteger("ap") + 75);
 
-            if(!worldObj.isRemote) MessageHandler.Wrapper.sendTo(new MessageSyncScanner(scanner), (EntityPlayerMP) player);
+            if(!worldObj.isRemote) MessageHandler.Wrapper.sendTo(new MessageSyncScanner(player, scanner), (EntityPlayerMP) player);
 
         }
 

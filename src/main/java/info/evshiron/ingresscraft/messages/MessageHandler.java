@@ -16,8 +16,15 @@ public class MessageHandler {
 
         int index = 0;
 
-        Wrapper.registerMessage(MessageSyncScanner.class, MessageSyncScanner.class, index++, Side.SERVER);
-        Wrapper.registerMessage(MessageSyncPortal.class, MessageSyncPortal.class, index++, Side.SERVER);
+        Wrapper.registerMessage(MessageCreateScanner.class, MessageCreateScanner.class, index++, Side.SERVER);
+        Wrapper.registerMessage(MessageSyncScanner.class, MessageSyncScanner.class, index++, Side.CLIENT);
+        Wrapper.registerMessage(MessageCreatePortal.class, MessageCreatePortal.class, index++, Side.SERVER);
+
+        Wrapper.registerMessage(MessageGetPortalInfo.class, MessageGetPortalInfo.class, index++, Side.SERVER);
+        Wrapper.registerMessage(MessageGetPortalInfo.class, MessageGetPortalInfo.class, index++, Side.CLIENT);
+
+        Wrapper.registerMessage(MessageGetPortalLinkability.class, MessageGetPortalLinkability.class, index++, Side.SERVER);
+        Wrapper.registerMessage(MessageGetPortalLinkability.class, MessageGetPortalLinkability.class, index++, Side.CLIENT);
 
     }
 

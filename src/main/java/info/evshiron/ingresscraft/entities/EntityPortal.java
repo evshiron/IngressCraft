@@ -17,7 +17,6 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by evshiron on 5/26/15.
@@ -26,7 +25,7 @@ public class EntityPortal extends EntityIngressBase implements IEntityAdditional
 
     public static final String NAME = "portal";
 
-    public String Uuid = "";
+    public String UUID = "";
     public String Name = "-UNKNOWN-";
     public int Faction = Constants.Faction.NEUTRAL;
     public String Owner = "-UNKNOWN-";
@@ -37,7 +36,7 @@ public class EntityPortal extends EntityIngressBase implements IEntityAdditional
 
         super(world);
 
-        Uuid = UUID.randomUUID().toString();
+        UUID = java.util.UUID.randomUUID().toString();
 
         setSize(1, 3);
 
@@ -82,7 +81,7 @@ public class EntityPortal extends EntityIngressBase implements IEntityAdditional
     @Override
     public void writeEntityToNBT(NBTTagCompound nbt) {
 
-        nbt.setString("uuid", Uuid);
+        nbt.setString("uuid", UUID);
         nbt.setString("name", Name);
         nbt.setInteger("faction", Faction);
         nbt.setString("owner", Owner);
@@ -96,7 +95,7 @@ public class EntityPortal extends EntityIngressBase implements IEntityAdditional
 
         super.readEntityFromNBT(nbt);
 
-        Uuid = nbt.getString("uuid");
+        UUID = nbt.getString("uuid");
         Name = nbt.getString("name");
         Faction = nbt.getInteger("faction");
         Owner = nbt.getString("owner");
@@ -106,7 +105,7 @@ public class EntityPortal extends EntityIngressBase implements IEntityAdditional
     @Override
     public void writeSpawnData(ByteBuf buffer) {
 
-        ByteBufUtils.writeUTF8String(buffer, Uuid);
+        ByteBufUtils.writeUTF8String(buffer, UUID);
         ByteBufUtils.writeUTF8String(buffer, Name);
         ByteBufUtils.writeUTF8String(buffer, String.valueOf(Faction));
         ByteBufUtils.writeUTF8String(buffer, Owner);
@@ -116,7 +115,7 @@ public class EntityPortal extends EntityIngressBase implements IEntityAdditional
     @Override
     public void readSpawnData(ByteBuf additionalData) {
 
-        Uuid = ByteBufUtils.readUTF8String(additionalData);
+        UUID = ByteBufUtils.readUTF8String(additionalData);
         Name = ByteBufUtils.readUTF8String(additionalData);
         Faction = Integer.parseInt(ByteBufUtils.readUTF8String(additionalData));
         Owner = ByteBufUtils.readUTF8String(additionalData);
@@ -257,7 +256,7 @@ public class EntityPortal extends EntityIngressBase implements IEntityAdditional
                 ItemStack portalKey = new ItemStack(IngressCraft.PortalKeyItem, 1, 0);
 
                 NBTTagCompound nbt1 = new NBTTagCompound();
-                nbt1.setString("uuid", Uuid);
+                nbt1.setString("uuid", UUID);
                 nbt1.setString("name", Name);
                 nbt1.setInteger("level", GetLevel());
                 nbt1.setDouble("x", posX);

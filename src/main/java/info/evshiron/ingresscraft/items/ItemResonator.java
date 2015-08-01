@@ -123,13 +123,13 @@ public class ItemResonator extends Item {
 
                     nbt.setInteger("ap", nbt.getInteger("ap") + 625);
 
-                    if(!world.isRemote) MessageHandler.Wrapper.sendTo(new MessageSyncScanner(scanner), (EntityPlayerMP) player);
+                    if(!world.isRemote) MessageHandler.Wrapper.sendTo(new MessageSyncScanner(player, scanner), (EntityPlayerMP) player);
 
                     break;
 
                 }
 
-                if(!world.isRemote) MessageHandler.Wrapper.sendTo(new MessageSyncScanner(scanner), (EntityPlayerMP) player);
+                if(!world.isRemote) MessageHandler.Wrapper.sendTo(new MessageSyncScanner(player, scanner), (EntityPlayerMP) player);
 
             }
 

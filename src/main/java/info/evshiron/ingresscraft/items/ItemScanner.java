@@ -3,7 +3,7 @@ package info.evshiron.ingresscraft.items;
 import info.evshiron.ingresscraft.CommonProxy;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
-import info.evshiron.ingresscraft.client.gui.GUIScanner;
+import info.evshiron.ingresscraft.client.gui.GUICreateScanner;
 import info.evshiron.ingresscraft.utils.IngressNotifier;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -111,9 +111,9 @@ public class ItemScanner extends ItemArmor {
 
             if(world.isRemote) {
 
-                if(GUIDisabler == 0 && CommonProxy.CurrentScreenId != GUIScanner.ID) {
+                if(GUIDisabler == 0 && CommonProxy.CurrentScreenId != GUICreateScanner.ID) {
 
-                    player.openGui(IngressCraft.Instance, GUIScanner.ID, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+                    player.openGui(IngressCraft.Instance, GUICreateScanner.ID, world, (int) player.posX, (int) player.posY, (int) player.posZ);
 
                 }
 

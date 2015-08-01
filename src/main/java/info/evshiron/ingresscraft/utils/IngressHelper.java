@@ -123,7 +123,7 @@ public class IngressHelper {
 
                 EntityPortal portal = (EntityPortal) entity;
 
-                if(portal.Uuid.contentEquals(uuid)) {
+                if(portal.UUID.contentEquals(uuid)) {
 
                     return portal;
 
