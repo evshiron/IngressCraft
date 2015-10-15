@@ -1,5 +1,7 @@
 package info.evshiron.ingresscraft;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
@@ -51,9 +53,11 @@ public class IngressData extends WorldSavedData {
 
         nbt.setTag("agents", mAgents);
         nbt.setTag("portals", mPortals);
+        nbt.setTag("links", mLinks);
 
     }
 
+    //@SideOnly(Side.SERVER)
     public void RegisterAgent(String codename, int faction) {
 
         NBTTagCompound agent = new NBTTagCompound();
@@ -63,8 +67,11 @@ public class IngressData extends WorldSavedData {
 
         mAgents.setTag(codename, agent);
 
+        markDirty();
+
     }
 
+    //@SideOnly(Side.SERVER)
     public void RegisterPortal(String uuid, String name, double x, double y, double z) {
 
         NBTTagCompound portal = new NBTTagCompound();
@@ -81,12 +88,21 @@ public class IngressData extends WorldSavedData {
 
     }
 
+    //@SideOnly(Side.SERVER)
+    public void AddLink(String startUUID, String endUUID) {
+
+
+
+    }
+
+    //@SideOnly(Side.SERVER)
     public NBTTagCompound GetPortal(String uuid) {
 
         return mPortals.getCompoundTag(uuid);
 
     }
 
+    //@SideOnly(Side.SERVER)
     public boolean GetPortalLinkability(String fromUuid, String toUuid) {
 
         boolean linkability = true;

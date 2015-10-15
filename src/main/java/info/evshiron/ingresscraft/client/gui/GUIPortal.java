@@ -1,9 +1,11 @@
 package info.evshiron.ingresscraft.client.gui;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.GuiScrollingList;
 import info.evshiron.ingresscraft.CommonProxy;
 import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
+import info.evshiron.ingresscraft.client.effects.EffectLink;
 import info.evshiron.ingresscraft.entities.EntityPortal;
 import info.evshiron.ingresscraft.entities.EntityResonator;
 import info.evshiron.ingresscraft.items.ItemPortalKey;
@@ -20,7 +22,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -69,23 +73,23 @@ public class GUIPortal extends GuiScreen {
 
     }
 
-    public static class GuiLinkablePortalList extends GuiScrollingList {
+    public class LinkablePortalItem {
 
-        public static class Item {
+        public String Uuid;
+        public String Name;
 
-            public String Uuid;
-            public String Name;
+        public LinkablePortalItem(String uuid, String name) {
 
-            public Item(String uuid, String name) {
-
-                Uuid = uuid;
-                Name = name;
-
-            }
+            Uuid = uuid;
+            Name = name;
 
         }
 
-        public ArrayList<Item> Items;
+    }
+
+    public class GuiLinkablePortalList extends GuiScrollingList {
+
+        public ArrayList<LinkablePortalItem> Items;
 
         GUIPortal mParent;
         int mSelectedItemIndex;
@@ -96,7 +100,7 @@ public class GUIPortal extends GuiScreen {
 
             mParent = parent;
 
-            Items = new ArrayList<Item>();
+            Items = new ArrayList<LinkablePortalItem>();
 
         }
 
@@ -111,6 +115,7 @@ public class GUIPortal extends GuiScreen {
             if(!doubleClick) {
 
                 mSelectedItemIndex = index;
+
             }
             else {
 
@@ -133,7 +138,7 @@ public class GUIPortal extends GuiScreen {
         @Override
         protected void drawSlot(int index, int var2, int top, int var4, Tessellator tessellator) {
 
-            Item item = Items.get(index);
+            LinkablePortalItem item = Items.get(index);
 
             // 32x32 icon with a border of 4.
             mParent.renderIcon(new ItemStack(IngressCraft.PortalKeyItem), left + 4, top + 4, 32, 32);
@@ -358,7 +363,7 @@ public class GUIPortal extends GuiScreen {
 
                     if(nbt.getBoolean(uuid)) {
 
-                        mLinkablePortalList.Items.add(new GuiLinkablePortalList.Item(uuid, PortalNames.getString(uuid)));
+                        mLinkablePortalList.Items.add(new LinkablePortalItem(uuid, PortalNames.getString(uuid)));
 
                     }
 

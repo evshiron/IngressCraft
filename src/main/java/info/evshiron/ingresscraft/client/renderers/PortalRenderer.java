@@ -4,6 +4,7 @@ import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.entities.EntityPortal;
 import info.evshiron.ingresscraft.utils.IngressDeserializer;
+import info.evshiron.ingresscraft.utils.RendererUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderEntity;
 import net.minecraft.entity.Entity;
@@ -36,46 +37,6 @@ public class PortalRenderer extends RenderEntity {
     public PortalRenderer() {
 
         mPortalModel = IngressDeserializer.Deserialize(getClass().getResourceAsStream("/assets/ingresscraft/models/entities/texturedPortal.obj"));
-
-    }
-
-    String readAllFromStream(InputStream source) throws IOException {
-
-        StringBuilder sb = new StringBuilder();
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(source));
-
-        String line;
-        while((line = br.readLine()) != null) {
-
-            sb.append(line).append("\n");
-
-        }
-
-        return sb.toString();
-
-    }
-
-    int createShader(int type, InputStream stream) {
-
-        int shader = GL20.glCreateShader(type);
-
-        try {
-
-            String source = readAllFromStream(stream);
-            GL20.glShaderSource(shader, source);
-            GL20.glCompileShader(shader);
-
-            System.out.println(GL20.glGetShaderInfoLog(shader, GL20.GL_COMPILE_STATUS));
-
-            return shader;
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-            return 0;
-
-        }
 
     }
 
@@ -135,8 +96,8 @@ public class PortalRenderer extends RenderEntity {
         if(mShaderProgram == 0) {
 
             int shaderProgram = GL20.glCreateProgram();
-            int vertexShader = createShader(GL20.GL_VERTEX_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/portal_scanner.glsl.vert"));
-            int fragmentShader = createShader(GL20.GL_FRAGMENT_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/portal_scanner.glsl.frag"));
+            int vertexShader = RendererUtil.CreateShader(GL20.GL_VERTEX_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/portal_scanner.glsl.vert"));
+            int fragmentShader = RendererUtil.CreateShader(GL20.GL_FRAGMENT_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/portal_scanner.glsl.frag"));
 
             GL20.glAttachShader(shaderProgram, vertexShader);
             GL20.glAttachShader(shaderProgram, fragmentShader);
@@ -147,22 +108,22 @@ public class PortalRenderer extends RenderEntity {
 
             mShaderProgram = shaderProgram;
 
-            int ringVertexBufferObjectId = GL15.glGenBuffers();
+            int vertexBufferObjectId = GL15.glGenBuffers();
 
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, ringVertexBufferObjectId);
+            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexBufferObjectId);
             GL15.glBufferData(GL15.GL_ARRAY_BUFFER, mPortalModel.Vertices, GL15.GL_STATIC_DRAW);
 
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
-            int ringIndexBufferObjectId = GL15.glGenBuffers();
+            int indexBufferObjectId = GL15.glGenBuffers();
 
-            GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, ringIndexBufferObjectId);
+            GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectId);
             GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, mPortalModel.Indices, GL15.GL_STATIC_DRAW);
 
             GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
 
-            mVertexBufferObjectId = ringVertexBufferObjectId;
-            mIndexBufferObjectId = ringIndexBufferObjectId;
+            mVertexBufferObjectId = vertexBufferObjectId;
+            mIndexBufferObjectId = indexBufferObjectId;
 
         }
 

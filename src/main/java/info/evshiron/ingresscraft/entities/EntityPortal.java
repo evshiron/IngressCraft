@@ -176,7 +176,7 @@ public class EntityPortal extends EntityIngressBase implements IEntityAdditional
     @Override
     protected boolean interact(EntityPlayer player) {
 
-        if(player.getCurrentEquippedItem().getItem() instanceof ItemXMPBurster) {
+        if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemXMPBurster) {
 
             return false;
 

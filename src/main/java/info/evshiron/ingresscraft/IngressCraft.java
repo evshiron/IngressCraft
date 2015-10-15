@@ -2,12 +2,14 @@ package info.evshiron.ingresscraft;
 
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import info.evshiron.ingresscraft.blocks.BlockXM;
+import info.evshiron.ingresscraft.commands.CommandIngressCraft;
 import info.evshiron.ingresscraft.entities.EntityPortal;
 import info.evshiron.ingresscraft.entities.EntityResonator;
 import info.evshiron.ingresscraft.items.*;
@@ -172,6 +174,13 @@ public class IngressCraft
         NetworkRegistry.INSTANCE.registerGuiHandler(Instance, Proxy);
 
         MessageHandler.Setup();
+
+    }
+
+    @EventHandler
+    public void serverLoad(FMLServerStartingEvent event) {
+
+        event.registerServerCommand(new CommandIngressCraft());
 
     }
 

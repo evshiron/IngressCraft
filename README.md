@@ -79,6 +79,7 @@ A Power Cube?
 * [Basic GUI - Minecraft Forge](http://www.minecraftforge.net/wiki/Basic_GUI)
 * [[1.4.7][forge]Blaueseichoern's GUI Tutorial - Tutorials - Archive - Minecraft Forum - Minecraft Forum](http://www.minecraftforum.net/forums/archive/tutorials/931088-1-4-7-forge-blaueseichoerns-gui-tutorial)
 * [GuiScrollingList (Forge API)](http://cmicro.github.io/NeatCraft/forge-javadoc/)
+* [[solved]EntityFX Movements](http://www.minecraftforge.net/forum/index.php?topic=30868.0)
 
 ## Credits
 

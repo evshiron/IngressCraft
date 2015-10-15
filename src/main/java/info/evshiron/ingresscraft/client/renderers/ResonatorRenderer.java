@@ -4,7 +4,9 @@ import info.evshiron.ingresscraft.Constants;
 import info.evshiron.ingresscraft.IngressCraft;
 import info.evshiron.ingresscraft.entities.EntityResonator;
 import info.evshiron.ingresscraft.utils.IngressDeserializer;
+import info.evshiron.ingresscraft.utils.RendererUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -38,46 +40,6 @@ public class ResonatorRenderer extends RenderEntity {
 
         mResonatorRingModel = IngressDeserializer.Deserialize(getClass().getResourceAsStream("/assets/ingresscraft/models/entities/texturedResonatorRing.obj"));
         mResonatorXMModel = IngressDeserializer.Deserialize(getClass().getResourceAsStream("/assets/ingresscraft/models/entities/texturedResonatorXM.obj"));
-
-    }
-
-    String readAllFromStream(InputStream source) throws IOException {
-
-        StringBuilder sb = new StringBuilder();
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(source));
-
-        String line;
-        while((line = br.readLine()) != null) {
-
-            sb.append(line).append("\n");
-
-        }
-
-        return sb.toString();
-
-    }
-
-    int createShader(int type, InputStream stream) {
-
-        int shader = GL20.glCreateShader(type);
-
-        try {
-
-            String source = readAllFromStream(stream);
-            GL20.glShaderSource(shader, source);
-            GL20.glCompileShader(shader);
-
-            System.out.println(GL20.glGetShaderInfoLog(shader, GL20.GL_COMPILE_STATUS));
-
-            return shader;
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-            return 0;
-
-        }
 
     }
 
@@ -155,8 +117,8 @@ public class ResonatorRenderer extends RenderEntity {
         if(mRingShaderProgram == 0 || mRingShaderProgram == 0) {
 
             int ringShaderProgram = GL20.glCreateProgram();
-            int ringVertexShader = createShader(GL20.GL_VERTEX_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/bicolor_textured.glsl.vert"));
-            int ringFragmentShader = createShader(GL20.GL_FRAGMENT_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/bicolor_textured.glsl.frag"));
+            int ringVertexShader = RendererUtil.CreateShader(GL20.GL_VERTEX_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/bicolor_textured.glsl.vert"));
+            int ringFragmentShader = RendererUtil.CreateShader(GL20.GL_FRAGMENT_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/bicolor_textured.glsl.frag"));
 
             GL20.glAttachShader(ringShaderProgram, ringVertexShader);
             GL20.glAttachShader(ringShaderProgram, ringFragmentShader);
@@ -166,8 +128,8 @@ public class ResonatorRenderer extends RenderEntity {
             System.out.println(GL20.glGetProgramInfoLog(ringShaderProgram, GL20.GL_LINK_STATUS));
 
             int xmShaderProgram = GL20.glCreateProgram();
-            int xmVertexShader = createShader(GL20.GL_VERTEX_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/xm.glsl.vert"));
-            int xmFragmentShader = createShader(GL20.GL_FRAGMENT_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/xm.glsl.frag"));
+            int xmVertexShader = RendererUtil.CreateShader(GL20.GL_VERTEX_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/xm.glsl.vert"));
+            int xmFragmentShader = RendererUtil.CreateShader(GL20.GL_FRAGMENT_SHADER, getClass().getResourceAsStream("/assets/ingresscraft/shaders/xm.glsl.frag"));
 
             GL20.glAttachShader(xmShaderProgram, xmVertexShader);
             GL20.glAttachShader(xmShaderProgram, xmFragmentShader);
